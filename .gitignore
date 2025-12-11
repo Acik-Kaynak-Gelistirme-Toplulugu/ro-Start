@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# MacOS
+.DS_Store
+._*
+
+# Build & Packaging
+package_build/
+*.deb
+*.tar.gz
+dist/
+build/
+*.spec
+
+# IDEs
+.vscode/
+.idea/
