@@ -5,6 +5,11 @@ __pycache__/
 venv/
 .env
 
+# Javascript/Node
+**/node_modules/
+npm-debug.log
+yarn-error.log
+
 # MacOS
 .DS_Store
 ._*

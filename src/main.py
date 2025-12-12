@@ -18,7 +18,7 @@ def main():
     app = QApplication(sys.argv)
     
     # Uygulama genel ayarları
-    app.setApplicationName("Linux Welcome")
+    app.setApplicationName("Ro-Start")
     app.setApplicationVersion("1.0.0")
     
     # Ana pencereyi oluştur ve göster

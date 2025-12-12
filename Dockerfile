@@ -39,6 +39,7 @@ COPY requirements.txt .
 COPY src/ ./src/
 COPY assets/ ./assets/
 COPY resources/ ./resources/
+COPY tema/dist ./tema/dist
 COPY README.md .
 
 # Dil ayarlarını yap (Türkçe karakter sorunu için)
