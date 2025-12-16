@@ -241,28 +241,28 @@ export const steps: StepConfig[] = [
 
 export const themeConfig = {
   // Gradient renkleri (Tailwind sınıfları)
-  backgroundGradient: 'from-slate-200 via-gray-100 to-slate-200',
+  backgroundGradient: 'from-slate-200 via-gray-100 to-slate-200 dark:from-slate-950 dark:via-purple-950 dark:to-slate-900',
   
   // Animasyonlu orb renkleri - Daha şeffaf/beyazımsı
-  orb1Color: 'bg-blue-300',
-  orb2Color: 'bg-indigo-300',
-  orb3Color: 'bg-slate-300',
+  orb1Color: 'bg-blue-300 dark:bg-purple-600/40',
+  orb2Color: 'bg-indigo-300 dark:bg-blue-600/40',
+  orb3Color: 'bg-slate-300 dark:bg-indigo-600/40',
   
   // Glass effect opacity - Daha mat
-  glassOpacity: 'bg-white/40',
-  glassOpacityHover: 'bg-white/60',
-  glassCardOpacity: 'bg-white/50',
+  glassOpacity: 'bg-white/40 dark:bg-slate-800/40',
+  glassOpacityHover: 'bg-white/60 dark:bg-slate-800/60',
+  glassCardOpacity: 'bg-white/50 dark:bg-slate-800/20',
   
   // Border colors
-  borderColor: 'border-white/40',
+  borderColor: 'border-white/40 dark:border-slate-700/50',
   
   // Text colors for Light Mode
-  textHeading: 'text-slate-800',
-  textSubheading: 'text-slate-600',
-  textBody: 'text-slate-500',
-  textMuted: 'text-slate-400',
+  textHeading: 'text-slate-800 dark:text-slate-100',
+  textSubheading: 'text-slate-600 dark:text-slate-300',
+  textBody: 'text-slate-500 dark:text-slate-400',
+  textMuted: 'text-slate-400 dark:text-slate-500',
   
   // Icon colors
-  iconPrimary: 'text-slate-700',
-  iconSecondary: 'text-slate-500',
+  iconPrimary: 'text-slate-700 dark:text-slate-300',
+  iconSecondary: 'text-slate-500 dark:text-slate-500',
 };

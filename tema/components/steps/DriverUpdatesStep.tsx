@@ -1,25 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Cpu, ExternalLink, HardDrive, Monitor } from 'lucide-react';
 import { themeConfig } from '../../config/welcome-config';
 
-export function DriverUpdatesStep({ step, t }: { step: any, t: any }) {
+interface SystemSpecs {
+  cpu: string;
+  gpu: string;
+  ram: string;
+  storage: string;
+}
+
+export function DriverUpdatesStep({ t }: { step: any, t: any }) {
+  const [specs, setSpecs] = useState<SystemSpecs | null>(null);
+
+  useEffect(() => {
+    const handleSpecsUpdate = (event: CustomEvent<SystemSpecs>) => {
+      setSpecs(event.detail);
+    };
+
+    window.addEventListener('system-specs-update' as any, handleSpecsUpdate as any);
+
+    return () => {
+      window.removeEventListener('system-specs-update' as any, handleSpecsUpdate as any);
+    };
+  }, []);
+
   const openDriverManager = () => {
-    // Gerçek uygulamada bu, sistemin kendi sürücü yöneticisini (örn. software-properties-gtk) açacak.
-    // Python tarafında bu URL yakalanıp ilgili komut çalıştırılabilir.
     window.location.href = "app://launch-driver-manager";
-    console.log("Sürücü Yöneticisi başlatılıyor...");
   };
+
+  const displayCpu = specs?.cpu || t.driverUpdates.specs.cpuVal;
+  const displayGpu = specs?.gpu || t.driverUpdates.specs.gpuVal;
+  const displayRam = specs?.ram || t.driverUpdates.specs.ramVal;
+  const displayStorage = specs?.storage || t.driverUpdates.specs.storageVal;
 
   return (
     <div className="space-y-8 flex flex-col items-center justify-center h-full">
       <div className="text-center space-y-4">
         <motion.div
           initial={{ scale: 0, rotate: 0 }}
-          animate={{ scale: 1, rotate: 360 }}
+          animate={{ scale: 1 }}
           transition={{ 
-            scale: { delay: 0.2, type: "spring" },
-            rotate: { duration: 20, repeat: Infinity, ease: "linear" }
+            scale: { delay: 0.2, type: "spring" }
           }}
           className={`inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-white/40 to-white/10 backdrop-blur-xl border ${themeConfig.borderColor} mb-6 shadow-xl`}
         >
@@ -43,34 +65,33 @@ export function DriverUpdatesStep({ step, t }: { step: any, t: any }) {
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4">
-             {/* Simple System Spec Placeholders - Dynamic data would go here */}
-            <div className={`p-4 rounded-xl bg-white/40 border ${themeConfig.borderColor} flex items-center gap-3`}>
+             {/* Dynamic Data System Specs */}
+            <div className={`p-4 rounded-xl bg-white/40 dark:bg-slate-700/50 border ${themeConfig.borderColor} flex items-center gap-3`}>
                 <Cpu className={`w-6 h-6 ${themeConfig.iconSecondary}`} />
-                <div className="text-left">
+                <div className="text-left overflow-hidden">
                     <div className={`${themeConfig.textSubheading} text-xs font-medium`}>{t.driverUpdates.specs.cpu}</div>
-                    <div className={`${themeConfig.textHeading} font-semibold`}>{t.driverUpdates.specs.cpuVal}</div>
+                    <div className={`${themeConfig.textHeading} font-semibold truncate`} title={displayCpu}>{displayCpu}</div>
                 </div>
             </div>
-            <div className={`p-4 rounded-xl bg-white/40 border ${themeConfig.borderColor} flex items-center gap-3`}>
+            <div className={`p-4 rounded-xl bg-white/40 dark:bg-slate-700/50 border ${themeConfig.borderColor} flex items-center gap-3`}>
                 <Monitor className={`w-6 h-6 ${themeConfig.iconSecondary}`} />
-                <div className="text-left">
+                <div className="text-left overflow-hidden">
                     <div className={`${themeConfig.textSubheading} text-xs font-medium`}>{t.driverUpdates.specs.gpu}</div>
-                    <div className={`${themeConfig.textHeading} font-semibold`}>{t.driverUpdates.specs.gpuVal}</div>
+                    <div className={`${themeConfig.textHeading} font-semibold truncate`} title={displayGpu}>{displayGpu}</div>
                 </div>
             </div>
-            {/* Added RAM and Storage */}
-            <div className={`p-4 rounded-xl bg-white/40 border ${themeConfig.borderColor} flex items-center gap-3`}>
-                <div className={`w-6 h-6 rounded bg-slate-200 flex items-center justify-center text-xs font-bold ${themeConfig.textHeading}`}>R</div>
-                <div className="text-left">
+            <div className={`p-4 rounded-xl bg-white/40 dark:bg-slate-700/50 border ${themeConfig.borderColor} flex items-center gap-3`}>
+                <div className={`w-6 h-6 shrink-0 rounded bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-xs font-bold ${themeConfig.textHeading} dark:text-slate-200`}>R</div>
+                <div className="text-left overflow-hidden">
                     <div className={`${themeConfig.textSubheading} text-xs font-medium`}>{t.driverUpdates.specs.ram}</div>
-                    <div className={`${themeConfig.textHeading} font-semibold`}>{t.driverUpdates.specs.ramVal}</div>
+                    <div className={`${themeConfig.textHeading} font-semibold truncate`} title={displayRam}>{displayRam}</div>
                 </div>
             </div>
-            <div className={`p-4 rounded-xl bg-white/40 border ${themeConfig.borderColor} flex items-center gap-3`}>
+            <div className={`p-4 rounded-xl bg-white/40 dark:bg-slate-700/50 border ${themeConfig.borderColor} flex items-center gap-3`}>
                 <HardDrive className={`w-6 h-6 ${themeConfig.iconSecondary}`} />
-                <div className="text-left">
+                <div className="text-left overflow-hidden">
                     <div className={`${themeConfig.textSubheading} text-xs font-medium`}>{t.driverUpdates.specs.storage}</div>
-                    <div className={`${themeConfig.textHeading} font-semibold`}>{t.driverUpdates.specs.storageVal}</div>
+                    <div className={`${themeConfig.textHeading} font-semibold truncate`} title={displayStorage}>{displayStorage}</div>
                 </div>
             </div>
           </div>

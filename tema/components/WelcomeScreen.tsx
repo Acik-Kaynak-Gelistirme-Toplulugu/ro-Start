@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronRight, Globe } from "lucide-react";
+import { ChevronRight, Globe, Moon, Sun } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { Checkbox } from "./ui/checkbox";
 import { steps, themeConfig } from "../config/welcome-config";
 // import { translations } from '../config/locales'; // Temporarily commented out
 import { WelcomeStep } from "./steps/WelcomeStep";
@@ -106,6 +107,7 @@ const translations = {
     },
     footer: {
       copyright: "© 2026 Ro-Start. Tüm hakları saklıdır.",
+      autostart: "Başlangıçta Göster",
     },
   },
   en: {
@@ -201,6 +203,7 @@ const translations = {
     },
     footer: {
       copyright: "© 2026 Ro-Start. All rights reserved.",
+      autostart: "Show on Startup",
     },
   },
 };
@@ -209,6 +212,37 @@ export function WelcomeScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [language, setLanguage] = useState<"tr" | "en">("tr");
   const [showLangMenu, setShowLangMenu] = useState(false);
+  // Theme state: false = light, true = dark
+  const [isDark, setIsDark] = useState(false);
+  const [autostartEnabled, setAutostartEnabled] = useState(true);
+
+  // Apply theme class to document
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  useEffect(() => {
+    const handleAutostartUpdate = (event: CustomEvent<{ enabled: boolean }>) => {
+      setAutostartEnabled(event.detail.enabled);
+    };
+    window.addEventListener('autostart-status-update' as any, handleAutostartUpdate as any);
+    return () => {
+       window.removeEventListener('autostart-status-update' as any, handleAutostartUpdate as any);
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+  };
+
+  const handleAutostartChange = (checked: boolean) => {
+    setAutostartEnabled(checked);
+    window.location.href = `app://set-autostart?enabled=${checked}`;
+  };
 
   const t = translations[language];
 
@@ -250,7 +284,7 @@ export function WelcomeScreen() {
 
   return (
     <div
-      className={`h-screen w-full relative overflow-hidden bg-gradient-to-br ${themeConfig.backgroundGradient}`}
+      className={`h-screen w-full relative overflow-hidden bg-gradient-to-br ${themeConfig.backgroundGradient} transition-colors duration-500`}
     >
       {/* Animated background elements */}
       <div className="absolute inset-0">
@@ -299,8 +333,22 @@ export function WelcomeScreen() {
         }}
       />
 
-      {/* Language Selector */}
-      <div className="absolute top-6 right-8 z-50">
+      {/* Header Actions (Theme Toggle & Language) */}
+      <div className="absolute top-6 right-8 z-50 flex items-center gap-3">
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className={`group flex items-center justify-center w-10 h-10 rounded-xl backdrop-blur-xl ${themeConfig.glassCardOpacity} border ${themeConfig.borderColor} ${themeConfig.textHeading} hover:bg-white/60 transition-all duration-300`}
+          aria-label="Toggle Theme"
+        >
+          {isDark ? (
+            <Moon className="w-5 h-5 text-indigo-400" />
+          ) : (
+            <Sun className="w-5 h-5 text-amber-500" />
+          )}
+        </button>
+
+        {/* Language Selector */}
         <div className="relative">
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
@@ -316,17 +364,17 @@ export function WelcomeScreen() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden"
+                className="absolute right-0 mt-2 w-32 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden"
               >
                 <button
                   onClick={() => {
                     setLanguage("tr");
                     setShowLangMenu(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 transition-colors ${
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
                     language === "tr"
                       ? "text-blue-600 font-medium"
-                      : "text-slate-600"
+                      : "text-slate-600 dark:text-slate-300"
                   }`}
                 >
                   Türkçe
@@ -336,10 +384,10 @@ export function WelcomeScreen() {
                     setLanguage("en");
                     setShowLangMenu(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 transition-colors ${
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
                     language === "en"
                       ? "text-blue-600 font-medium"
-                      : "text-slate-600"
+                      : "text-slate-600 dark:text-slate-300"
                   }`}
                 >
                   English
@@ -354,7 +402,7 @@ export function WelcomeScreen() {
       <div className="relative z-10 h-screen flex flex-col">
         {/* Glassmorphism container */}
         <div
-          className={`backdrop-blur-3xl ${themeConfig.glassOpacity} flex-1 flex flex-col shadow-none overflow-hidden`}
+          className={`backdrop-blur-3xl ${themeConfig.glassOpacity} flex-1 flex flex-col shadow-none overflow-hidden transition-colors duration-500`}
         >
           {/* Content area - Flex-1 ensures it takes available space */}
           <div className="flex-1 relative flex flex-col min-h-0">
@@ -380,28 +428,51 @@ export function WelcomeScreen() {
             className={`flex-shrink-0 px-8 md:px-12 py-6 border-t ${themeConfig.borderColor} backdrop-blur-xl bg-white/10`}
           >
             <div className="flex justify-between items-center max-w-7xl mx-auto w-full">
-              <div className="flex gap-2">
-                {steps.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      index === currentStep
-                        ? "w-8 bg-slate-800"
-                        : index < currentStep
-                        ? "w-1.5 bg-slate-400/60"
-                        : "w-1.5 bg-slate-400/20"
-                    }`}
-                  />
-                ))}
+              {/* Left Side: Autostart + Progress */}
+              <div className="flex items-center gap-6">
+                 {/* Autostart Toggle */}
+                 <div className="flex items-center gap-2">
+                    <Checkbox 
+                        id="autostart" 
+                        checked={autostartEnabled}
+                        onCheckedChange={handleAutostartChange}
+                        className={`border-slate-400 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600`}
+                    />
+                    <label 
+                        htmlFor="autostart" 
+                        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${themeConfig.textBody} cursor-pointer select-none`}
+                    >
+                        {t.footer.autostart}
+                    </label>
+                 </div>
+
+                 {/* Separator */}
+                 <div className={`h-6 w-px ${themeConfig.borderColor}`} />
+
+                 {/* Progress Dots */}
+                 <div className="flex gap-2">
+                    {steps.map((_, index) => (
+                    <div
+                        key={index}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                        index === currentStep
+                            ? "w-8 bg-slate-800 dark:bg-slate-200"
+                            : index < currentStep
+                            ? "w-1.5 bg-slate-400/60"
+                            : "w-1.5 bg-slate-400/20"
+                        }`}
+                    />
+                    ))}
+                 </div>
               </div>
 
               <div className="flex gap-4">
                 <button
                   onClick={prevStep}
                   disabled={currentStep === 0}
-                  className={`px-6 py-3 rounded-xl backdrop-blur-xl bg-white/40 border ${themeConfig.borderColor} text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/60 transition-all duration-300 font-medium`}
+                  className={`px-6 py-3 rounded-xl backdrop-blur-xl bg-white/40 border ${themeConfig.borderColor} text-slate-700 dark:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/60 transition-all duration-300 font-medium`}
                 >
-                  Geri
+                  {t.nav.back}
                 </button>
 
                 <button
@@ -409,7 +480,7 @@ export function WelcomeScreen() {
                   className={`group px-8 py-3 rounded-xl backdrop-blur-xl bg-blue-600/90 border border-blue-400/30 text-white hover:bg-blue-600 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 font-medium shadow-lg shadow-blue-500/20`}
                   disabled={currentStep === steps.length - 1}
                 >
-                  {currentStep === steps.length - 1 ? "Başla" : "İleri"}
+                  {currentStep === steps.length - 1 ? t.nav.start : t.nav.next}
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>

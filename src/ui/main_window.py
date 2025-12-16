@@ -1,8 +1,19 @@
 import sys
 import os
 import subprocess
+import json
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QMessageBox
 from PyQt6.QtWebEngineWidgets import QWebEngineView
+from urllib.parse import parse_qs
+# Try import based on execution context
+try:
+    from core.sys_info import get_system_specs
+    from core.autostart import is_autostart_enabled, set_autostart
+except ImportError:
+    # Fallback if running relative
+    from src.core.sys_info import get_system_specs
+    from src.core.autostart import is_autostart_enabled, set_autostart
+
 from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 from PyQt6.QtCore import QUrl, QDir
 
@@ -20,6 +31,8 @@ class CustomWebEnginePage(QWebEnginePage):
                 self.close_application()
             elif host == "install-apps":
                 self.install_apps(query)
+            elif host == "set-autostart":
+                self.handle_set_autostart(query)
             elif host == "open-url":
                 # Example: app://open-url?url=https://google.com
                 # Need to parse query to get 'url' param
@@ -41,26 +54,26 @@ class CustomWebEnginePage(QWebEnginePage):
         else:
             # Simulation for macOS/Windows
             print("Simulation: Launching Driver Manager")
-            # We can't use self (QWebEnginePage) as parent for QMessageBox easily without casting to widget, 
-            # so we use None -- this will show a modal dialog
             QMessageBox.information(None, "Simulation", "Launching Driver Manager\n(Simulated on non-Linux OS)")
-
+            
     def close_application(self):
         print("Closing application requested.")
-        # Find the main window and close it
-        # self.view() returns the QWebEngineView given in constructor or setPage
         if self.view() and self.view().window():
             self.view().window().close()
 
     def install_apps(self, query):
         print(f"Install Apps Requested: {query}")
-        # Here you would parse the query string to get app names
-        # e.g., ?apps=vlc,discord
         if sys.platform == "linux":
-            # Real installation logic would go here (likely needing polkit)
             print("Native installation not yet implemented.")
         else:
             QMessageBox.information(None, "Simulation", f"Installing Apps: {query}\n(Simulated)")
+
+    def handle_set_autostart(self, query):
+        params = parse_qs(query)
+        # QUrl.query() might return string, parse_qs expects string
+        enabled = params.get('enabled', ['false'])[0].lower() == 'true'
+        print(f"Setting autostart to: {enabled}")
+        set_autostart(enabled)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -79,13 +92,11 @@ class MainWindow(QMainWindow):
         
         # Web View
         self.web_view = QWebEngineView()
+        self.web_view.loadFinished.connect(self.on_load_finished)
         
         # Set Custom Page for handling navigation requests
         self.custom_page = CustomWebEnginePage(self.web_view)
         self.web_view.setPage(self.custom_page)
-        
-        # Enable Developer Extras (Optional, helpful for debugging)
-        # self.web_view.page().settings().setAttribute(QWebEngineSettings.WebAttribute.DeveloperExtrasEnabled, True)
         
         self.layout.addWidget(self.web_view)
         
@@ -117,3 +128,20 @@ class MainWindow(QMainWindow):
             """
             self.web_view.setHtml(error_msg)
             print(f"Error: UI not found at {html_path}")
+
+    def on_load_finished(self, ok):
+        if ok:
+            print("Page loaded. Injecting system data...")
+            try:
+                specs = get_system_specs()
+                autostart = is_autostart_enabled()
+                
+                # JS Injection
+                js_code = f"""
+                window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
+                window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
+                """
+                self.web_view.page().runJavaScript(js_code)
+                print(f"Injected specs: {specs}, Autostart: {autostart}")
+            except Exception as e:
+                print(f"Failed to inject data: {e}")
