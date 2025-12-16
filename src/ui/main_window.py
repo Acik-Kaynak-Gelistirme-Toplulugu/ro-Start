@@ -2,9 +2,15 @@ import sys
 import os
 import subprocess
 import json
+import logging
+import shutil
+from urllib.parse import parse_qs
+
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QMessageBox
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from urllib.parse import parse_qs
+from PyQt6.QtWebEngineCore import QWebEnginePage
+from PyQt6.QtCore import QUrl
+
 # Try import based on execution context
 try:
     from core.sys_info import get_system_specs
@@ -14,8 +20,8 @@ except ImportError:
     from src.core.sys_info import get_system_specs
     from src.core.autostart import is_autostart_enabled, set_autostart
 
-from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
-from PyQt6.QtCore import QUrl, QDir
+# Configure Logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class CustomWebEnginePage(QWebEnginePage):
     def acceptNavigationRequest(self, url, _type, isMainFrame):
@@ -23,7 +29,7 @@ class CustomWebEnginePage(QWebEnginePage):
         if url.scheme() == "app":
             host = url.host()
             query = url.query()
-            print(f"Intercepted command: {host}, Query: {query}")
+            logging.info(f"Intercepted command: {host}, Query: {query}")
             
             if host == "launch-driver-manager":
                 self.launch_driver_manager()
@@ -35,7 +41,6 @@ class CustomWebEnginePage(QWebEnginePage):
                 self.handle_set_autostart(query)
             elif host == "open-url":
                 # Example: app://open-url?url=https://google.com
-                # Need to parse query to get 'url' param
                 pass 
             
             return False # Stop navigation
@@ -43,36 +48,37 @@ class CustomWebEnginePage(QWebEnginePage):
 
     def launch_driver_manager(self):
         if sys.platform == "linux":
-            print("Launching Driver Manager...")
-            try:
-                # Common driver manager for Ubuntu/Debian based systems
-                # --open-tab=4 usually opens the 'Additional Drivers' tab
-                subprocess.Popen(["software-properties-gtk", "--open-tab=4"])
-            except FileNotFoundError:
-                print("Error: software-properties-gtk not found.")
-                # You might want to try other commands or show an error in the UI
+            logging.info("Launching Driver Manager...")
+            # Check for standard Ubuntu update manager
+            if shutil.which("software-properties-gtk"):
+                try:
+                    subprocess.Popen(["software-properties-gtk", "--open-tab=4"])
+                except Exception as e:
+                    logging.error(f"Error launching software-properties-gtk: {e}")
+            else:
+                logging.warning("software-properties-gtk not found.")
+                # Fallback or alert? For now, log.
         else:
             # Simulation for macOS/Windows
-            print("Simulation: Launching Driver Manager")
+            logging.info("Simulation: Launching Driver Manager")
             QMessageBox.information(None, "Simulation", "Launching Driver Manager\n(Simulated on non-Linux OS)")
             
     def close_application(self):
-        print("Closing application requested.")
+        logging.info("Closing application requested.")
         if self.view() and self.view().window():
             self.view().window().close()
 
     def install_apps(self, query):
-        print(f"Install Apps Requested: {query}")
+        logging.info(f"Install Apps Requested: {query}")
         if sys.platform == "linux":
-            print("Native installation not yet implemented.")
+            logging.info("Native installation not yet implemented.")
         else:
             QMessageBox.information(None, "Simulation", f"Installing Apps: {query}\n(Simulated)")
 
     def handle_set_autostart(self, query):
         params = parse_qs(query)
-        # QUrl.query() might return string, parse_qs expects string
         enabled = params.get('enabled', ['false'])[0].lower() == 'true'
-        print(f"Setting autostart to: {enabled}")
+        logging.info(f"Setting autostart to: {enabled}")
         set_autostart(enabled)
 
 class MainWindow(QMainWindow):
@@ -113,7 +119,7 @@ class MainWindow(QMainWindow):
         if os.path.exists(html_path):
             url = QUrl.fromLocalFile(html_path)
             self.web_view.setUrl(url)
-            print(f"Loading UI from: {url.toString()}")
+            logging.info(f"Loading UI from: {url.toString()}")
         else:
             error_msg = f"""
             <html>
@@ -127,11 +133,11 @@ class MainWindow(QMainWindow):
             </html>
             """
             self.web_view.setHtml(error_msg)
-            print(f"Error: UI not found at {html_path}")
+            logging.error(f"UI not found at {html_path}")
 
     def on_load_finished(self, ok):
         if ok:
-            print("Page loaded. Injecting system data...")
+            logging.info("Page loaded. Injecting system data...")
             try:
                 specs = get_system_specs()
                 autostart = is_autostart_enabled()
@@ -142,6 +148,6 @@ class MainWindow(QMainWindow):
                 window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
                 """
                 self.web_view.page().runJavaScript(js_code)
-                print(f"Injected specs: {specs}, Autostart: {autostart}")
+                logging.info(f"Injected specs: {specs}, Autostart: {autostart}")
             except Exception as e:
-                print(f"Failed to inject data: {e}")
+                logging.error(f"Failed to inject data: {e}")
