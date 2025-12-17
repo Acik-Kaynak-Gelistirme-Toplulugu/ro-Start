@@ -58,6 +58,14 @@ export const translations = {
       description: 'Size önerilen popüler uygulamaları seçin ve yükleyin.',
       selected: 'Seçildi',
       select: 'Seçmek için tıkla',
+      categories: {
+        internet: "İnternet",
+        development: "Geliştirme",
+        music: "Müzik",
+        media: "Medya",
+        graphics: "Grafik",
+        system: "Sistem"
+      },
       footer: 'Daha sonra Uygulama Mağazası\'sından istediğiniz zaman yeni uygulamalar yükleyebilirsiniz.'
     },
     ready: {
@@ -138,6 +146,14 @@ export const translations = {
       description: 'Select and install popular applications recommended for you.',
       selected: 'Selected',
       select: 'Click to select',
+      categories: {
+        internet: "Internet",
+        development: "Development",
+        music: "Music",
+        media: "Media",
+        graphics: "Graphics",
+        system: "System"
+      },
       footer: 'You can install new applications from the App Store at any time later.'
     },
     ready: {

@@ -77,6 +77,36 @@ def get_gpu_info():
     
     return "N/A (Driver not active)"
 
+import os
+
+def get_distro_info():
+    """Retrieves distribution name and version."""
+    distro_name = "Linux"
+    distro_version = "Unknown"
+    
+    try:
+        if sys.platform == "linux":
+            if os.path.exists("/etc/os-release"):
+                with open("/etc/os-release") as f:
+                    data = {}
+                    for line in f:
+                        if "=" in line:
+                            k, v = line.strip().split("=", 1)
+                            data[k] = v.strip('"')
+                    
+                    if "NAME" in data: distro_name = data["NAME"]
+                    if "VERSION_ID" in data: distro_version = data["VERSION_ID"]
+                    
+        elif sys.platform == "darwin":
+            distro_name = "macOS"
+            distro_version = platform.mac_ver()[0]
+            
+    except Exception as e:
+        logging.error(f"Error getting distro info: {e}")
+        pass
+
+    return distro_name, distro_version
+
 def get_system_specs():
     """Aggregates all system specifications."""
     try:
@@ -84,7 +114,6 @@ def get_system_specs():
         if psutil:
             ram_bytes = psutil.virtual_memory().total
             ram_str = get_size_str(ram_bytes)
-            # Add type if possible? psutil doesn't give DDR type easily.
         else:
             ram_str = "Unknown"
         
@@ -94,12 +123,15 @@ def get_system_specs():
         
         cpu_name = get_cpu_info()
         gpu_name = get_gpu_info()
+        distro_name, distro_version = get_distro_info()
         
         return {
             "cpu": cpu_name,
             "gpu": gpu_name,
             "ram": ram_str,
-            "storage": storage_str
+            "storage": storage_str,
+            "distro": distro_name,
+            "version": distro_version
         }
     except Exception as e:
         logging.error(f"Error getting system specs: {e}")
@@ -107,5 +139,7 @@ def get_system_specs():
             "cpu": "Unknown",
             "gpu": "Unknown",
             "ram": "Unknown",
-            "storage": "Unknown"
+            "storage": "Unknown",
+            "distro": "Linux",  
+            "version": "Unknown"
         }

@@ -10,21 +10,9 @@ interface SystemSpecs {
   storage: string;
 }
 
-export function DriverUpdatesStep({ t }: { step: any, t: any }) {
-  const [specs, setSpecs] = useState<SystemSpecs | null>(null);
-
-  useEffect(() => {
-    const handleSpecsUpdate = (event: CustomEvent<SystemSpecs>) => {
-      setSpecs(event.detail);
-    };
-
-    window.addEventListener('system-specs-update' as any, handleSpecsUpdate as any);
-
-    return () => {
-      window.removeEventListener('system-specs-update' as any, handleSpecsUpdate as any);
-    };
-  }, []);
-
+export function DriverUpdatesStep({ step, t, specs }: { step: any, t: any, specs: SystemSpecs | null }) {
+  // specs is now passed as a prop
+  
   const openDriverManager = () => {
     window.location.href = "app://launch-driver-manager";
   };
@@ -35,7 +23,7 @@ export function DriverUpdatesStep({ t }: { step: any, t: any }) {
   const displayStorage = specs?.storage || t.driverUpdates.specs.storageVal;
 
   return (
-    <div className="space-y-8 flex flex-col items-center justify-center h-full">
+    <div className="space-y-6 flex flex-col items-center h-full pt-4">
       <div className="text-center space-y-4">
         <motion.div
           initial={{ scale: 0, rotate: 0 }}

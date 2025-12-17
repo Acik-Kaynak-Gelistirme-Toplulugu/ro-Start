@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Sparkles } from 'lucide-react';
 import { generalConfig, themeConfig } from '../../config/welcome-config';
 
-export function ReadyStep({ step, t }: { step: any, t: any }) {
+export function ReadyStep({ step, t, specs }: { step: any, t: any, specs?: any }) {
   return (
     <div className="space-y-8 text-center flex flex-col items-center justify-center h-full">
       <motion.div
@@ -34,11 +34,11 @@ export function ReadyStep({ step, t }: { step: any, t: any }) {
         <div className="grid grid-cols-3 gap-8">
           <div>
             <div className={`${themeConfig.textSubheading} text-sm mb-1 font-medium`}>{t.ready.system}</div>
-            <div className={`${themeConfig.textHeading} text-xl font-bold`}>{generalConfig.appName}</div>
+            <div className={`${themeConfig.textHeading} text-xl font-bold`}>{specs?.distro || generalConfig.appName}</div>
           </div>
           <div>
             <div className={`${themeConfig.textSubheading} text-sm mb-1 font-medium`}>{t.ready.version}</div>
-            <div className={`${themeConfig.textHeading} text-xl font-bold`}>{generalConfig.version}</div>
+            <div className={`${themeConfig.textHeading} text-xl font-bold`}>{specs?.version || generalConfig.version}</div>
           </div>
           <div>
             <div className={`${themeConfig.textSubheading} text-sm mb-1 font-medium`}>{t.ready.status}</div>

@@ -62,7 +62,9 @@ export function AppSuggestionsStep({ step, t }: { step: any, t: any }) {
                 <div className="flex-1 min-w-0 flex flex-col justify-between h-full py-1">
                     <div>
                         <h3 className={`${themeConfig.textHeading} mb-1 truncate font-semibold text-lg`}>{app.name}</h3>
-                        <p className={`${themeConfig.textMuted} text-sm font-medium`}>{app.category}</p>
+                        <p className={`${themeConfig.textMuted} text-sm font-medium`}>
+                          {t.appSuggestions.categories?.[app.category] || app.category}
+                        </p>
                     </div>
                     
                     <div className="flex items-center justify-end">
@@ -89,7 +91,7 @@ export function AppSuggestionsStep({ step, t }: { step: any, t: any }) {
         transition={{ delay: 0.7 }}
         className="backdrop-blur-xl bg-blue-500/10 rounded-2xl border border-blue-500/20 p-4 flex justify-between items-center"
       >
-        <p className="text-blue-700 text-sm">
+        <p className="text-blue-700 dark:text-blue-200 text-sm">
           💡 <strong>Tip:</strong> {t.appSuggestions.footer}
         </p>
 

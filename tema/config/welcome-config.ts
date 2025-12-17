@@ -137,7 +137,7 @@ export interface AppSuggestion {
 export const appSuggestions: AppSuggestion[] = [
   {
     name: 'Google Chrome',
-    category: 'İnternet',
+    category: 'internet',
     description: 'Hızlı ve güvenli web tarayıcısı',
     icon: Chrome,
     size: '95 MB',
@@ -146,7 +146,7 @@ export const appSuggestions: AppSuggestion[] = [
   },
   {
     name: 'Visual Studio Code',
-    category: 'Geliştirme',
+    category: 'development',
     description: 'Modern kod editörü',
     icon: Code,
     size: '120 MB',
@@ -155,7 +155,7 @@ export const appSuggestions: AppSuggestion[] = [
   },
   {
     name: 'Spotify',
-    category: 'Müzik',
+    category: 'music',
     description: 'Müzik streaming servisi',
     icon: Music,
     size: '180 MB',
@@ -164,7 +164,7 @@ export const appSuggestions: AppSuggestion[] = [
   },
   {
     name: 'VLC Media Player',
-    category: 'Medya',
+    category: 'media',
     description: 'Güçlü medya oynatıcı',
     icon: Film,
     size: '45 MB',
@@ -173,7 +173,7 @@ export const appSuggestions: AppSuggestion[] = [
   },
   {
     name: 'GIMP',
-    category: 'Grafik',
+    category: 'graphics',
     description: 'Profesyonel görsel düzenleme',
     icon: Image,
     size: '210 MB',
@@ -182,7 +182,7 @@ export const appSuggestions: AppSuggestion[] = [
   },
   {
     name: 'Terminal Emulator',
-    category: 'Sistem',
+    category: 'system',
     description: 'Gelişmiş terminal özellikleri',
     icon: Terminal,
     size: '25 MB',

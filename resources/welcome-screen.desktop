@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Welcome Screen
-Comment=Welcome to your new Linux system
-Exec=python3 /opt/welcome-screen/src/main.py
-Icon=utilities-system-monitor
-Terminal=false
-Type=Application
-Categories=System;Settings;
-StartupNotify=true
