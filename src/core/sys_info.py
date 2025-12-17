@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import sys
 import logging
+from functools import lru_cache
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,11 +22,12 @@ def get_size_str(bytes):
         bytes /= 1024
     return f"{bytes:.1f} PB"
 
+@lru_cache(maxsize=1)
 def get_cpu_info():
-    """Retrieves CPU model name."""
+    """Retrieves CPU model name. Cached."""
     try:
         if sys.platform == "linux":
-            # Read from /proc/cpuinfo for reliability on Linux
+            # Read from /proc/cpuinfo for reliability on Linux - much faster than lscpu
             try:
                 with open("/proc/cpuinfo", "r") as f:
                     for line in f:
@@ -39,7 +41,8 @@ def get_cpu_info():
                 cmd = "lscpu | grep 'Model name' | cut -d: -f2"
                 return subprocess.check_output(cmd, shell=True).decode().strip()
 
-        elif sys.platform == "darwin": # macOS (Development)
+        elif sys.platform == "darwin": # macOS
+             # sysctl is reasonably fast
              command = "sysctl -n machdep.cpu.brand_string"
              return subprocess.check_output(command, shell=True).decode().strip()
              
@@ -49,24 +52,24 @@ def get_cpu_info():
     
     return platform.processor() or "Unknown CPU"
 
+@lru_cache(maxsize=1)
 def get_gpu_info():
-    """Retrieves GPU model name."""
+    """Retrieves GPU model name. Cached."""
     try:
         if sys.platform == "linux":
             # Try lspci
             if shutil.which("lspci"):
                 try:
                     # Look for VGA compatible controller
-                    # Use -mm for machine readable output if possible, but standard grep is fine for now
                     cmd = r"lspci | grep -i 'vga\|3d' | cut -d: -f3 | head -n 1"
                     output = subprocess.check_output(cmd, shell=True).decode().strip()
                     if output:
-                        # Clean up output (remove brackets sometimes found)
                         return output.split('[')[-1].split(']')[0] if '[' in output else output
                 except subprocess.CalledProcessError:
                     pass
         elif sys.platform == "darwin":
-            # macOS system profiler
+            # macOS system profiler is slow, but we cache it now.
+            # Using grep to limit output parsing
              cmd = "system_profiler SPDisplaysDataType | grep 'Chipset Model' | cut -d: -f2"
              output = subprocess.check_output(cmd, shell=True).decode().strip()
              if output: return output
@@ -76,8 +79,6 @@ def get_gpu_info():
         pass
     
     return "N/A (Driver not active)"
-
-import os
 
 def get_distro_info():
     """Retrieves distribution name and version."""

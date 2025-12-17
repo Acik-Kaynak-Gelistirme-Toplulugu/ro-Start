@@ -89,7 +89,7 @@ export function WelcomeScreen() {
       case "app-suggestions":
         return <AppSuggestionsStep step={step} t={t} />;
       case "ready":
-        return <ReadyStep step={step} t={t} specs={systemSpecs} />;
+        return <ReadyStep step={step} t={t} specs={systemSpecs} autostartEnabled={autostartEnabled} onAutostartChange={handleAutostartChange} />;
       default:
         return <WelcomeStep step={step} t={t} />;
     }

@@ -35,7 +35,7 @@ export function WelcomeStep({ step, t }: { step: any, t: any }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + index * 0.1 }}
-              className={`backdrop-blur-xl ${themeConfig.glassCardOpacity} rounded-2xl border ${themeConfig.borderColor} p-6 hover:bg-white/60 transition-all duration-300 hover:scale-105 cursor-pointer shadow-sm`}
+              className={`backdrop-blur-xl ${themeConfig.glassCardOpacity} rounded-2xl border ${themeConfig.borderColor} p-6 transition-all duration-300 shadow-sm`}
             >
               {React.createElement(feature.icon, { className: `w-8 h-8 ${themeConfig.iconPrimary} mb-3` })}
               <h3 className={`${themeConfig.textHeading} mb-2 font-semibold`}>{title}</h3>

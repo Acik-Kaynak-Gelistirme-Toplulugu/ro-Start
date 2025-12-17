@@ -23,7 +23,7 @@ export function DriverUpdatesStep({ step, t, specs }: { step: any, t: any, specs
   const displayStorage = specs?.storage || t.driverUpdates.specs.storageVal;
 
   return (
-    <div className="space-y-6 flex flex-col items-center h-full pt-4">
+    <div className="space-y-6 flex flex-col items-center h-full pt-4 pb-8">
       <div className="text-center space-y-4">
         <motion.div
           initial={{ scale: 0, rotate: 0 }}

@@ -204,11 +204,26 @@ class CustomWebEnginePage(QWebEnginePage):
         logging.info(f"Setting autostart to: {enabled}")
         set_autostart(enabled)
 
+class SystemSpecsLoader(QThread):
+    specs_signal = pyqtSignal(dict)
+    
+    def run(self):
+        try:
+            specs = get_system_specs()
+            self.specs_signal.emit(specs)
+        except Exception as e:
+            logging.error(f"Error calling get_system_specs: {e}")
+            self.specs_signal.emit({})
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Ro-Start")
         self.setMinimumSize(960, 640)
+        
+        # State
+        self.is_page_loaded = False
+        self.cached_specs = None
         
         # Central Widget
         self.central_widget = QWidget()
@@ -229,8 +244,22 @@ class MainWindow(QMainWindow):
         
         self.layout.addWidget(self.web_view)
         
+        # Start async loading of specs
+        self.start_specs_loader()
+        
         # Load Content
         self.load_ui()
+
+    def start_specs_loader(self):
+        self.specs_loader = SystemSpecsLoader()
+        self.specs_loader.specs_signal.connect(self.on_specs_loaded)
+        self.specs_loader.start()
+        
+    def on_specs_loaded(self, specs):
+        self.cached_specs = specs
+        logging.info("System specs loaded in background.")
+        if self.is_page_loaded:
+            self.inject_system_data()
 
     def load_ui(self):
         # Resolve path to tema/dist/index.html
@@ -260,17 +289,29 @@ class MainWindow(QMainWindow):
 
     def on_load_finished(self, ok):
         if ok:
-            logging.info("Page loaded. Injecting system data...")
-            try:
-                specs = get_system_specs()
-                autostart = is_autostart_enabled()
+            logging.info("Page loaded.")
+            self.is_page_loaded = True
+            
+            # If specs are already here, inject them immediately.
+            # If not, wait for on_specs_loaded to trigger injection.
+            if self.cached_specs:
+                self.inject_system_data()
+            else:
+                logging.info("Waiting for system specs to finish loading...")
                 
-                # JS Injection
-                js_code = f"""
-                window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
-                window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
-                """
-                self.web_view.page().runJavaScript(js_code)
-                logging.info(f"Injected specs: {specs}, Autostart: {autostart}")
-            except Exception as e:
-                logging.error(f"Failed to inject data: {e}")
+    def inject_system_data(self):
+        if not self.cached_specs: return
+        
+        try:
+            specs = self.cached_specs
+            autostart = is_autostart_enabled()
+            
+            # JS Injection
+            js_code = f"""
+            window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
+            window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
+            """
+            self.web_view.page().runJavaScript(js_code)
+            logging.info(f"Injected specs: {specs}, Autostart: {autostart}")
+        except Exception as e:
+            logging.error(f"Failed to inject data: {e}")

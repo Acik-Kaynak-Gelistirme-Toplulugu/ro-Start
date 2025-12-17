@@ -76,7 +76,12 @@ export const translations = {
       version: 'Sürüm',
       status: 'Durum',
       readyStatus: 'Hazır ✓',
-      startButton: 'Sistemi Başlat'
+      startButton: 'Sistemi Başlat',
+      miniApp: {
+        title: 'Ro-Asist',
+        description: 'Sisteminizi yönetmenizi sağlayan merkezi asistan. Güncellemeler, hızlı erişim, kişiselleştirme ve daha fazlası tek bir yerde.',
+        checkbox: 'Ro-Asist başlangıçta çalışsın'
+      }
     },
     nav: {
       back: 'Geri',
@@ -164,7 +169,12 @@ export const translations = {
       version: 'Version',
       status: 'Status',
       readyStatus: 'Ready ✓',
-      startButton: 'Start System'
+      startButton: 'Start System',
+      miniApp: {
+        title: 'Ro-Asist',
+        description: 'The central assistant for managing your system. Updates, quick access, customization, and more in one place.',
+        checkbox: 'Run Ro-Asist at startup'
+      }
     },
     nav: {
       back: 'Back',
