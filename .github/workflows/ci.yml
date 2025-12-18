@@ -49,10 +49,10 @@ jobs:
 
       - name: Install dependencies (Topic)
         run: |
-          cd tema
+          cd frontend
           npm ci
 
       - name: Build Frontend
         run: |
-          cd tema
+          cd frontend
           npm run build

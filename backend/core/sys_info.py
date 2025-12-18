@@ -7,7 +7,7 @@ import os
 from functools import lru_cache
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 try:
     import psutil
@@ -18,7 +18,7 @@ except ImportError:
 
 def get_size_str(bytes):
     """Converts bytes to human readable string."""
-    for unit in ['', 'KB', 'MB', 'GB', 'TB', 'PB']:
+    for unit in ["", "KB", "MB", "GB", "TB", "PB"]:
         if bytes < 1024:
             return f"{bytes:.1f} {unit}"
         bytes /= 1024
@@ -68,7 +68,7 @@ def get_gpu_info():
                     cmd = r"lspci | grep -i 'vga\|3d' | cut -d: -f3 | head -n 1"
                     output = subprocess.check_output(cmd, shell=True).decode().strip()
                     if output:
-                        return output.split('[')[-1].split(']')[0] if '[' in output else output
+                        return output.split("[")[-1].split("]")[0] if "[" in output else output
                 except subprocess.CalledProcessError:
                     pass
         elif sys.platform == "darwin":
@@ -146,7 +146,7 @@ def get_system_specs():
             "storage": storage_str,
             "distro": distro_name,
             "version": distro_version,
-            "distro_id": distro_id
+            "distro_id": distro_id,
         }
     except Exception as e:
         logging.error(f"Error getting system specs: {e}")
@@ -156,5 +156,5 @@ def get_system_specs():
             "ram": "Unknown",
             "storage": "Unknown",
             "distro": "Linux",
-            "version": "Unknown"
+            "version": "Unknown",
         }

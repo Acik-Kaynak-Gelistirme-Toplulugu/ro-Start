@@ -24,7 +24,7 @@ except ImportError:
     import darkdetect
 
 # Configure Logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class SystemUpdateThread(QThread):
@@ -59,7 +59,7 @@ class SystemUpdateThread(QThread):
                 "Preparing to unpack .../libglib2.0-0_2.80.0_amd64.deb ...",
                 "Unpacking libglib2.0-0:amd64 (2.80.0) over (2.79.0) ...",
                 "Setting up libglib2.0-0:amd64 (2.80.0) ...",
-                "done."
+                "done.",
             ]
 
             total_lines = len(simulated_logs)
@@ -116,12 +116,7 @@ class SystemUpdateThread(QThread):
 
         try:
             process = subprocess.Popen(
-                full_command,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1
+                full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1
             )
 
             for line in process.stdout:
@@ -229,7 +224,7 @@ class CustomWebEnginePage(QWebEnginePage):
 
     def handle_set_autostart(self, query):
         params = parse_qs(query)
-        enabled = params.get('enabled', ['false'])[0].lower() == 'true'
+        enabled = params.get("enabled", ["false"])[0].lower() == "true"
         logging.info(f"Setting autostart to: {enabled}")
         set_autostart(enabled)
 
