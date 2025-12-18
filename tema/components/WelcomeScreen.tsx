@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronRight, Globe, Moon, Sun } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ImageWithFallback } from "./common/ImageWithFallback";
 import { Checkbox } from "./ui/checkbox";
 import { steps, themeConfig } from "../config/welcome-config";
-import { translations } from '../config/locales';
+import { translations } from "../config/locales";
 import { WelcomeStep } from "./steps/WelcomeStep";
 import { SystemUpdatesStep } from "./steps/SystemUpdatesStep";
 import { DriverUpdatesStep } from "./steps/DriverUpdatesStep";
@@ -24,27 +24,41 @@ export function WelcomeScreen() {
   // Apply theme class to document
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
 
   useEffect(() => {
-    const handleAutostartUpdate = (event: CustomEvent<{ enabled: boolean }>) => {
+    const handleAutostartUpdate = (
+      event: CustomEvent<{ enabled: boolean }>
+    ) => {
       setAutostartEnabled(event.detail.enabled);
     };
-    
+
     const handleSpecsUpdate = (event: CustomEvent<any>) => {
-       setSystemSpecs(event.detail);
+      setSystemSpecs(event.detail);
     };
 
-    window.addEventListener('autostart-status-update' as any, handleAutostartUpdate as any);
-    window.addEventListener('system-specs-update' as any, handleSpecsUpdate as any);
-    
+    window.addEventListener(
+      "autostart-status-update" as any,
+      handleAutostartUpdate as any
+    );
+    window.addEventListener(
+      "system-specs-update" as any,
+      handleSpecsUpdate as any
+    );
+
     return () => {
-       window.removeEventListener('autostart-status-update' as any, handleAutostartUpdate as any);
-       window.removeEventListener('system-specs-update' as any, handleSpecsUpdate as any);
+      window.removeEventListener(
+        "autostart-status-update" as any,
+        handleAutostartUpdate as any
+      );
+      window.removeEventListener(
+        "system-specs-update" as any,
+        handleSpecsUpdate as any
+      );
     };
   }, []);
 
@@ -89,7 +103,15 @@ export function WelcomeScreen() {
       case "app-suggestions":
         return <AppSuggestionsStep step={step} t={t} />;
       case "ready":
-        return <ReadyStep step={step} t={t} specs={systemSpecs} autostartEnabled={autostartEnabled} onAutostartChange={handleAutostartChange} />;
+        return (
+          <ReadyStep
+            step={step}
+            t={t}
+            specs={systemSpecs}
+            autostartEnabled={autostartEnabled}
+            onAutostartChange={handleAutostartChange}
+          />
+        );
       default:
         return <WelcomeStep step={step} t={t} />;
     }
@@ -243,23 +265,21 @@ export function WelcomeScreen() {
             <div className="flex justify-between items-center max-w-7xl mx-auto w-full">
               {/* Left Side: Autostart + Progress */}
               <div className="flex items-center gap-6">
-
-
-                 {/* Progress Dots */}
-                 <div className="flex gap-2">
-                    {steps.map((_, index) => (
+                {/* Progress Dots */}
+                <div className="flex gap-2">
+                  {steps.map((_, index) => (
                     <div
-                        key={index}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                      key={index}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
                         index === currentStep
-                            ? "w-8 bg-slate-800 dark:bg-slate-200"
-                            : index < currentStep
-                            ? "w-1.5 bg-slate-400/60"
-                            : "w-1.5 bg-slate-400/20"
-                        }`}
+                          ? "w-8 bg-slate-800 dark:bg-slate-200"
+                          : index < currentStep
+                          ? "w-1.5 bg-slate-400/60"
+                          : "w-1.5 bg-slate-400/20"
+                      }`}
                     />
-                    ))}
-                 </div>
+                  ))}
+                </div>
               </div>
 
               <div className="flex gap-4">
