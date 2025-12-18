@@ -121,7 +121,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ro-start-${{ matrix.arch }}-deb
-          path: ${{ env.PKG_NAME }}.deb
+          path: "*.deb"
 
   create-release:
     needs: build-deb
