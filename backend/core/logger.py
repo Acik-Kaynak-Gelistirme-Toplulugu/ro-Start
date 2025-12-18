@@ -11,6 +11,12 @@ def setup_logging(app_name="ro-start"):
     Linux: ~/.local/state/ro-start/logs/ or ~/.cache/...
     macOS: ~/Library/Logs/ro-start/
     """
+    # Get root logger
+    root_logger = logging.getLogger()
+
+    # If already configured, don't add duplicate handlers
+    if root_logger.handlers:
+        return None
 
     # Determine log directory
     log_dir = user_log_dir(app_name, ensure_exists=True)
@@ -31,7 +37,6 @@ def setup_logging(app_name="ro-start"):
     file_handler.setFormatter(file_formatter)
 
     # Root Logger Config
-    root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
     root_logger.addHandler(console_handler)
     root_logger.addHandler(file_handler)

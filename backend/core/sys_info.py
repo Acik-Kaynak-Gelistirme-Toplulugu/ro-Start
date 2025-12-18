@@ -16,13 +16,13 @@ except ImportError:
     logging.warning("psutil not installed. RAM info will be inaccurate.")
 
 
-def get_size_str(bytes):
+def get_size_str(size_bytes):
     """Converts bytes to human readable string."""
     for unit in ["", "KB", "MB", "GB", "TB", "PB"]:
-        if bytes < 1024:
-            return f"{bytes:.1f} {unit}"
-        bytes /= 1024
-    return f"{bytes:.1f} PB"
+        if size_bytes < 1024:
+            return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.1f} PB"
 
 
 @lru_cache(maxsize=1)
