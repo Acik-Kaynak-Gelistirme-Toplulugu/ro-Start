@@ -1,0 +1,8 @@
+include README.md
+include LICENSE
+include requirements.txt
+include ro-start.desktop
+recursive-include frontend/dist *
+recursive-include assets *.png
+global-exclude __pycache__
+global-exclude *.py[co]

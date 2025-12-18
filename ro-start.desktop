@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.1.0
+Type=Application
+Name=Ro-Start
+GenericName=Welcome Screen
+Comment=Modern welcome application for Linux distributions
+Exec=ro-start
+Icon=ro-start
+Terminal=false
+Categories=System;Settings;
+Keywords=welcome;setup;system;
+StartupNotify=true
+X-GNOME-Autostart-enabled=false
