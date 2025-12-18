@@ -1,0 +1,21 @@
+app-id: org.osdev.ro_start
+runtime: org.kde.Platform
+runtime-version: "6.6"
+sdk: org.kde.Sdk
+command: ro-start
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+  - --filesystem=host # System updates require host access (careful with sandbox)
+
+modules:
+  - name: ro-start
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps .
+    sources:
+      - type: dir
+        path: .

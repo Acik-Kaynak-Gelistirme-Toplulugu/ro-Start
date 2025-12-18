@@ -1,20 +1,27 @@
 import sys
 import os
 from PyQt6.QtWidgets import QApplication
-from ui.main_window import MainWindow
+
+# Adjust path for running directly vs as generic package
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+try:
+    from src.ui.main_window import MainWindow
+    from src.core.logger import setup_logging
+except ImportError:
+    from ui.main_window import MainWindow
+    from core.logger import setup_logging
 
 def main():
-    # Çalışma dizinini scriptin olduğu yerin bir üstüne (proje köküne) ayarla
-    script_dir = os.path.dirname(os.path.abspath(__file__)) 
-    project_root = os.path.dirname(script_dir) 
-    os.chdir(project_root)
+    # Setup Logging
+    log_file = setup_logging()
     
     # Uyarıları Sustur (Log Kirliliğini Önle)
     os.environ["QT_LOGGING_RULES"] = "*.debug=false;qt.qpa.*=false"
     
-    # Font uyarısı için (Opsiyonel: Sistem 'Segoe UI' bulamazsa sessizce sans-serif'e düşer ama log basar)
-    # Biz bunu CSS tarafında çözeceğiz.
-
     app = QApplication(sys.argv)
     
     # Uygulama genel ayarları

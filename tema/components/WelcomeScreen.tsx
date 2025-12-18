@@ -41,6 +41,10 @@ export function WelcomeScreen() {
       setSystemSpecs(event.detail);
     };
 
+    const handleThemeUpdate = (event: CustomEvent<{ isDark: boolean }>) => {
+      setIsDark(event.detail.isDark);
+    };
+
     window.addEventListener(
       "autostart-status-update" as any,
       handleAutostartUpdate as any
@@ -48,6 +52,10 @@ export function WelcomeScreen() {
     window.addEventListener(
       "system-specs-update" as any,
       handleSpecsUpdate as any
+    );
+    window.addEventListener(
+      "theme-status-update" as any,
+      handleThemeUpdate as any
     );
 
     return () => {
@@ -58,6 +66,10 @@ export function WelcomeScreen() {
       window.removeEventListener(
         "system-specs-update" as any,
         handleSpecsUpdate as any
+      );
+      window.removeEventListener(
+        "theme-status-update" as any,
+        handleThemeUpdate as any
       );
     };
   }, []);

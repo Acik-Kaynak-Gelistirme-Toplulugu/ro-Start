@@ -16,10 +16,12 @@ from PyQt6.QtCore import QUrl, QThread, pyqtSignal, QObject
 try:
     from core.sys_info import get_system_specs, get_distro_info
     from core.autostart import is_autostart_enabled, set_autostart
+    import darkdetect
 except ImportError:
     # Fallback if running relative
     from src.core.sys_info import get_system_specs, get_distro_info
     from src.core.autostart import is_autostart_enabled, set_autostart
+    import darkdetect
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -325,13 +327,15 @@ class MainWindow(QMainWindow):
         try:
             specs = self.cached_specs
             autostart = is_autostart_enabled()
+            is_dark = darkdetect.isDark()
             
             # JS Injection
             js_code = f"""
             window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
             window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
+            window.dispatchEvent(new CustomEvent('theme-status-update', {{ detail: {{ isDark: {str(is_dark).lower()} }} }}));
             """
             self.web_view.page().runJavaScript(js_code)
-            logging.info(f"Injected specs: {specs}, Autostart: {autostart}")
+            logging.info(f"Injected specs: {specs}, Autostart: {autostart}, DarkMode: {is_dark}")
         except Exception as e:
             logging.error(f"Failed to inject data: {e}")
