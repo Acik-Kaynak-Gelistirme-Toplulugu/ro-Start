@@ -7,17 +7,18 @@ import shutil
 from urllib.parse import parse_qs
 
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QMessageBox
+from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtCore import QUrl, QThread, pyqtSignal, QObject
 
 # Try import based on execution context
 try:
-    from core.sys_info import get_system_specs
+    from core.sys_info import get_system_specs, get_distro_info
     from core.autostart import is_autostart_enabled, set_autostart
 except ImportError:
     # Fallback if running relative
-    from src.core.sys_info import get_system_specs
+    from src.core.sys_info import get_system_specs, get_distro_info
     from src.core.autostart import is_autostart_enabled, set_autostart
 
 # Configure Logging
@@ -41,9 +42,6 @@ class SystemUpdateThread(QThread):
             
             simulated_logs = [
                 "Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease",
-                "Hit:2 http://archive.ubuntu.com/ubuntu noble-updates InRelease",
-                "Hit:3 http://archive.ubuntu.com/ubuntu noble-backports InRelease",
-                "Hit:4 http://security.ubuntu.com/ubuntu noble-security InRelease",
                 "Reading package lists... Done",
                 "Building dependency tree... Done",
                 "Reading state information... Done",
@@ -53,27 +51,19 @@ class SystemUpdateThread(QThread):
                 "4 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.",
                 "Need to get 42.5 MB of archives.",
                 "After this operation, 1024 KB of additional disk space will be used.",
-                "Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-0 amd64 2.80.0 [1,400 kB]",
-                "Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 firefox amd64 125.0.1 [40.0 MB]",
                 "Fetched 42.5 MB in 2s (18.5 MB/s)",
                 "(Reading database ... 185432 files and directories currently installed.)",
                 "Preparing to unpack .../libglib2.0-0_2.80.0_amd64.deb ...",
                 "Unpacking libglib2.0-0:amd64 (2.80.0) over (2.79.0) ...",
                 "Setting up libglib2.0-0:amd64 (2.80.0) ...",
-                "Processing triggers for libc-bin (2.39) ...",
-                "Processing triggers for man-db (2.12.0) ...",
-                "Setting up firefox (125.0.1) ...",
                 "done."
             ]
             
             total_lines = len(simulated_logs)
             for idx, line in enumerate(simulated_logs):
                 self.log_signal.emit(line)
-                # Simulate variable processing speed
                 delay = random.uniform(0.1, 0.5) if "Get:" not in line else 0.8
                 time.sleep(delay)
-                
-                # Calculate progress roughly based on lines
                 progress = int((idx / total_lines) * 100)
                 self.status_signal.emit("updating", progress)
                 
@@ -81,43 +71,67 @@ class SystemUpdateThread(QThread):
             self.status_signal.emit("completed", 100)
             return
 
-        # Combine commands into a single pkexec call to request password only once
-        full_command = "apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"
+        # Linux Implementation
+        _, _, distro_id = get_distro_info()
+        distro_id = distro_id.lower()
         
-        commands = [
-            ("Updating system packages...", ["pkexec", "/bin/sh", "-c", full_command])
-        ]
+        update_cmd = ""
         
-        total_steps = len(commands)
+        # Debuan/Ubuntu
+        if distro_id in ["ubuntu", "debian", "linuxmint", "pop", "kali", "neon"]:
+             update_cmd = "apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"
         
-        for idx, (desc, cmd) in enumerate(commands):
-            self.log_signal.emit(desc)
-            self.status_signal.emit("updating", int((idx / total_steps) * 100))
+        # Fedora/RHEL
+        elif distro_id in ["fedora", "rhel", "centos", "almalinux"]:
+            update_cmd = "dnf update -y"
             
-            try:
-                # Use stdbuf or pty for better realtime output if needed, but Popen is safer for now
-                process = subprocess.Popen(
-                    cmd, 
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.STDOUT, 
-                    text=True,
-                    bufsize=1  # Line buffered
-                )
-                
-                for line in process.stdout:
-                    self.log_signal.emit(line.strip())
-                
-                process.wait()
-                
-                if process.returncode != 0:
-                    self.log_signal.emit(f"Command failed with return code {process.returncode}")
-                    self.status_signal.emit("error", 0)
-                    return
+        # Arch Linux
+        elif distro_id in ["arch", "manjaro", "endeavouros"]:
+            update_cmd = "pacman -Syu --noconfirm"
+            
+        # OpenSUSE
+        elif "suse" in distro_id:
+             update_cmd = "zypper up -y"
+        
+        else:
+             # Fallback or generic
+             self.log_signal.emit(f"Unsupported distribution: {distro_id}")
+             self.status_signal.emit("error", 0)
+             return
 
-            except Exception as e:
-                self.log_signal.emit(f"Execution failed: {str(e)}")
+        # Wrap in pkexec
+        full_command = f"pkexec /bin/sh -c '{update_cmd}'"
+        
+        self.log_signal.emit(f"Detected Distro: {distro_id}")
+        self.log_signal.emit(f"Executing: {update_cmd}")
+        self.status_signal.emit("updating", 10)
+            
+        try:
+            process = subprocess.Popen(
+                full_command, 
+                shell=True,
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.STDOUT, 
+                text=True,
+                bufsize=1
+            )
+            
+            for line in process.stdout:
+                self.log_signal.emit(line.strip())
+                # Update progress artificially or parse output (parsing is hard across distros)
+                self.status_signal.emit("updating", 50) # Indeterminate state mainly
+            
+            process.wait()
+            
+            if process.returncode != 0:
+                self.log_signal.emit(f"Command failed with return code {process.returncode}")
                 self.status_signal.emit("error", 0)
                 return
+
+        except Exception as e:
+            self.log_signal.emit(f"Execution failed: {str(e)}")
+            self.status_signal.emit("error", 0)
+            return
 
         self.log_signal.emit("System update completed successfully!")
         self.status_signal.emit("completed", 100)
@@ -171,20 +185,26 @@ class CustomWebEnginePage(QWebEnginePage):
 
     def launch_driver_manager(self):
         if sys.platform == "linux":
-            logging.info("Launching Driver Manager...")
-            # Check for standard Ubuntu update manager
-            if shutil.which("software-properties-gtk"):
+            logging.info("Checking for Ro-Control...")
+            if shutil.which("ro-control"):
                 try:
-                    subprocess.Popen(["software-properties-gtk", "--open-tab=4"])
+                    subprocess.Popen(["ro-control"])
+                    logging.info("Ro-Control launched.")
                 except Exception as e:
-                    logging.error(f"Error launching software-properties-gtk: {e}")
+                    logging.error(f"Error launching ro-control: {e}")
+                    # Fallback to URL if launch fails? Maybe better to show error.
+                    # For now, let's just log it.
             else:
-                logging.warning("software-properties-gtk not found.")
-                # Fallback or alert? For now, log.
+                logging.info("Ro-Control not found. Redirecting to GitHub.")
+                QDesktopServices.openUrl(QUrl("https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-control"))
         else:
             # Simulation for macOS/Windows
-            logging.info("Simulation: Launching Driver Manager")
-            QMessageBox.information(None, "Simulation", "Launching Driver Manager\n(Simulated on non-Linux OS)")
+            logging.info("Simulation: Checking Ro-Control")
+            # In sim mode, we'll act as if it's missing to test the URL redirect logic,
+            # or pop up a dialog. User said "if not installed, redirect".
+            # Let's verify URL opening on macOS too.
+            QDesktopServices.openUrl(QUrl("https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-control"))
+            logging.info("Opened GitHub URL due to simulation/missing app.")
             
     def close_application(self):
         logging.info("Closing application requested.")

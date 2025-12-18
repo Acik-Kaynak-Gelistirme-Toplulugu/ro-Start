@@ -19,7 +19,7 @@ def main():
     
     # Uygulama genel ayarları
     app.setApplicationName("Ro-Start")
-    app.setApplicationVersion("1.0.0")
+    app.setApplicationVersion("1.1.0")
     
     # Ana pencereyi oluştur ve göster
     window = MainWindow()

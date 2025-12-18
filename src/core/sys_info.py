@@ -81,9 +81,10 @@ def get_gpu_info():
     return "N/A (Driver not active)"
 
 def get_distro_info():
-    """Retrieves distribution name and version."""
+    """Retrieves distribution name, version, and ID."""
     distro_name = "Linux"
     distro_version = "Unknown"
+    distro_id = "linux"
     
     try:
         if sys.platform == "linux":
@@ -97,16 +98,18 @@ def get_distro_info():
                     
                     if "NAME" in data: distro_name = data["NAME"]
                     if "VERSION_ID" in data: distro_version = data["VERSION_ID"]
+                    if "ID" in data: distro_id = data["ID"]
                     
         elif sys.platform == "darwin":
             distro_name = "macOS"
             distro_version = platform.mac_ver()[0]
+            distro_id = "macos"
             
     except Exception as e:
         logging.error(f"Error getting distro info: {e}")
         pass
 
-    return distro_name, distro_version
+    return distro_name, distro_version, distro_id
 
 def get_system_specs():
     """Aggregates all system specifications."""
@@ -124,7 +127,7 @@ def get_system_specs():
         
         cpu_name = get_cpu_info()
         gpu_name = get_gpu_info()
-        distro_name, distro_version = get_distro_info()
+        distro_name, distro_version, distro_id = get_distro_info()
         
         return {
             "cpu": cpu_name,
@@ -132,7 +135,8 @@ def get_system_specs():
             "ram": ram_str,
             "storage": storage_str,
             "distro": distro_name,
-            "version": distro_version
+            "version": distro_version,
+            "distro_id": distro_id
         }
     except Exception as e:
         logging.error(f"Error getting system specs: {e}")
