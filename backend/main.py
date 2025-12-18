@@ -15,24 +15,26 @@ except ImportError:
     from ui.main_window import MainWindow
     from core.logger import setup_logging
 
+
 def main():
     # Setup Logging
-    log_file = setup_logging()
-    
+    setup_logging()
+
     # Uyarıları Sustur (Log Kirliliğini Önle)
     os.environ["QT_LOGGING_RULES"] = "*.debug=false;qt.qpa.*=false"
-    
+
     app = QApplication(sys.argv)
-    
+
     # Uygulama genel ayarları
     app.setApplicationName("Ro-Start")
     app.setApplicationVersion("1.1.0")
-    
+
     # Ana pencereyi oluştur ve göster
     window = MainWindow()
     window.show()
-    
+
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

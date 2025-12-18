@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import sys
 import logging
+import os
 from functools import lru_cache
 
 # Configure logging
@@ -14,6 +15,7 @@ except ImportError:
     psutil = None
     logging.warning("psutil not installed. RAM info will be inaccurate.")
 
+
 def get_size_str(bytes):
     """Converts bytes to human readable string."""
     for unit in ['', 'KB', 'MB', 'GB', 'TB', 'PB']:
@@ -21,6 +23,7 @@ def get_size_str(bytes):
             return f"{bytes:.1f} {unit}"
         bytes /= 1024
     return f"{bytes:.1f} PB"
+
 
 @lru_cache(maxsize=1)
 def get_cpu_info():
@@ -35,22 +38,23 @@ def get_cpu_info():
                             return line.split(":")[1].strip()
             except FileNotFoundError:
                 pass
-            
+
             # Fallback to lscpu if /proc/cpuinfo fails
             if shutil.which("lscpu"):
                 cmd = "lscpu | grep 'Model name' | cut -d: -f2"
                 return subprocess.check_output(cmd, shell=True).decode().strip()
 
-        elif sys.platform == "darwin": # macOS
-             # sysctl is reasonably fast
-             command = "sysctl -n machdep.cpu.brand_string"
-             return subprocess.check_output(command, shell=True).decode().strip()
-             
+        elif sys.platform == "darwin":  # macOS
+            # sysctl is reasonably fast
+            command = "sysctl -n machdep.cpu.brand_string"
+            return subprocess.check_output(command, shell=True).decode().strip()
+
     except Exception as e:
         logging.error(f"Error getting CPU info: {e}")
         pass
-    
+
     return platform.processor() or "Unknown CPU"
+
 
 @lru_cache(maxsize=1)
 def get_gpu_info():
@@ -70,22 +74,24 @@ def get_gpu_info():
         elif sys.platform == "darwin":
             # macOS system profiler is slow, but we cache it now.
             # Using grep to limit output parsing
-             cmd = "system_profiler SPDisplaysDataType | grep 'Chipset Model' | cut -d: -f2"
-             output = subprocess.check_output(cmd, shell=True).decode().strip()
-             if output: return output
+            cmd = "system_profiler SPDisplaysDataType | grep 'Chipset Model' | cut -d: -f2"
+            output = subprocess.check_output(cmd, shell=True).decode().strip()
+            if output:
+                return output
 
     except Exception as e:
         logging.error(f"Error getting GPU info: {e}")
         pass
-    
+
     return "N/A (Driver not active)"
+
 
 def get_distro_info():
     """Retrieves distribution name, version, and ID."""
     distro_name = "Linux"
     distro_version = "Unknown"
     distro_id = "linux"
-    
+
     try:
         if sys.platform == "linux":
             if os.path.exists("/etc/os-release"):
@@ -95,21 +101,25 @@ def get_distro_info():
                         if "=" in line:
                             k, v = line.strip().split("=", 1)
                             data[k] = v.strip('"')
-                    
-                    if "NAME" in data: distro_name = data["NAME"]
-                    if "VERSION_ID" in data: distro_version = data["VERSION_ID"]
-                    if "ID" in data: distro_id = data["ID"]
-                    
+
+                    if "NAME" in data:
+                        distro_name = data["NAME"]
+                    if "VERSION_ID" in data:
+                        distro_version = data["VERSION_ID"]
+                    if "ID" in data:
+                        distro_id = data["ID"]
+
         elif sys.platform == "darwin":
             distro_name = "macOS"
             distro_version = platform.mac_ver()[0]
             distro_id = "macos"
-            
+
     except Exception as e:
         logging.error(f"Error getting distro info: {e}")
         pass
 
     return distro_name, distro_version, distro_id
+
 
 def get_system_specs():
     """Aggregates all system specifications."""
@@ -120,15 +130,15 @@ def get_system_specs():
             ram_str = get_size_str(ram_bytes)
         else:
             ram_str = "Unknown"
-        
+
         # Storage (Root partition)
         total, used, free = shutil.disk_usage("/")
         storage_str = get_size_str(total)
-        
+
         cpu_name = get_cpu_info()
         gpu_name = get_gpu_info()
         distro_name, distro_version, distro_id = get_distro_info()
-        
+
         return {
             "cpu": cpu_name,
             "gpu": gpu_name,
@@ -145,6 +155,6 @@ def get_system_specs():
             "gpu": "Unknown",
             "ram": "Unknown",
             "storage": "Unknown",
-            "distro": "Linux",  
+            "distro": "Linux",
             "version": "Unknown"
         }

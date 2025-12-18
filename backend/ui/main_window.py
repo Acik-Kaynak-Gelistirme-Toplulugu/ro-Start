@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QMessageBox
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage
-from PyQt6.QtCore import QUrl, QThread, pyqtSignal, QObject
+from PyQt6.QtCore import QUrl, QThread, pyqtSignal
 
 # Try import based on execution context
 try:
@@ -26,22 +26,23 @@ except ImportError:
 # Configure Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 class SystemUpdateThread(QThread):
     log_signal = pyqtSignal(str)
-    status_signal = pyqtSignal(str, int) # status (idle, updating, completed, error), progress %
+    status_signal = pyqtSignal(str, int)  # status (idle, updating, completed, error), progress %
 
     def run(self):
         self.status_signal.emit("updating", 0)
         self.log_signal.emit("Starting system update...")
-        
+
         if sys.platform == "darwin":
             # Simulation for macOS - Mimic Real APT Output
             import time
             import random
-            
+
             self.log_signal.emit("Requesting privileges...")
-            time.sleep(1) # Simulate auth delay
-            
+            time.sleep(1)  # Simulate auth delay
+
             simulated_logs = [
                 "Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease",
                 "Reading package lists... Done",
@@ -60,7 +61,7 @@ class SystemUpdateThread(QThread):
                 "Setting up libglib2.0-0:amd64 (2.80.0) ...",
                 "done."
             ]
-            
+
             total_lines = len(simulated_logs)
             for idx, line in enumerate(simulated_logs):
                 self.log_signal.emit(line)
@@ -68,7 +69,7 @@ class SystemUpdateThread(QThread):
                 time.sleep(delay)
                 progress = int((idx / total_lines) * 100)
                 self.status_signal.emit("updating", progress)
-                
+
             self.log_signal.emit("System update completed successfully!")
             self.status_signal.emit("completed", 100)
             return
@@ -76,55 +77,55 @@ class SystemUpdateThread(QThread):
         # Linux Implementation
         _, _, distro_id = get_distro_info()
         distro_id = distro_id.lower()
-        
+
         update_cmd = ""
-        
+
         # Debuan/Ubuntu
         if distro_id in ["ubuntu", "debian", "linuxmint", "pop", "kali", "neon"]:
-             update_cmd = "apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"
-        
+            update_cmd = "apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"
+
         # Fedora/RHEL
         elif distro_id in ["fedora", "rhel", "centos", "almalinux"]:
             update_cmd = "dnf update -y"
-            
+
         # Arch Linux
         elif distro_id in ["arch", "manjaro", "endeavouros"]:
             update_cmd = "pacman -Syu --noconfirm"
-            
+
         # OpenSUSE
         elif "suse" in distro_id:
-             update_cmd = "zypper up -y"
-        
+            update_cmd = "zypper up -y"
+
         else:
-             # Fallback or generic
-             self.log_signal.emit(f"Unsupported distribution: {distro_id}")
-             self.status_signal.emit("error", 0)
-             return
+            # Fallback or generic
+            self.log_signal.emit(f"Unsupported distribution: {distro_id}")
+            self.status_signal.emit("error", 0)
+            return
 
         # Wrap in pkexec
         full_command = f"pkexec /bin/sh -c '{update_cmd}'"
-        
+
         self.log_signal.emit(f"Detected Distro: {distro_id}")
         self.log_signal.emit(f"Executing: {update_cmd}")
         self.status_signal.emit("updating", 10)
-            
+
         try:
             process = subprocess.Popen(
-                full_command, 
+                full_command,
                 shell=True,
-                stdout=subprocess.PIPE, 
-                stderr=subprocess.STDOUT, 
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1
             )
-            
+
             for line in process.stdout:
                 self.log_signal.emit(line.strip())
                 # Update progress artificially or parse output (parsing is hard across distros)
-                self.status_signal.emit("updating", 50) # Indeterminate state mainly
-            
+                self.status_signal.emit("updating", 50)  # Indeterminate state mainly
+
             process.wait()
-            
+
             if process.returncode != 0:
                 self.log_signal.emit(f"Command failed with return code {process.returncode}")
                 self.status_signal.emit("error", 0)
@@ -138,6 +139,7 @@ class SystemUpdateThread(QThread):
         self.log_signal.emit("System update completed successfully!")
         self.status_signal.emit("completed", 100)
 
+
 class CustomWebEnginePage(QWebEnginePage):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -149,7 +151,7 @@ class CustomWebEnginePage(QWebEnginePage):
             host = url.host()
             query = url.query()
             logging.info(f"Intercepted command: {host}, Query: {query}")
-            
+
             if host == "launch-driver-manager":
                 self.launch_driver_manager()
             elif host == "close-welcome":
@@ -160,8 +162,8 @@ class CustomWebEnginePage(QWebEnginePage):
                 self.handle_set_autostart(query)
             elif host == "start-system-update":
                 self.start_system_update()
-            
-            return False # Stop navigation
+
+            return False  # Stop navigation
         return super().acceptNavigationRequest(url, _type, isMainFrame)
 
     def start_system_update(self):
@@ -207,7 +209,7 @@ class CustomWebEnginePage(QWebEnginePage):
             # Let's verify URL opening on macOS too.
             QDesktopServices.openUrl(QUrl("https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-control"))
             logging.info("Opened GitHub URL due to simulation/missing app.")
-            
+
     def close_application(self):
         logging.info("Closing application requested.")
         if self.view() and self.view().window():
@@ -226,9 +228,10 @@ class CustomWebEnginePage(QWebEnginePage):
         logging.info(f"Setting autostart to: {enabled}")
         set_autostart(enabled)
 
+
 class SystemSpecsLoader(QThread):
     specs_signal = pyqtSignal(dict)
-    
+
     def run(self):
         try:
             specs = get_system_specs()
@@ -237,38 +240,39 @@ class SystemSpecsLoader(QThread):
             logging.error(f"Error calling get_system_specs: {e}")
             self.specs_signal.emit({})
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Ro-Start")
         self.setMinimumSize(960, 640)
-        
+
         # State
         self.is_page_loaded = False
         self.cached_specs = None
-        
+
         # Central Widget
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
-        
+
         # Layout
         self.layout = QVBoxLayout(self.central_widget)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
-        
+
         # Web View
         self.web_view = QWebEngineView()
         self.web_view.loadFinished.connect(self.on_load_finished)
-        
+
         # Set Custom Page for handling navigation requests
         self.custom_page = CustomWebEnginePage(self.web_view)
         self.web_view.setPage(self.custom_page)
-        
+
         self.layout.addWidget(self.web_view)
-        
+
         # Start async loading of specs
         self.start_specs_loader()
-        
+
         # Load Content
         self.load_ui()
 
@@ -276,7 +280,7 @@ class MainWindow(QMainWindow):
         self.specs_loader = SystemSpecsLoader()
         self.specs_loader.specs_signal.connect(self.on_specs_loaded)
         self.specs_loader.start()
-        
+
     def on_specs_loaded(self, specs):
         self.cached_specs = specs
         logging.info("System specs loaded in background.")
@@ -289,7 +293,7 @@ class MainWindow(QMainWindow):
         # Go up from backend/ui to backend, then to root
         project_root = os.path.abspath(os.path.join(script_dir, "../../"))
         html_path = os.path.join(project_root, "frontend", "dist", "index.html")
-        
+
         if os.path.exists(html_path):
             url = QUrl.fromLocalFile(html_path)
             self.web_view.setUrl(url)
@@ -313,22 +317,23 @@ class MainWindow(QMainWindow):
         if ok:
             logging.info("Page loaded.")
             self.is_page_loaded = True
-            
+
             # If specs are already here, inject them immediately.
             # If not, wait for on_specs_loaded to trigger injection.
             if self.cached_specs:
                 self.inject_system_data()
             else:
                 logging.info("Waiting for system specs to finish loading...")
-                
+
     def inject_system_data(self):
-        if not self.cached_specs: return
-        
+        if not self.cached_specs:
+            return
+
         try:
             specs = self.cached_specs
             autostart = is_autostart_enabled()
             is_dark = darkdetect.isDark()
-            
+
             # JS Injection
             js_code = f"""
             window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
