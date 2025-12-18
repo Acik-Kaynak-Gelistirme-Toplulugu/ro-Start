@@ -27,12 +27,12 @@ Proje iki temel bölüme ayrılmıştır:
 
 ```
 ro-start/
-├── src/               # 🐍 Python Backend (Uygulama Mantığı)
+├── backend/           # 🐍 Python Backend (Uygulama Mantığı)
 │   ├── core/          # Sistem araçları, sürücü mantığı, teknik özellikler
 │   ├── ui/            # PyQt6 penceresi ve WebEngine kurulumu
 │   └── main.py        # Giriş noktası
 │
-├── tema/              # ⚛️ React Frontend (Görünüm)
+├── frontend/          # ⚛️ React Frontend (Görünüm)
 │   ├── src/           # Bileşenler, hook'lar, stiller
 │   ├── dist/          # Derlenmiş statik dosyalar (Python tarafından yüklenir)
 │   └── public/        # Varlıklar (Assets)
@@ -50,12 +50,12 @@ Yerel makinenizde geliştirme ortamını kurmak için aşağıdaki adımları iz
 - **Node.js 18+ & npm** (Arayüzü derlemek için)
 - **Linux Ortamı** (Tam sürücü işlevselliği için önerilir, ancak macOS/Windows üzerinde simülasyon modunda çalışır)
 
-### 1. Kullanıcı Arayüzünü (Tema) Derleyin
+### 1. Kullanıcı Arayüzünü Derleyin
 
 Python uygulaması derlenmiş HTML/CSS/JS dosyalarını yükler. Önce frontend'i derlemelisiniz.
 
 ```bash
-cd tema
+cd frontend
 npm install
 npm run build
 cd ..
@@ -70,8 +70,8 @@ Sanal ortam (venv) kullanmanız önerilir.
 python3 -m venv venv
 source venv/bin/activate
 
-# Bağımlılıkları yükle
-pip install -r requirements.txt
+# Bağımlılıkları yükle (Geliştirici modu)
+pip install -e .
 ```
 
 ### 3. Ro-Start'ı Çalıştırın
@@ -79,7 +79,11 @@ pip install -r requirements.txt
 Uygulamayı başlatın.
 
 ```bash
-python3 src/main.py
+# Önerilen
+ro-start
+
+# veya doğrudan
+python3 backend/main.py
 ```
 
 > **Not:** macOS veya Windows üzerinde çalıştırıyorsanız, "Sürücü Kurulumu" gibi sisteme özgü özellikler **Simülasyon Modunda** (taklit yanıtlarla) çalışacaktır.

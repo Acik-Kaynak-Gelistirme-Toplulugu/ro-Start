@@ -27,12 +27,12 @@ The project is divided into two distinct parts:
 
 ```
 ro-start/
-├── src/               # 🐍 Python Backend (App Logic)
+├── backend/           # 🐍 Python Backend (App Logic)
 │   ├── core/          # System utilities, driver logic, specs
 │   ├── ui/            # PyQt6 window and WebEngine setup
 │   └── main.py        # Entry point
 │
-├── tema/              # ⚛️ React Frontend (The Look)
+├── frontend/          # ⚛️ React Frontend (The Look)
 │   ├── src/           # Components, hooks, styles
 │   ├── dist/          # Built static files (loaded by Python)
 │   └── public/        # Assets
@@ -50,12 +50,12 @@ Follow these steps to set up the environment on your local machine.
 - **Node.js 18+ & npm** (for building the UI)
 - **Linux Environment** (Recommended for full driver functionality, but runs on macOS/Windows in simulation mode)
 
-### 1. Build the User Interface (Theme)
+### 1. Build the User Interface
 
 The Python application loads the compiled HTML/CSS/JS. You must build the frontend first.
 
 ```bash
-cd tema
+cd frontend
 npm install
 npm run build
 cd ..
@@ -70,16 +70,20 @@ It is recommended to use a virtual environment.
 python3 -m venv venv
 source venv/bin/activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies (Editable mode recommended for dev)
+pip install -e .
 ```
 
 ### 3. Run Ro-Start
 
-Launch the application.
+Launch the application using the entry point or directly via python.
 
 ```bash
-python3 src/main.py
+# Recommended
+ro-start
+
+# Or directly
+python3 backend/main.py
 ```
 
 > **Note:** If running on macOS or Windows, system-specific features like "Driver Installation" will run in **Simulation Mode** (mocked responses).
