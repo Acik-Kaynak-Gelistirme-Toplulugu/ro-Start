@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ro-start = "src.main:main"
+ro-start = "backend.main:main"
 
 [tool.ruff]
 line-length = 120

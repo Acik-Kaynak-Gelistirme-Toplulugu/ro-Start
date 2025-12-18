@@ -19,8 +19,8 @@ try:
     import darkdetect
 except ImportError:
     # Fallback if running relative
-    from src.core.sys_info import get_system_specs, get_distro_info
-    from src.core.autostart import is_autostart_enabled, set_autostart
+    from backend.core.sys_info import get_system_specs, get_distro_info
+    from backend.core.autostart import is_autostart_enabled, set_autostart
     import darkdetect
 
 # Configure Logging
@@ -284,11 +284,11 @@ class MainWindow(QMainWindow):
             self.inject_system_data()
 
     def load_ui(self):
-        # Resolve path to tema/dist/index.html
+        # Resolve path to frontend/dist/index.html
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        # Go up from src/ui to src, then to root
+        # Go up from backend/ui to backend, then to root
         project_root = os.path.abspath(os.path.join(script_dir, "../../"))
-        html_path = os.path.join(project_root, "tema", "dist", "index.html")
+        html_path = os.path.join(project_root, "frontend", "dist", "index.html")
         
         if os.path.exists(html_path):
             url = QUrl.fromLocalFile(html_path)
@@ -301,8 +301,8 @@ class MainWindow(QMainWindow):
                 <h1>UI Not Found</h1>
                 <p>Could not find <code>index.html</code> at:</p>
                 <code style="background: #eee; padding: 5px;">{html_path}</code>
-                <p>Please build the React application in the <code>tema</code> directory first.</p>
-                <p>Run: <code>cd tema && npm install && npm run build</code></p>
+                <p>Please build the React application in the <code>frontend</code> directory first.</p>
+                <p>Run: <code>cd frontend && npm install && npm run build</code></p>
             </body>
             </html>
             """

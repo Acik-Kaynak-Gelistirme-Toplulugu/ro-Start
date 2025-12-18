@@ -9,8 +9,8 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 try:
-    from src.ui.main_window import MainWindow
-    from src.core.logger import setup_logging
+    from backend.ui.main_window import MainWindow
+    from backend.core.logger import setup_logging
 except ImportError:
     from ui.main_window import MainWindow
     from core.logger import setup_logging

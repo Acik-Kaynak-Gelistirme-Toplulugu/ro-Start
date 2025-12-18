@@ -21,8 +21,8 @@ def set_autostart(enable=True):
         
         python_exe = sys.executable
         # Get path to src/main.py. We are in src/core/autostart.py
-        script_dir = os.path.dirname(os.path.abspath(__file__)) # src/core
-        src_dir = os.path.dirname(script_dir) # src
+        script_dir = os.path.dirname(os.path.abspath(__file__)) # backend/core
+        src_dir = os.path.dirname(script_dir) # backend
         main_script = os.path.join(src_dir, "main.py")
         
         # Determine icon path if possible, or use a generic one
