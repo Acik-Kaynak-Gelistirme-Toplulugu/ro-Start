@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QTextEdit
 from PyQt6.QtCore import Qt, QProcess
 from core.i18n import tr
 
+
 class UpdatePage(QWidget):
     def __init__(self):
         super().__init__()
@@ -11,7 +12,7 @@ class UpdatePage(QWidget):
 
         title = QLabel(tr.t("update.title"))
         title.setObjectName("pageTitle")
-        
+
         description = QLabel(tr.t("update.description"))
         description.setObjectName("pageDesc")
         description.setWordWrap(True)
@@ -19,13 +20,13 @@ class UpdatePage(QWidget):
         # Durum Göstergesi
         # İlk açılışta kontrol yapmadığımız için "Kontrol ediliyor" demek yanıltıcı.
         # "Sistem durumu: Güncelleme için hazır" gibi nötr bir ifade daha doğru.
-        self.status_label = QLabel(tr.t("update.status_unknown")) 
+        self.status_label = QLabel(tr.t("update.status_unknown"))
         self.status_label.setObjectName("statusLabel")
         self.status_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #ffffff; margin-bottom: 10px;")
 
         # Update Button
         self.update_btn = QPushButton(tr.t("update.btn_update"))
-        self.update_btn.setMinimumWidth(260) # Sabit değil, minimum genişlik veriyoruz ki taşmasın
+        self.update_btn.setMinimumWidth(260)  # Sabit değil, minimum genişlik veriyoruz ki taşmasın
         self.update_btn.setFixedHeight(50)
         self.update_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.update_btn.setObjectName("actionButton")
@@ -34,11 +35,12 @@ class UpdatePage(QWidget):
         # Log Başlığı
         log_title = QLabel(tr.t("update.log_title"))
         log_title.setStyleSheet("margin-top: 10px; font-weight: bold;")
-        
+
         # Log Görüntüleyici
         self.log_viewer = QTextEdit()
         self.log_viewer.setReadOnly(True)
-        self.log_viewer.setStyleSheet("""
+        self.log_viewer.setStyleSheet(
+            """
             QTextEdit {
                 background-color: #11111b;
                 color: #a6adc8;
@@ -48,7 +50,8 @@ class UpdatePage(QWidget):
                 font-size: 12px;
                 padding: 10px;
             }
-        """)
+        """
+        )
 
         layout.addWidget(title)
         layout.addWidget(description)
@@ -57,7 +60,7 @@ class UpdatePage(QWidget):
         layout.addWidget(self.update_btn)
         layout.addWidget(log_title)
         layout.addWidget(self.log_viewer)
-        
+
         # Process nesnesi
         self.process = None
 
@@ -66,25 +69,26 @@ class UpdatePage(QWidget):
         self.update_btn.setEnabled(False)
         self.log_viewer.clear()
         self.log_viewer.append(">>> " + tr.t("update.status_started"))
-        
+
         # Komut belirle
         cmd = self.get_distro_update_command()
-        
+
         # Mac OS Fallback
         import platform
+
         if platform.system() == "Darwin":
-             cmd = "echo 'Simulating update on Mac OS...'; sleep 1; echo 'Downloading packages...'; sleep 1; echo 'Installing...'; sleep 1; echo 'Done.'"
+            cmd = "echo 'Simulating update on Mac OS...'; sleep 1; echo 'Downloading packages...'; sleep 1; echo 'Installing...'; sleep 1; echo 'Done.'"
 
         # Process başlat
         self.process = QProcess()
         self.process.readyReadStandardOutput.connect(self.handle_stdout)
         self.process.readyReadStandardError.connect(self.handle_stderr)
         self.process.finished.connect(self.process_finished)
-        
+
         # Sudo gerektiren komutlar için pkexec kullanılabilir veya kullanıcı terminalden çalıştırırmış gibi simüle edilir.
         # En temiz yöntem: pkexec ile yetki alıp komutu çalıştırmak.
         # "pkexec bash -c 'komut'"
-        
+
         if platform.system() != "Darwin":
             full_cmd = "pkexec"
             args = ["bash", "-c", cmd]
@@ -115,7 +119,6 @@ class UpdatePage(QWidget):
             self.log_viewer.append(f"\n❌ {tr.t('update.error')}")
 
     def get_distro_update_command(self):
-        import platform
         distro_id = "debian"
         try:
             with open("/etc/os-release", "r") as f:
@@ -123,7 +126,7 @@ class UpdatePage(QWidget):
                     if line.startswith("ID="):
                         distro_id = line.strip().split("=")[1].strip('"').lower()
                         break
-        except:
+        except Exception:
             pass
 
         if distro_id in ["fedora", "rhel", "centos"]:

@@ -1,10 +1,10 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QFrame, QCheckBox, QGridLayout
 from PyQt6.QtCore import Qt, QUrl, QStandardPaths
-from PyQt6.QtGui import QDesktopServices, QFont
+from PyQt6.QtGui import QDesktopServices
 from core.i18n import tr
 import platform
 import os
-import subprocess
+
 
 class HomePage(QWidget):
     def __init__(self):
@@ -16,14 +16,14 @@ class HomePage(QWidget):
         # --- Hero Section ---
         hero_layout = QVBoxLayout()
         hero_layout.setSpacing(10)
-        
+
         title = QLabel(tr.t("home.title"))
         title.setObjectName("pageTitle")
-        
+
         description = QLabel(tr.t("home.description"))
         description.setObjectName("pageDesc")
         description.setWordWrap(True)
-        
+
         hero_layout.addWidget(title)
         hero_layout.addWidget(description)
         layout.addLayout(hero_layout)
@@ -31,7 +31,7 @@ class HomePage(QWidget):
         # --- System Info Card ---
         # Sistem bilgilerini çek
         sys_info = self.get_system_info()
-        
+
         info_card = QFrame()
         info_card.setObjectName("cardFrame")
         info_layout = QGridLayout(info_card)
@@ -40,17 +40,19 @@ class HomePage(QWidget):
         info_layout.setVerticalSpacing(10)
 
         # Bilgileri ekle (Sol: Etiket, Sağ: Değer)
-        self.add_info_row(info_layout, 0, "OS:", sys_info['distro'])
-        self.add_info_row(info_layout, 1, "Kernel:", sys_info['kernel'])
-        self.add_info_row(info_layout, 2, "Processor:", sys_info['cpu'])
-        self.add_info_row(info_layout, 3, "Memory:", sys_info['ram'])
-        
+        self.add_info_row(info_layout, 0, "OS:", sys_info["distro"])
+        self.add_info_row(info_layout, 1, "Kernel:", sys_info["kernel"])
+        self.add_info_row(info_layout, 2, "Processor:", sys_info["cpu"])
+        self.add_info_row(info_layout, 3, "Memory:", sys_info["ram"])
+
         layout.addWidget(info_card)
 
         layout.addStretch()
 
         # --- Quick Links ---
-        links_lbl = QLabel(tr.t("home.links_title") if tr.t("home.links_title") != "home.links_title" else "Quick Links")
+        links_lbl = QLabel(
+            tr.t("home.links_title") if tr.t("home.links_title") != "home.links_title" else "Quick Links"
+        )
         links_lbl.setStyleSheet("font-weight: bold; color: #ffffff; margin-bottom: 5px;")
         layout.addWidget(links_lbl)
 
@@ -61,22 +63,22 @@ class HomePage(QWidget):
         self.add_link_button(links_layout, tr.t("home.docs"), "https://example.com/docs")
         self.add_link_button(links_layout, tr.t("home.forum"), "https://example.com/forum")
         self.add_link_button(links_layout, tr.t("home.github"), "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu")
-        
+
         layout.addLayout(links_layout)
-        
+
         layout.addSpacing(20)
 
         # --- Autostart Checkbox ---
         self.autostart_cb = QCheckBox(tr.t("home.autostart_label"))
         # Stil zaten main_window.py css'inden gelecek (QCheckBox selector)
         self.autostart_cb.setCursor(Qt.CursorShape.PointingHandCursor)
-        
+
         # Mevcut durumu kontrol et
         if self.check_autostart():
             self.autostart_cb.setChecked(True)
-            
+
         self.autostart_cb.toggled.connect(self.toggle_autostart)
-        
+
         # Sağ alta hizala
         cb_layout = QHBoxLayout()
         cb_layout.addStretch()
@@ -99,16 +101,16 @@ class HomePage(QWidget):
         layout.addWidget(btn)
 
     def get_system_info(self):
-        info = {'distro': 'Unknown Linux', 'kernel': platform.release(), 'cpu': platform.processor(), 'ram': 'Unknown'}
-        
+        info = {"distro": "Unknown Linux", "kernel": platform.release(), "cpu": platform.processor(), "ram": "Unknown"}
+
         # Distro Name
         try:
             with open("/etc/os-release") as f:
                 for line in f:
                     if line.startswith("PRETTY_NAME="):
-                        info['distro'] = line.split("=")[1].strip('"').strip()
+                        info["distro"] = line.split("=")[1].strip('"').strip()
                         break
-        except:
+        except Exception:
             pass
 
         # CPU Info (Cleaned)
@@ -116,24 +118,24 @@ class HomePage(QWidget):
             with open("/proc/cpuinfo") as f:
                 for line in f:
                     if "model name" in line:
-                        info['cpu'] = line.split(":")[1].strip()
+                        info["cpu"] = line.split(":")[1].strip()
                         break
-        except:
+        except Exception:
             pass
-            
+
         # RAM Info
         try:
             with open("/proc/meminfo") as f:
                 mem_total = 0
                 for line in f:
                     if "MemTotal" in line:
-                        mem_total = int(line.split()[1]) # KB
+                        mem_total = int(line.split()[1])  # KB
                         break
                 gb = mem_total / 1024 / 1024
-                info['ram'] = f"{gb:.1f} GB"
-        except:
+                info["ram"] = f"{gb:.1f} GB"
+        except Exception:
             pass
-            
+
         return info
 
     def get_autostart_path(self):
