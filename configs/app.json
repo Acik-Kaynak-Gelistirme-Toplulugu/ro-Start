@@ -1,0 +1,33 @@
+{
+  "app": {
+    "name": "Ro-Start",
+    "version": "1.1.0",
+    "description": "Modern welcome application for Linux distributions"
+  },
+  "ui": {
+    "theme": "liquid-glass",
+    "default_language": "auto",
+    "window": {
+      "min_width": 960,
+      "min_height": 640,
+      "resizable": true
+    }
+  },
+  "features": {
+    "system_update": true,
+    "driver_management": true,
+    "software_suggestions": true,
+    "autostart": true
+  },
+  "links": {
+    "website": "https://repo.osdev.shop",
+    "docs": "https://repo.osdev.shop/docs",
+    "forum": "https://repo.osdev.shop/forum",
+    "github": "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
+  },
+  "logging": {
+    "level": "INFO",
+    "max_file_size_mb": 5,
+    "backup_count": 3
+  }
+}

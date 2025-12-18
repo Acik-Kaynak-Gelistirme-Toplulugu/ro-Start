@@ -1,5 +1,8 @@
+# Production Dependencies
 PyQt6
 PyQt6-WebEngine
 psutil
 darkdetect
 platformdirs
+
+# Development Dependencies (install with: pip install -r requirements-dev.txt)

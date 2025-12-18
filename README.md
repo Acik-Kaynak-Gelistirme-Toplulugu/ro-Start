@@ -23,8 +23,6 @@
 
 ## 🏗️ Project Structure
 
-The project is divided into two distinct parts:
-
 ```
 ro-start/
 ├── backend/           # 🐍 Python Backend (App Logic)
@@ -33,9 +31,30 @@ ro-start/
 │   └── main.py        # Entry point
 │
 ├── frontend/          # ⚛️ React Frontend (The Look)
-│   ├── src/           # Components, hooks, styles
-│   ├── dist/          # Built static files (loaded by Python)
-│   └── public/        # Assets
+│   ├── components/    # React components
+│   ├── config/        # Frontend configuration
+│   └── dist/          # Built static files (loaded by Python)
+│
+├── assets/            # 📦 Static Assets
+│   └── locales/       # Translation files (i18n)
+│
+├── configs/           # ⚙️ Configuration Files
+│   ├── app.json       # Application settings
+│   └── distros.yaml   # Distribution-specific configs
+│
+├── scripts/           # 🔧 Build & Install Scripts
+│   ├── install.sh     # Installation script
+│   ├── build.sh       # Build script
+│   └── pre-commit     # Git hook
+│
+├── tests/             # 🧪 Test Suite
+│   ├── backend/       # Python tests (pytest)
+│   └── frontend/      # React tests (vitest)
+│
+├── docs/              # 📚 Documentation
+│   ├── ARCHITECTURE.md
+│   ├── DEVELOPMENT.md
+│   └── API.md
 │
 └── requirements.txt   # Python Dependencies
 ```

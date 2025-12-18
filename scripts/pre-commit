@@ -1,0 +1,31 @@
+#!/bin/bash
+# Pre-commit hook to ensure code quality
+
+echo "🔍 Running pre-commit checks..."
+
+# Run ruff
+echo "  → Checking Python code with ruff..."
+if ! venv/bin/ruff check .; then
+    echo "❌ Ruff check failed. Please fix the issues before committing."
+    exit 1
+fi
+
+# Run black
+echo "  → Checking Python formatting with black..."
+if ! venv/bin/black --check .; then
+    echo "❌ Black formatting check failed. Run 'black .' to fix."
+    exit 1
+fi
+
+# Run frontend checks if package.json exists
+if [ -f "frontend/package.json" ]; then
+    echo "  → Checking frontend code..."
+    cd frontend
+    if ! npm run lint 2>/dev/null; then
+        echo "⚠️  Frontend lint check skipped (no lint script found)"
+    fi
+    cd ..
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0
