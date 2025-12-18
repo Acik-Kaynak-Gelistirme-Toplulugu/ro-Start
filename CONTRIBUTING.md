@@ -50,18 +50,18 @@ When contributing to this project, you must agree that you have authored 100% of
     pip install -r requirements.txt
 
     # Frontend
-    cd tema
+    cd frontend
     npm install
     ```
 
 4.  **Run Development Mode:**
-    - To run the full app: `python3 src/main.py`
-    - To edit UI live: `cd tema && npm run dev`
+    - To run the full app: `python3 backend/main.py`
+    - To edit UI live: `cd frontend && npm run dev`
 
 ### Project Structure
 
-- `src/`: Python backend logic (system info, driver management).
-- `tema/`: React frontend (UI components, styles).
+- `backend/`: Python backend logic (system info, driver management).
+- `frontend/`: React frontend (UI components, styles).
 
 ## Styleguides
 

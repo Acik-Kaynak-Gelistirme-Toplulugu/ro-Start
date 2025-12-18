@@ -75,6 +75,11 @@ class SystemUpdateThread(QThread):
             return
 
         # Linux Implementation
+        if not shutil.which("pkexec"):
+            self.log_signal.emit("Error: pkexec not found. Cannot escalate privileges.")
+            self.status_signal.emit("error", 0)
+            return
+
         _, _, distro_id = get_distro_info()
         distro_id = distro_id.lower()
 
@@ -288,38 +293,53 @@ class MainWindow(QMainWindow):
             self.inject_system_data()
 
     def load_ui(self):
-        # Resolve path to frontend/dist/index.html
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        # Go up from backend/ui to backend, then to root
-        project_root = os.path.abspath(os.path.join(script_dir, "../../"))
-        html_path = os.path.join(project_root, "frontend", "dist", "index.html")
+        """
+        Loads the UI from local filesystem.
+        Tries to locate 'frontend/dist/index.html' relative to the executable/script,
+        or standard installation paths.
+        """
+        possible_paths = []
 
-        if os.path.exists(html_path):
+        # 1. Dev Mode / Relative to this script (backend/ui/main_window.py)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        possible_paths.append(os.path.abspath(os.path.join(script_dir, "../../frontend/dist/index.html")))
+
+        # 2. Installed Mode
+        possible_paths.append("/usr/share/ro-start/frontend/dist/index.html")
+        possible_paths.append("/usr/local/share/ro-start/frontend/dist/index.html")
+
+        html_path = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                html_path = path
+                break
+
+        if html_path:
             url = QUrl.fromLocalFile(html_path)
             self.web_view.setUrl(url)
             logging.info(f"Loading UI from: {url.toString()}")
         else:
+            # Fallback Error Page
             error_msg = f"""
             <html>
-            <body style="font-family: sans-serif; text-align: center; padding: 50px;">
-                <h1>UI Not Found</h1>
-                <p>Could not find <code>index.html</code> at:</p>
-                <code style="background: #eee; padding: 5px;">{html_path}</code>
-                <p>Please build the React application in the <code>frontend</code> directory first.</p>
-                <p>Run: <code>cd frontend && npm install && npm run build</code></p>
+            <body style="font-family: sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
+                <h1 style="color: #e74c3c;">UI Not Found</h1>
+                <p>Could not find <code>index.html</code> in any of the following locations:</p>
+                <ul style="list-style: none; padding: 0;">
+                    {''.join([f'<li style="background: #fff; padding: 10px; margin: 5px; border-radius: 5px;">{p}</li>' for p in possible_paths])}
+                </ul>
+                <hr>
+                <p><strong>For Developers:</strong> Run <code>cd frontend && npm install && npm run build</code></p>
             </body>
             </html>
             """
             self.web_view.setHtml(error_msg)
-            logging.error(f"UI not found at {html_path}")
+            logging.error("UI not found in standard locations.")
 
     def on_load_finished(self, ok):
         if ok:
             logging.info("Page loaded.")
             self.is_page_loaded = True
-
-            # If specs are already here, inject them immediately.
-            # If not, wait for on_specs_loaded to trigger injection.
             if self.cached_specs:
                 self.inject_system_data()
             else:
@@ -334,7 +354,6 @@ class MainWindow(QMainWindow):
             autostart = is_autostart_enabled()
             is_dark = darkdetect.isDark()
 
-            # JS Injection
             js_code = f"""
             window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
             window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
