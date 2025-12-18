@@ -1,7 +1,7 @@
 """
 Tests for system information module
 """
-import pytest
+
 from backend.core.sys_info import get_size_str, get_cpu_info, get_gpu_info
 
 

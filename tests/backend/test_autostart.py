@@ -1,7 +1,7 @@
 """
 Tests for autostart functionality
 """
-import pytest
+
 import os
 from backend.core.autostart import get_autostart_file_path, is_autostart_enabled, set_autostart
 
@@ -20,15 +20,15 @@ def test_autostart_operations():
     path = get_autostart_file_path()
     if os.path.exists(path):
         os.remove(path)
-    
+
     # Test initial state
     assert not is_autostart_enabled()
-    
+
     # Test enable
     result = set_autostart(True)
     assert result is True
     assert is_autostart_enabled()
-    
+
     # Test disable
     result = set_autostart(False)
     assert result is True
