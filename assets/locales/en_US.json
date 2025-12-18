@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Welcome to Linux",
+    "version": "v1.0.0 (Beta)"
+  },
+  "sidebar": {
+    "welcome": "Welcome",
+    "home": "Home",
+    "update": "Update System",
+    "drivers": "Drivers",
+    "software": "Software"
+  },
+    "home": {
+        "title": "Welcome to Your System",
+        "description": "Essential tools to configure and prepare your computer.",
+        "website": "Website",
+        "docs": "Documentation",
+        "forum": "Community Forum",
+        "github": "Source Code (GitHub)",
+        "links_title": "Useful Links",
+        "autostart_label": "Show at startup"
+    },
+    "update": {
+        "title": "System Update",
+        "description": "Check and install software updates to keep your system stable and secure.",
+        "status_unknown": "Status: Waiting for check...",
+        "status_uptodate": "Great! Your system is fully up to date.",
+        "status_need_update": "New updates are available.",
+        "btn_update": "Start Update",
+        "log_title": "Process Log",
+        "status_started": "Starting update process, please wait...",
+        "success": "Process completed successfully.",
+        "error": "An error occurred during update."
+    },
+    "drivers": {
+        "title": "Hardware Drivers",
+        "description": "Manage NVIDIA drivers to ensure best performance for your graphics card.",
+        "detecting": "Scanning hardware...",
+        "detected": "Detected GPU:",
+        "unknown_gpu": "NVIDIA Graphics Card Not Detected.",
+        "driver_installed": "Installed Driver:",
+        "driver_not_found": "Driver Not Installed",
+        "driver_current": "Active",
+        "btn_launch": "Open NVIDIA Settings",
+        "session_type": "Session Type"
+    },
+  "software": {
+    "title": "Recommended Software",
+    "description": "Install popular applications to get started quickly.",
+    "btn_install": "Install",
+    "categories": {
+      "web": "Web Browser",
+      "editor": "Code Editor",
+      "music": "Music",
+      "chat": "Communication",
+      "graphics": "Graphics",
+      "media": "Media"
+    }
+  }
+}
