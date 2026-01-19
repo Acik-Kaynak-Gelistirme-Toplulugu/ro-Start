@@ -39,8 +39,7 @@ class UpdatePage(QWidget):
         # Log Görüntüleyici
         self.log_viewer = QTextEdit()
         self.log_viewer.setReadOnly(True)
-        self.log_viewer.setStyleSheet(
-            """
+        self.log_viewer.setStyleSheet("""
             QTextEdit {
                 background-color: #11111b;
                 color: #a6adc8;
@@ -50,8 +49,7 @@ class UpdatePage(QWidget):
                 font-size: 12px;
                 padding: 10px;
             }
-        """
-        )
+        """)
 
         layout.addWidget(title)
         layout.addWidget(description)
