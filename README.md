@@ -1,14 +1,36 @@
-# 🚀 Ro-Start
+<div align="center">
+  <h1>🚀 Ro-Start</h1>
+  
+  [![Türkçe Oku](https://img.shields.io/badge/Dili_Değiştir-Türkçe-red?style=for-the-badge)](README.tr.md)
+  [![License](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE)
+  [![Platform](https://img.shields.io/badge/Platform-Linux-orange.svg?style=for-the-badge)](https://www.linux.org/)
 
-[![Türkçe Oku](https://img.shields.io/badge/Dili_Değiştir-Türkçe-red?style=for-the-badge)](README.tr.md)
-
-> **A next-generation, transparent welcome application for Linux distributions.**
-
-**Ro-Start** replaces traditional welcome screens with a modern, "Liquid Glass" aesthetic. Built with a hybrid architecture combining the system-level power of **Python (PyQt6)** and the reactive UI capabilities of **React (Vite + TailwindCSS)**, it creates a premium first impression for your Linux distro.
+  <br />
+  
+  <p align="center">
+    <b>A next-generation, transparent welcome application for Linux distributions.</b>
+    <br />
+    Replacing traditional welcome screens with a modern, <b>"Liquid Glass"</b> aesthetic.
+  </p>
 
 ![Ro-Start Banner](assets/welcome_screen.png)
 
-## ✨ key Features
+  <br />
+
+  <!-- Tech Stack Badges -->
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/PyQt6-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="PyQt6" />
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
+</div>
+
+<br />
+
+**Ro-Start** creates a premium first impression for your Linux distro by combining the system-level power of **Python (PyQt6)** with the reactive UI capabilities of **React (Vite + TailwindCSS)**.
+
+## ✨ Key Features
 
 - **🎨 Liquid Glass UI:** A stunning, transparent, and matte design language inspired by modern OS aesthetics.
 - **🚀 Hybrid Architecture:**
