@@ -31,9 +31,7 @@ export function WelcomeScreen() {
   }, [isDark]);
 
   useEffect(() => {
-    const handleAutostartUpdate = (
-      event: CustomEvent<{ enabled: boolean }>
-    ) => {
+    const handleAutostartUpdate = (event: CustomEvent<{ enabled: boolean }>) => {
       setAutostartEnabled(event.detail.enabled);
     };
 
@@ -45,32 +43,14 @@ export function WelcomeScreen() {
       setIsDark(event.detail.isDark);
     };
 
-    window.addEventListener(
-      "autostart-status-update" as any,
-      handleAutostartUpdate as any
-    );
-    window.addEventListener(
-      "system-specs-update" as any,
-      handleSpecsUpdate as any
-    );
-    window.addEventListener(
-      "theme-status-update" as any,
-      handleThemeUpdate as any
-    );
+    window.addEventListener("autostart-status-update" as any, handleAutostartUpdate as any);
+    window.addEventListener("system-specs-update" as any, handleSpecsUpdate as any);
+    window.addEventListener("theme-status-update" as any, handleThemeUpdate as any);
 
     return () => {
-      window.removeEventListener(
-        "autostart-status-update" as any,
-        handleAutostartUpdate as any
-      );
-      window.removeEventListener(
-        "system-specs-update" as any,
-        handleSpecsUpdate as any
-      );
-      window.removeEventListener(
-        "theme-status-update" as any,
-        handleThemeUpdate as any
-      );
+      window.removeEventListener("autostart-status-update" as any, handleAutostartUpdate as any);
+      window.removeEventListener("system-specs-update" as any, handleSpecsUpdate as any);
+      window.removeEventListener("theme-status-update" as any, handleThemeUpdate as any);
     };
   }, []);
 
@@ -286,8 +266,8 @@ export function WelcomeScreen() {
                         index === currentStep
                           ? "w-8 bg-slate-800 dark:bg-slate-200"
                           : index < currentStep
-                          ? "w-1.5 bg-slate-400/60"
-                          : "w-1.5 bg-slate-400/20"
+                            ? "w-1.5 bg-slate-400/60"
+                            : "w-1.5 bg-slate-400/20"
                       }`}
                     />
                   ))}

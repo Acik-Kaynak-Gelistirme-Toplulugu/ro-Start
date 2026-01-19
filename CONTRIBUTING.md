@@ -37,7 +37,6 @@ When contributing to this project, you must agree that you have authored 100% of
     ```
 
 2.  **Environment Setup:**
-
     - Python 3.10+
     - Node.js 18+
 

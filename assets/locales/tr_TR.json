@@ -1,60 +1,60 @@
 {
-    "app": {
-        "title": "Linux'a Hoş Geldiniz",
-        "version": "v1.0.0 (Beta)"
-    },
-    "sidebar": {
-        "welcome": "Hoş Geldiniz",
-        "home": "Ana Sayfa",
-        "update": "Sistemi Güncelle",
-        "drivers": "Sürücüler",
-        "software": "Yazılımlar"
-    },
-    "home": {
-        "title": "Sisteminize Hoş Geldiniz",
-        "description": "Bilgisayarınızı yapılandırmanıza ve hazır hale getirmenize yardımcı olacak araçlar.",
-        "website": "Web Sitesi",
-        "docs": "Belgelendirme",
-        "forum": "Topluluk Forumu",
-        "github": "Kaynak Kod (GitHub)",
-        "links_title": "Faydalı Bağlantılar",
-        "autostart_label": "Başlangıçta göster"
-    },
-    "update": {
-        "title": "Sistem Güncellemesi",
-        "description": "Sisteminizin kararlılığı ve güvenliği için yazılım güncellemelerini denetleyin ve yükleyin.",
-        "status_unknown": "Durum: Denetleme bekleniyor...",
-        "status_uptodate": "Harika! Sisteminiz tamamen güncel.",
-        "status_need_update": "Yeni güncellemeler mevcut.",
-        "btn_update": "Güncellemeleri Başlat",
-        "log_title": "İşlem Kaydı",
-        "status_started": "Güncelleme işlemi başlatılıyor, lütfen bekleyin...",
-        "success": "İşlem başarıyla tamamlandı.",
-        "error": "Güncelleme sırasında bir hata oluştu."
-    },
-    "drivers": {
-        "title": "Donanım Sürücüleri",
-        "description": "Ekran kartınız için en iyi performansı sağlayacak NVIDIA sürücülerini yönetin.",
-        "detecting": "Donanım taranıyor...",
-        "detected": "Algılanan GPU:",
-        "unknown_gpu": "NVIDIA Grafik Kartı Algılanamadı.",
-        "driver_installed": "Yüklü Sürücü:",
-        "driver_not_found": "Sürücü Kurulu Değil",
-        "driver_current": "Aktif",
-        "btn_launch": "NVIDIA Ayarlarını Aç",
-        "session_type": "Oturum Tipi"
-    },
-    "software": {
-        "title": "Önerilen Yazılımlar",
-        "description": "Hızlı bir başlangıç için popüler uygulamaları yükleyin.",
-        "btn_install": "Yükle",
-        "categories": {
-            "web": "Web Tarayıcısı",
-            "editor": "Kod Editörü",
-            "music": "Müzik",
-            "chat": "İletişim",
-            "graphics": "Grafik",
-            "media": "Medya"
-        }
+  "app": {
+    "title": "Linux'a Hoş Geldiniz",
+    "version": "v1.0.0 (Beta)"
+  },
+  "sidebar": {
+    "welcome": "Hoş Geldiniz",
+    "home": "Ana Sayfa",
+    "update": "Sistemi Güncelle",
+    "drivers": "Sürücüler",
+    "software": "Yazılımlar"
+  },
+  "home": {
+    "title": "Sisteminize Hoş Geldiniz",
+    "description": "Bilgisayarınızı yapılandırmanıza ve hazır hale getirmenize yardımcı olacak araçlar.",
+    "website": "Web Sitesi",
+    "docs": "Belgelendirme",
+    "forum": "Topluluk Forumu",
+    "github": "Kaynak Kod (GitHub)",
+    "links_title": "Faydalı Bağlantılar",
+    "autostart_label": "Başlangıçta göster"
+  },
+  "update": {
+    "title": "Sistem Güncellemesi",
+    "description": "Sisteminizin kararlılığı ve güvenliği için yazılım güncellemelerini denetleyin ve yükleyin.",
+    "status_unknown": "Durum: Denetleme bekleniyor...",
+    "status_uptodate": "Harika! Sisteminiz tamamen güncel.",
+    "status_need_update": "Yeni güncellemeler mevcut.",
+    "btn_update": "Güncellemeleri Başlat",
+    "log_title": "İşlem Kaydı",
+    "status_started": "Güncelleme işlemi başlatılıyor, lütfen bekleyin...",
+    "success": "İşlem başarıyla tamamlandı.",
+    "error": "Güncelleme sırasında bir hata oluştu."
+  },
+  "drivers": {
+    "title": "Donanım Sürücüleri",
+    "description": "Ekran kartınız için en iyi performansı sağlayacak NVIDIA sürücülerini yönetin.",
+    "detecting": "Donanım taranıyor...",
+    "detected": "Algılanan GPU:",
+    "unknown_gpu": "NVIDIA Grafik Kartı Algılanamadı.",
+    "driver_installed": "Yüklü Sürücü:",
+    "driver_not_found": "Sürücü Kurulu Değil",
+    "driver_current": "Aktif",
+    "btn_launch": "NVIDIA Ayarlarını Aç",
+    "session_type": "Oturum Tipi"
+  },
+  "software": {
+    "title": "Önerilen Yazılımlar",
+    "description": "Hızlı bir başlangıç için popüler uygulamaları yükleyin.",
+    "btn_install": "Yükle",
+    "categories": {
+      "web": "Web Tarayıcısı",
+      "editor": "Kod Editörü",
+      "music": "Müzik",
+      "chat": "İletişim",
+      "graphics": "Grafik",
+      "media": "Medya"
     }
+  }
 }

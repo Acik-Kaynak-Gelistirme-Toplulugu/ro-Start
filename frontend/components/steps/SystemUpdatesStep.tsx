@@ -1,18 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  Download,
-  Terminal,
-  CheckCircle2,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { Download, Terminal, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { themeConfig } from "../../config/welcome-config";
 
 export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
-  const [status, setStatus] = useState<"idle" | "updating" | "completed">(
-    "idle"
-  );
+  const [status, setStatus] = useState<"idle" | "updating" | "completed">("idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [showLogs, setShowLogs] = useState(true);
@@ -46,20 +38,11 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
     };
 
     window.addEventListener("system-update-log", handleLog as EventListener);
-    window.addEventListener(
-      "system-update-status",
-      handleStatus as EventListener
-    );
+    window.addEventListener("system-update-status", handleStatus as EventListener);
 
     return () => {
-      window.removeEventListener(
-        "system-update-log",
-        handleLog as EventListener
-      );
-      window.removeEventListener(
-        "system-update-status",
-        handleStatus as EventListener
-      );
+      window.removeEventListener("system-update-log", handleLog as EventListener);
+      window.removeEventListener("system-update-status", handleStatus as EventListener);
     };
   }, []);
 
@@ -86,15 +69,9 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
             <Download className={`w-12 h-12 ${themeConfig.iconPrimary}`} />
           )}
         </motion.div>
-        <h1 className={`${themeConfig.textHeading} text-5xl font-bold`}>
-          {t.systemUpdates.title}
-        </h1>
-        <p
-          className={`${themeConfig.textSubheading} text-xl max-w-2xl mx-auto`}
-        >
-          {status === "completed"
-            ? t.systemUpdates.completedTitle
-            : t.systemUpdates.subtitle}
+        <h1 className={`${themeConfig.textHeading} text-5xl font-bold`}>{t.systemUpdates.title}</h1>
+        <p className={`${themeConfig.textSubheading} text-xl max-w-2xl mx-auto`}>
+          {status === "completed" ? t.systemUpdates.completedTitle : t.systemUpdates.subtitle}
         </p>
       </div>
 
@@ -105,9 +82,7 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center space-y-8"
           >
-            <p className={`${themeConfig.textBody} text-lg`}>
-              {t.systemUpdates.description}
-            </p>
+            <p className={`${themeConfig.textBody} text-lg`}>{t.systemUpdates.description}</p>
             <button
               onClick={startUpdate}
               className="px-10 py-4 rounded-2xl backdrop-blur-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:scale-105 transition-all duration-300 font-bold text-lg"
@@ -126,22 +101,14 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
             {/* Progress Bar */}
             <div className="space-y-2">
               <div className="flex justify-between items-center px-1">
-                <span
-                  className={`${themeConfig.textSubheading} text-sm font-medium`}
-                >
-                  {status === "completed"
-                    ? t.systemUpdates.completed
-                    : t.systemUpdates.updating}
+                <span className={`${themeConfig.textSubheading} text-sm font-medium`}>
+                  {status === "completed" ? t.systemUpdates.completed : t.systemUpdates.updating}
                 </span>
-                <span className={`${themeConfig.textHeading} font-bold`}>
-                  {progress}%
-                </span>
+                <span className={`${themeConfig.textHeading} font-bold`}>{progress}%</span>
               </div>
               <div className="h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner">
                 <motion.div
-                  className={`h-full ${
-                    status === "completed" ? "bg-green-500" : "bg-blue-600"
-                  }`}
+                  className={`h-full ${status === "completed" ? "bg-green-500" : "bg-blue-600"}`}
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.5 }}
@@ -156,11 +123,7 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
                 className={`flex items-center gap-2 text-sm ${themeConfig.textMuted} hover:${themeConfig.textHeading} transition-colors`}
               >
                 {showLogs ? t.systemUpdates.hideLogs : t.systemUpdates.showLogs}
-                {showLogs ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
+                {showLogs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </button>
             </div>
 
@@ -187,9 +150,7 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
                           {log}
                         </div>
                       ))}
-                      {status === "updating" && (
-                        <div className="animate-pulse">_</div>
-                      )}
+                      {status === "updating" && <div className="animate-pulse">_</div>}
                     </div>
                   </div>
                 </motion.div>
