@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Willkommen bei Linux",
+    "version": "v1.0.0 (Beta)"
+  },
+  "sidebar": {
+    "welcome": "Willkommen",
+    "home": "Startseite",
+    "update": "System aktualisieren",
+    "drivers": "Treiber",
+    "software": "Software"
+  },
+  "home": {
+    "title": "Willkommen in Ihrem System",
+    "description": "Wichtige Werkzeuge zur Konfiguration und Vorbereitung Ihres Computers.",
+    "website": "Webseite",
+    "docs": "Dokumentation",
+    "forum": "Community-Forum",
+    "github": "Quellcode (GitHub)",
+    "links_title": "Nützliche Links",
+    "autostart_label": "Beim Start anzeigen"
+  },
+  "update": {
+    "title": "Systemaktualisierung",
+    "description": "Software-Updates prüfen und installieren, um Ihr System stabil und sicher zu halten.",
+    "status_unknown": "Status: Warte auf Überprüfung...",
+    "status_uptodate": "Großartig! Ihr System ist auf dem neuesten Stand.",
+    "status_need_update": "Neue Updates sind verfügbar.",
+    "btn_update": "Update starten",
+    "log_title": "Prozessprotokoll",
+    "status_started": "Update-Vorgang wird gestartet, bitte warten...",
+    "success": "Vorgang erfolgreich abgeschlossen.",
+    "error": "Ein Fehler ist während des Updates aufgetreten."
+  },
+  "drivers": {
+    "title": "Hardware-Treiber",
+    "description": "Verwalten Sie NVIDIA-Treiber, um die beste Leistung für Ihre Grafikkarte zu gewährleisten.",
+    "detecting": "Hardware wird gescannt...",
+    "detected": "Erkannte GPU:",
+    "unknown_gpu": "NVIDIA-Grafikkarte nicht erkannt.",
+    "driver_installed": "Installierter Treiber:",
+    "driver_not_found": "Treiber nicht installiert",
+    "driver_current": "Aktiv",
+    "btn_launch": "NVIDIA-Einstellungen öffnen",
+    "session_type": "Sitzungstyp"
+  },
+  "software": {
+    "title": "Empfohlene Software",
+    "description": "Installieren Sie beliebte Anwendungen, um schnell loszulegen.",
+    "btn_install": "Installieren",
+    "categories": {
+      "web": "Webbrowser",
+      "editor": "Code-Editor",
+      "music": "Musik",
+      "chat": "Kommunikation",
+      "graphics": "Grafik",
+      "media": "Medien"
+    }
+  }
+}

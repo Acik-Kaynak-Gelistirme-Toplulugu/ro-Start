@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Benvenuto su Linux",
+    "version": "v1.0.0 (Beta)"
+  },
+  "sidebar": {
+    "welcome": "Benvenuto",
+    "home": "Home",
+    "update": "Aggiorna sistema",
+    "drivers": "Driver",
+    "software": "Software"
+  },
+  "home": {
+    "title": "Benvenuto nel tuo sistema",
+    "description": "Strumenti essenziali per configurare e preparare il tuo computer.",
+    "website": "Sito Web",
+    "docs": "Documentazione",
+    "forum": "Forum della comunità",
+    "github": "Codice sorgente (GitHub)",
+    "links_title": "Link utili",
+    "autostart_label": "Mostra all'avvio"
+  },
+  "update": {
+    "title": "Aggiornamento del sistema",
+    "description": "Controlla e installa gli aggiornamenti software per mantenere il tuo sistema stabile e sicuro.",
+    "status_unknown": "Stato: In attesa di controllo...",
+    "status_uptodate": "Ottimo! Il tuo sistema è completamente aggiornato.",
+    "status_need_update": "Sono disponibili nuovi aggiornamenti.",
+    "btn_update": "Avvia aggiornamento",
+    "log_title": "Registro del processo",
+    "status_started": "Avvio del processo di aggiornamento, attendere...",
+    "success": "Processo completato con successo.",
+    "error": "Si è verificato un errore durante l'aggiornamento."
+  },
+  "drivers": {
+    "title": "Driver hardware",
+    "description": "Gestisci i driver NVIDIA per garantire le migliori prestazioni alla tua scheda grafica.",
+    "detecting": "Scansione hardware...",
+    "detected": "GPU rilevata:",
+    "unknown_gpu": "Scheda grafica NVIDIA non rilevata.",
+    "driver_installed": "Driver installato:",
+    "driver_not_found": "Driver non installato",
+    "driver_current": "Attivo",
+    "btn_launch": "Apri impostazioni NVIDIA",
+    "session_type": "Tipo di sessione"
+  },
+  "software": {
+    "title": "Software consigliato",
+    "description": "Installa applicazioni popolari per iniziare rapidamente.",
+    "btn_install": "Installa",
+    "categories": {
+      "web": "Browser Web",
+      "editor": "Editor di codice",
+      "music": "Musica",
+      "chat": "Comunicazione",
+      "graphics": "Grafica",
+      "media": "Media"
+    }
+  }
+}

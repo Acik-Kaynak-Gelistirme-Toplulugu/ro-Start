@@ -4,6 +4,7 @@
   [![Türkçe Oku](https://img.shields.io/badge/Dili_Değiştir-Türkçe-red?style=for-the-badge)](README.tr.md)
   [![License](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE)
   [![Platform](https://img.shields.io/badge/Platform-Linux-orange.svg?style=for-the-badge)](https://www.linux.org/)
+  [![Security](https://img.shields.io/badge/Security-Hardened-green.svg?style=for-the-badge)](SECURITY.md)
 
   <br />
   
@@ -13,7 +14,7 @@
     Replacing traditional welcome screens with a modern, <b>"Liquid Glass"</b> aesthetic.
   </p>
 
-![Ro-Start Banner](assets/welcome_screen.png)
+![Ro-Start Welcome](assets/welcome.png)
 
   <br />
 
@@ -37,11 +38,12 @@
   - **Backend:** Python + PyQt6 + QtWebEngine for limitless system access.
   - **Frontend:** React + TypeScript + Framer Motion for 60fps animations.
 - **📊 System Canvas:** Beautiful visualization of CPU, GPU, RAM, and Storage statistics.
-- **🎮 Driver Manager:** Simplified NVIDIA driver installation and management.
+- **🔒 Security Hardened:** Input sanitization, no external connections, secure subprocess execution.
 - **🌍 Adaptive:** Auto-detects system language and scales to different resolutions.
 - **⚡ Autostart Ready:** Optional system startup integration.
+- **🔐 Privacy Focused:** Zero telemetry, all operations local-only.
 
-![Driver Manager UI](assets/driver_manager.png)
+![System Updates UI](assets/updates.png)
 
 ## 🏗️ Project Structure
 
@@ -108,11 +110,12 @@ It is recommended to use a virtual environment.
 
 ```bash
 # Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate  # On Linux/macOS
+# .venv\Scripts\activate  # On Windows
 
-# Install dependencies (Editable mode recommended for dev)
-pip install -e .
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ### 3. Run Ro-Start

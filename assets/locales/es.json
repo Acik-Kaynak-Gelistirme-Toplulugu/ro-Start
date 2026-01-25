@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Bienvenido a Linux",
+    "version": "v1.0.0 (Beta)"
+  },
+  "sidebar": {
+    "welcome": "Bienvenido",
+    "home": "Inicio",
+    "update": "Actualizar sistema",
+    "drivers": "Controladores",
+    "software": "Software"
+  },
+  "home": {
+    "title": "Bienvenido a su sistema",
+    "description": "Herramientas esenciales para configurar y preparar su ordenador.",
+    "website": "Sitio web",
+    "docs": "Documentación",
+    "forum": "Foro de la comunidad",
+    "github": "Código fuente (GitHub)",
+    "links_title": "Enlaces útiles",
+    "autostart_label": "Mostrar al inicio"
+  },
+  "update": {
+    "title": "Actualización del sistema",
+    "description": "Compruebe e instale actualizaciones de software para mantener su sistema estable y seguro.",
+    "status_unknown": "Estado: Esperando comprobación...",
+    "status_uptodate": "¡Genial! Su sistema está totalmente actualizado.",
+    "status_need_update": "Hay nuevas actualizaciones disponibles.",
+    "btn_update": "Iniciar actualización",
+    "log_title": "Registro del proceso",
+    "status_started": "Iniciando el proceso de actualización, por favor espere...",
+    "success": "Proceso completado con éxito.",
+    "error": "Ocurrió un error durante la actualización."
+  },
+  "drivers": {
+    "title": "Controladores de hardware",
+    "description": "Gestione los controladores de NVIDIA para asegurar el mejor rendimiento de su tarjeta gráfica.",
+    "detecting": "Escaneando hardware...",
+    "detected": "GPU detectada:",
+    "unknown_gpu": "No se detectó tarjeta gráfica NVIDIA.",
+    "driver_installed": "Controlador instalado:",
+    "driver_not_found": "Controlador no instalado",
+    "driver_current": "Activo",
+    "btn_launch": "Abrir configuración de NVIDIA",
+    "session_type": "Tipo de sesión"
+  },
+  "software": {
+    "title": "Software recomendado",
+    "description": "Instale aplicaciones populares para empezar rápidamente.",
+    "btn_install": "Instalar",
+    "categories": {
+      "web": "Navegador web",
+      "editor": "Editor de código",
+      "music": "Música",
+      "chat": "Comunicación",
+      "graphics": "Gráficos",
+      "media": "Medios"
+    }
+  }
+}

@@ -6,7 +6,7 @@
 
 **Ro-Start**, geleneksel karşılama ekranlarını modern "Akışkan Cam" (Liquid Glass) estetiği ile değiştirir. **Python (PyQt6)**'ın sistem erişim gücünü ve **React (Vite + TailwindCSS)**'in modern arayüz yeteneklerini birleştiren hibrit mimarisi ile Linux dağıtımınız için premium bir ilk izlenim yaratır.
 
-![Ro-Start Banner](assets/welcome_screen.png)
+![Ro-Start Karşılama](assets/welcome.png)
 
 ## ✨ Temel Özellikler
 
@@ -15,11 +15,12 @@
   - **Backend:** Sınırsız sistem erişimi için Python + PyQt6 + QtWebEngine.
   - **Frontend:** 60fps animasyonlar için React + TypeScript + Framer Motion.
 - **📊 Sistem Özeti:** CPU, GPU, RAM ve Depolama istatistiklerinin görsel sunumu.
-- **🎮 Sürücü Yöneticisi:** Basitleştirilmiş NVIDIA sürücü kurulumu ve yönetimi.
+- **🔒 Güvenlik:** Giriş temizleme, harici bağlantı yok, güvenli alt işlem yürütme.
 - **🌍 Adaptif:** Sistem dilini otomatik algılar ve farklı çözünürlüklere uyum sağlar.
 - **⚡ Hazır Başlangıç:** İsteğe bağlı sistem başlangıç entegrasyonu (Autostart).
+- **🔐 Gizlilik Odaklı:** Sıfır telemetri, tüm işlemler yalnızca yerel.
 
-![Driver Manager UI](assets/driver_manager.png)
+![Sistem Güncelleme Arayüzü](assets/updates.png)
 
 ## 🏗️ Proje Yapısı
 
@@ -67,11 +68,11 @@ Sanal ortam (venv) kullanmanız önerilir.
 
 ```bash
 # Sanal ortam oluştur
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 
-# Bağımlılıkları yükle (Geliştirici modu)
-pip install -e .
+# Bağımlılıkları yükle
+pip install -r requirements.txt
 ```
 
 ### 3. Ro-Start'ı Çalıştırın

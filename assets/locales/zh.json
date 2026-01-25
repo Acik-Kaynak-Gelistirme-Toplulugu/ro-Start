@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "欢迎使用 Linux",
+    "version": "v1.0.0 (公测版)"
+  },
+  "sidebar": {
+    "welcome": "欢迎",
+    "home": "主页",
+    "update": "系统更新",
+    "drivers": "驱动程序",
+    "software": "软件"
+  },
+  "home": {
+    "title": "欢迎进入您的系统",
+    "description": "配置和准备计算机的基本工具。",
+    "website": "网站",
+    "docs": "文档",
+    "forum": "社区论坛",
+    "github": "源代码 (GitHub)",
+    "links_title": "常用链接",
+    "autostart_label": "开机时显示"
+  },
+  "update": {
+    "title": "系统更新",
+    "description": "检查并安装软件更新，以保持系统的稳定和安全。",
+    "status_unknown": "状态：等待检查...",
+    "status_uptodate": "太棒了！您的系统已是最新状态。",
+    "status_need_update": "有新更新可用。",
+    "btn_update": "开始更新",
+    "log_title": "过程日志",
+    "status_started": "正在启动更新过程，请稍候...",
+    "success": "过程成功完成。",
+    "error": "更新过程中发生错误。"
+  },
+  "drivers": {
+    "title": "硬件驱动程序",
+    "description": "管理 NVIDIA 驱动程序，以确保显卡的最佳性能。",
+    "detecting": "正在扫描硬件...",
+    "detected": "检测到的 GPU：",
+    "unknown_gpu": "未检测到 NVIDIA 显卡。",
+    "driver_installed": "已安装的驱动程序：",
+    "driver_not_found": "驱动程序未安装",
+    "driver_current": "激活",
+    "btn_launch": "打开 NVIDIA 设置",
+    "session_type": "会话类型"
+  },
+  "software": {
+    "title": "推荐软件",
+    "description": "安装常用应用程序以快速入门。",
+    "btn_install": "安装",
+    "categories": {
+      "web": "网页浏览器",
+      "editor": "代码编辑器",
+      "music": "音乐",
+      "chat": "通讯",
+      "graphics": "图形",
+      "media": "媒体"
+    }
+  }
+}

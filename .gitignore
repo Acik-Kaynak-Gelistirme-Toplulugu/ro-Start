@@ -1,9 +1,15 @@
-# General
+# ===========================
+# System & OS Files
+# ===========================
 .DS_Store
 .AppleDouble
 .LSOverride
+Thumbs.db
+Desktop.ini
 
+# ===========================
 # Python
+# ===========================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -26,15 +32,22 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.pyc
 
+# ===========================
 # Virtual Environments
+# ===========================
 venv/
 .venv/
+.venv_*/
 env/
 .env/
 .env
+*.env
 
+# ===========================
 # Node/Frontend
+# ===========================
 node_modules/
 frontend/node_modules/
 frontend/dist/
@@ -42,19 +55,53 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.npmrc
+package-lock.json.bak
 
-# Installer / Packaging
+# ===========================
+# Build Artifacts
+# ===========================
 *.deb
 *.rpm
 *.tar.gz
+*.zip
 package_build/
 
-# IDEs
+# ===========================
+# IDEs & Editors
+# ===========================
 .idea/
 .vscode/
 *.swp
 *.swo
+*~
+.project
+.settings/
 
-# Logs
+# ===========================
+# Logs & Temporary Files
+# ===========================
 *.log
 run_log.txt
+*.tmp
+*.temp
+.cache/
+
+# ===========================
+# Security & Credentials
+# ===========================
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+.env.local
+.env.production
+
+# ===========================
+# Testing & Coverage
+# ===========================
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/

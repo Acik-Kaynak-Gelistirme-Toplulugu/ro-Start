@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Linux へようこそ",
+    "version": "v1.0.0 (ベータ)"
+  },
+  "sidebar": {
+    "welcome": "ようこそ",
+    "home": "ホーム",
+    "update": "システム更新",
+    "drivers": "ドライバー",
+    "software": "ソフトウェア"
+  },
+  "home": {
+    "title": "システムへようこそ",
+    "description": "コンピューターの構成と準備に不可欠なツールです。",
+    "website": "ウェブサイト",
+    "docs": "ドキュメント",
+    "forum": "コミュニティフォーラム",
+    "github": "ソースコード (GitHub)",
+    "links_title": "便利なリンク",
+    "autostart_label": "起動時に表示"
+  },
+  "update": {
+    "title": "システム更新",
+    "description": "システムの安定性とセキュリティを維持するために、ソフトウェアの更新を確認してインストールします。",
+    "status_unknown": "ステータス：確認待ち...",
+    "status_uptodate": "素晴らしい！システムは完全に最新です。",
+    "status_need_update": "新しい更新が利用可能です。",
+    "btn_update": "更新開始",
+    "log_title": "プロセスログ",
+    "status_started": "更新プロセスを開始しています。お待ちください...",
+    "success": "プロセスが正常に完了しました。",
+    "error": "更新中にエラーが発生しました。"
+  },
+  "drivers": {
+    "title": "ハードウェアドライバー",
+    "description": "グラフィックカードの最高のパフォーマンスを確保するために、NVIDIA ドライバーを管理します。",
+    "detecting": "ハードウェアをスキャン中...",
+    "detected": "検出された GPU：",
+    "unknown_gpu": "NVIDIA グラフィックカードが検出されませんでした。",
+    "driver_installed": "インストール済みドライバー：",
+    "driver_not_found": "ドライバーがインストールされていません",
+    "driver_current": "アクティブ",
+    "btn_launch": "NVIDIA 設定を開く",
+    "session_type": "セッションタイプ"
+  },
+  "software": {
+    "title": "おすすめのソフトウェア",
+    "description": "人気のアプリケーションをインストールして、すぐに使い始めましょう。",
+    "btn_install": "インストール",
+    "categories": {
+      "web": "ウェブブラウザ",
+      "editor": "コードエディタ",
+      "music": "音楽",
+      "chat": "コミュニケーション",
+      "graphics": "グラフィックス",
+      "media": "メディア"
+    }
+  }
+}

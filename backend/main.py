@@ -43,6 +43,9 @@ def main():
     # Silence Qt spam
     os.environ["QT_LOGGING_RULES"] = "*.debug=false;qt.qpa.*=false"
 
+    # High DPI Scaling Support
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    
     app = QApplication(sys.argv)
 
     # Application Metadata

@@ -6,8 +6,6 @@ import logging
 import os
 from functools import lru_cache
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 try:
     import psutil

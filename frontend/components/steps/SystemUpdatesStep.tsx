@@ -30,7 +30,7 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
         setStatus("completed");
         setProgress(100);
       } else if (event.detail.status === "error") {
-        setStatus("idle"); // Allow retry? or error state
+        setStatus("idle");
         addLog(`Error: ${event.detail.message}`);
       } else if (event.detail.status === "progress") {
         setProgress(event.detail.percentage);
@@ -55,37 +55,39 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
   };
 
   return (
-    <div className="space-y-6 flex flex-col h-full">
-      <div className="text-center space-y-4">
+    <div className="space-y-4 flex flex-col h-full w-full max-h-full">
+      <div className="text-center space-y-2 flex-shrink-0">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring" }}
-          className={`inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-white/40 to-white/10 backdrop-blur-xl border ${themeConfig.borderColor} mb-4 shadow-xl`}
+          className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-white/40 to-white/10 backdrop-blur-xl border ${themeConfig.borderColor} mb-2 shadow-xl`}
         >
           {status === "completed" ? (
-            <CheckCircle2 className="w-12 h-12 text-green-600" />
+            <CheckCircle2 className="w-8 h-8 text-green-600" />
           ) : (
-            <Download className={`w-12 h-12 ${themeConfig.iconPrimary}`} />
+            <Download className={`w-8 h-8 ${themeConfig.iconPrimary}`} />
           )}
         </motion.div>
-        <h1 className={`${themeConfig.textHeading} text-5xl font-bold`}>{t.systemUpdates.title}</h1>
-        <p className={`${themeConfig.textSubheading} text-xl max-w-2xl mx-auto`}>
+        <h1 className={`${themeConfig.textHeading} text-3xl md:text-4xl font-bold tracking-tight`}>
+          {t.systemUpdates.title}
+        </h1>
+        <p className={`${themeConfig.textSubheading} text-base max-w-xl mx-auto opacity-90`}>
           {status === "completed" ? t.systemUpdates.completedTitle : t.systemUpdates.subtitle}
         </p>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-start mt-8 max-w-3xl mx-auto w-full">
+      <div className="flex-1 flex flex-col items-center justify-center min-h-0 max-w-3xl mx-auto w-full">
         {status === "idle" && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center space-y-8"
+            className="text-center space-y-6 py-4"
           >
-            <p className={`${themeConfig.textBody} text-lg`}>{t.systemUpdates.description}</p>
+            <p className={`${themeConfig.textBody} text-sm max-w-lg`}>{t.systemUpdates.description}</p>
             <button
               onClick={startUpdate}
-              className="px-10 py-4 rounded-2xl backdrop-blur-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:scale-105 transition-all duration-300 font-bold text-lg"
+              className="px-8 py-3 rounded-xl backdrop-blur-xl bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:scale-105 transition-all duration-300 font-bold text-base"
             >
               {t.systemUpdates.updateButton}
             </button>
@@ -94,19 +96,19 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
 
         {status !== "idle" && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full space-y-6"
+            className="w-full h-full flex flex-col space-y-4 min-h-0"
           >
-            {/* Progress Bar */}
-            <div className="space-y-2">
+            {/* Progress Bar Container - Compact */}
+            <div className="space-y-2 flex-shrink-0">
               <div className="flex justify-between items-center px-1">
-                <span className={`${themeConfig.textSubheading} text-sm font-medium`}>
+                <span className={`${themeConfig.textSubheading} text-xs font-semibold uppercase tracking-wider`}>
                   {status === "completed" ? t.systemUpdates.completed : t.systemUpdates.updating}
                 </span>
-                <span className={`${themeConfig.textHeading} font-bold`}>{progress}%</span>
+                <span className={`${themeConfig.textHeading} text-sm font-bold`}>{progress}%</span>
               </div>
-              <div className="h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner">
+              <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden shadow-inner">
                 <motion.div
                   className={`h-full ${status === "completed" ? "bg-green-500" : "bg-blue-600"}`}
                   initial={{ width: 0 }}
@@ -116,46 +118,46 @@ export function SystemUpdatesStep({ step, t }: { step: any; t: any }) {
               </div>
             </div>
 
-            {/* Log Terminal Toggle */}
-            <div className="flex justify-center">
-              <button
-                onClick={() => setShowLogs(!showLogs)}
-                className={`flex items-center gap-2 text-sm ${themeConfig.textMuted} hover:${themeConfig.textHeading} transition-colors`}
-              >
-                {showLogs ? t.systemUpdates.hideLogs : t.systemUpdates.showLogs}
-                {showLogs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-            </div>
-
-            {/* Terminal Window */}
+            {/* Terminal Window - Flexible Height */}
             <AnimatePresence>
               {showLogs && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
+                  initial={{ opacity: 0, flexGrow: 0 }}
+                  animate={{ opacity: 1, flexGrow: 1 }}
+                  exit={{ opacity: 0, flexGrow: 0 }}
+                  className="flex flex-col min-h-0"
                 >
                   <div
-                    className="bg-slate-900 rounded-xl border border-slate-700 p-4 shadow-2xl font-mono text-xs md:text-sm text-green-400 h-64 overflow-y-auto custom-scrollbar"
+                    className="flex-1 bg-slate-900/95 dark:bg-black/80 rounded-xl border border-slate-700 p-4 shadow-2xl font-mono text-[10px] md:text-xs text-green-400 overflow-y-auto custom-scrollbar"
                     ref={logContainerRef}
                   >
-                    <div className="flex items-center gap-2 border-b border-slate-800 pb-2 mb-2 text-slate-500">
-                      <Terminal className="w-4 h-4" />
+                    <div className="flex items-center gap-2 border-b border-slate-800 pb-2 mb-2 text-slate-500 text-[10px] uppercase font-bold tracking-widest">
+                      <Terminal className="w-3 h-3" />
                       <span>system-update-log</span>
                     </div>
                     <div className="space-y-1">
                       {logs.map((log, i) => (
-                        <div key={i} className="break-all">
+                        <div key={i} className="break-all opacity-90 transition-opacity hover:opacity-100">
                           {log}
                         </div>
                       ))}
-                      {status === "updating" && <div className="animate-pulse">_</div>}
+                      {status === "updating" && <div className="animate-pulse inline-block w-2 h-4 bg-green-400"></div>}
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
+            
+            {/* Log Terminal Toggle - Minimal */}
+            <div className="flex justify-center flex-shrink-0">
+              <button
+                onClick={() => setShowLogs(!showLogs)}
+                className={`flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest ${themeConfig.textMuted} hover:${themeConfig.textHeading} transition-colors`}
+              >
+                {showLogs ? t.systemUpdates.hideLogs : t.systemUpdates.showLogs}
+                {showLogs ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              </button>
+            </div>
           </motion.div>
         )}
       </div>

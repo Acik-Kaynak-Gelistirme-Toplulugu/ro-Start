@@ -13,13 +13,25 @@ import { ReadyStep } from "./steps/ReadyStep";
 
 export function WelcomeScreen() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [language, setLanguage] = useState<"tr" | "en">("tr");
+  const [language, setLanguage] = useState<string>("en");
   const [showLangMenu, setShowLangMenu] = useState(false);
   // Theme state: false = light, true = dark
   const [isDark, setIsDark] = useState(false);
   const [autostartEnabled, setAutostartEnabled] = useState(true);
 
   const [systemSpecs, setSystemSpecs] = useState<any>(null);
+
+  const langNames: Record<string, string> = {
+    tr: "Türkçe",
+    en: "English",
+    de: "Deutsch",
+    fr: "Français",
+    es: "Español",
+    it: "Italiano",
+    ru: "Русский",
+    zh: "中文",
+    ja: "日本語",
+  };
 
   // Apply theme class to document
   useEffect(() => {
@@ -43,14 +55,20 @@ export function WelcomeScreen() {
       setIsDark(event.detail.isDark);
     };
 
+    const handleLanguageUpdate = (event: CustomEvent<{ language: string }>) => {
+      setLanguage(event.detail.language);
+    };
+
     window.addEventListener("autostart-status-update" as any, handleAutostartUpdate as any);
     window.addEventListener("system-specs-update" as any, handleSpecsUpdate as any);
     window.addEventListener("theme-status-update" as any, handleThemeUpdate as any);
+    window.addEventListener("language-status-update" as any, handleLanguageUpdate as any);
 
     return () => {
       window.removeEventListener("autostart-status-update" as any, handleAutostartUpdate as any);
       window.removeEventListener("system-specs-update" as any, handleSpecsUpdate as any);
       window.removeEventListener("theme-status-update" as any, handleThemeUpdate as any);
+      window.removeEventListener("language-status-update" as any, handleLanguageUpdate as any);
     };
   }, []);
 
@@ -63,7 +81,7 @@ export function WelcomeScreen() {
     window.location.href = `app://set-autostart?enabled=${checked}`;
   };
 
-  const t = translations[language];
+  const t = (translations as any)[language];
 
   if (!t) return null;
 
@@ -122,12 +140,12 @@ export function WelcomeScreen() {
         />
       </div>
 
-      {/* Floating orbs for depth */}
+      {/* Floating orbs for depth - Adjusted to be more relative to window center */}
       <motion.div
-        className={`absolute top-20 left-20 w-96 h-96 ${themeConfig.orb1Color} rounded-full mix-blend-multiply filter blur-3xl opacity-50`}
+        className={`absolute top-[10%] left-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] ${themeConfig.orb1Color} rounded-full mix-blend-multiply filter blur-3xl opacity-40`}
         animate={{
-          x: [0, 100, 0],
-          y: [0, 50, 0],
+          x: [-20, 20, -20],
+          y: [-20, 20, -20],
         }}
         transition={{
           duration: 20,
@@ -136,10 +154,10 @@ export function WelcomeScreen() {
         }}
       />
       <motion.div
-        className={`absolute bottom-20 right-20 w-96 h-96 ${themeConfig.orb2Color} rounded-full mix-blend-multiply filter blur-3xl opacity-50`}
+        className={`absolute bottom-[10%] right-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] ${themeConfig.orb2Color} rounded-full mix-blend-multiply filter blur-3xl opacity-40`}
         animate={{
-          x: [0, -100, 0],
-          y: [0, -50, 0],
+          x: [20, -20, 20],
+          y: [20, -20, 20],
         }}
         transition={{
           duration: 15,
@@ -148,10 +166,10 @@ export function WelcomeScreen() {
         }}
       />
       <motion.div
-        className={`absolute top-1/2 left-1/2 w-96 h-96 ${themeConfig.orb3Color} rounded-full mix-blend-multiply filter blur-3xl opacity-50`}
+        className={`absolute top-[40%] left-[40%] w-[25vw] h-[25vw] min-w-[250px] min-h-[250px] ${themeConfig.orb3Color} rounded-full mix-blend-multiply filter blur-3xl opacity-30`}
         animate={{
-          x: [-50, 50, -50],
-          y: [50, -50, 50],
+          x: [30, -30, 30],
+          y: [-30, 30, -30],
         }}
         transition={{
           duration: 18,
@@ -182,7 +200,7 @@ export function WelcomeScreen() {
             className={`flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-xl ${themeConfig.glassCardOpacity} border ${themeConfig.borderColor} ${themeConfig.textHeading} hover:bg-white/60 transition-all duration-300 font-medium text-sm`}
           >
             <Globe className="w-4 h-4" />
-            <span>{language === "tr" ? "Türkçe" : "English"}</span>
+            <span>{langNames[language] || language.toUpperCase()}</span>
           </button>
 
           <AnimatePresence>
@@ -191,34 +209,27 @@ export function WelcomeScreen() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-32 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden"
+                className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden z-[100]"
               >
-                <button
-                  onClick={() => {
-                    setLanguage("tr");
-                    setShowLangMenu(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
-                    language === "tr"
-                      ? "text-blue-600 font-medium"
-                      : "text-slate-600 dark:text-slate-300"
-                  }`}
-                >
-                  Türkçe
-                </button>
-                <button
-                  onClick={() => {
-                    setLanguage("en");
-                    setShowLangMenu(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
-                    language === "en"
-                      ? "text-blue-600 font-medium"
-                      : "text-slate-600 dark:text-slate-300"
-                  }`}
-                >
-                  English
-                </button>
+                <div className="max-h-64 overflow-y-auto custom-scrollbar">
+                  {Object.entries(langNames).map(([code, name]) => (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        setLanguage(code);
+                        setShowLangMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-between ${
+                        language === code
+                          ? "text-blue-600 font-bold bg-blue-50/50 dark:bg-blue-900/20"
+                          : "text-slate-600 dark:text-slate-300"
+                      }`}
+                    >
+                      <span>{name}</span>
+                      {language === code && <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -229,20 +240,20 @@ export function WelcomeScreen() {
       <div className="relative z-10 h-screen flex flex-col">
         {/* Glassmorphism container */}
         <div
-          className={`backdrop-blur-3xl ${themeConfig.glassOpacity} flex-1 flex flex-col shadow-none overflow-hidden transition-colors duration-500`}
+          className={`backdrop-blur-3xl ${themeConfig.glassOpacity} flex-1 flex flex-col shadow-none overflow-hidden transition-colors duration-500 m-4 md:m-10 rounded-3xl border ${themeConfig.borderColor} shadow-2xl`}
         >
           {/* Content area - Flex-1 ensures it takes available space */}
-          <div className="flex-1 relative flex flex-col min-h-0">
-            {/* Scrollable inner container */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8">
+          <div className="flex-1 relative flex flex-col min-h-0 overflow-hidden">
+            {/* Centered inner container - No main scrollbar for cleaner look */}
+            <div className="flex-1 flex items-center justify-center p-6 md:p-12 overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="h-full flex flex-col justify-center min-h-min"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.02 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="w-full max-w-5xl mx-auto h-full flex flex-col items-center justify-center overflow-hidden"
                 >
                   {renderStep()}
                 </motion.div>

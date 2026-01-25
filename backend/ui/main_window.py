@@ -16,15 +16,16 @@ from PyQt6.QtCore import QUrl, QThread, pyqtSignal
 try:
     from core.sys_info import get_system_specs, get_distro_info
     from core.autostart import is_autostart_enabled, set_autostart
+    from core.security import sanitize_for_javascript, validate_distro_id
     import darkdetect
 except ImportError:
     # Fallback if running relative
     from backend.core.sys_info import get_system_specs, get_distro_info
     from backend.core.autostart import is_autostart_enabled, set_autostart
+    from backend.core.security import sanitize_for_javascript, validate_distro_id
     import darkdetect
 
-# Configure Logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 
 
 class SystemUpdateThread(QThread):
@@ -81,25 +82,35 @@ class SystemUpdateThread(QThread):
             return
 
         _, _, distro_id = get_distro_info()
-        distro_id = distro_id.lower()
+        
+        # Validate distro_id for security
+        try:
+            distro_id = validate_distro_id(distro_id)
+        except ValueError as e:
+            self.log_signal.emit(f"Security Error: {e}")
+            self.status_signal.emit("error", 0)
+            return
 
-        update_cmd = ""
+        update_cmds = []
 
-        # Debuan/Ubuntu
+        # Debian/Ubuntu
         if distro_id in ["ubuntu", "debian", "linuxmint", "pop", "kali", "neon"]:
-            update_cmd = "apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"
+            update_cmds = [
+                "pkexec", "/bin/sh", "-c",
+                "apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get upgrade -y"
+            ]
 
         # Fedora/RHEL
         elif distro_id in ["fedora", "rhel", "centos", "almalinux"]:
-            update_cmd = "dnf update -y"
+            update_cmds = ["pkexec", "dnf", "update", "-y"]
 
         # Arch Linux
         elif distro_id in ["arch", "manjaro", "endeavouros"]:
-            update_cmd = "pacman -Syu --noconfirm"
+            update_cmds = ["pkexec", "pacman", "-Syu", "--noconfirm"]
 
         # OpenSUSE
         elif "suse" in distro_id:
-            update_cmd = "zypper up -y"
+            update_cmds = ["pkexec", "zypper", "up", "-y"]
 
         else:
             # Fallback or generic
@@ -107,16 +118,14 @@ class SystemUpdateThread(QThread):
             self.status_signal.emit("error", 0)
             return
 
-        # Wrap in pkexec
-        full_command = f"pkexec /bin/sh -c '{update_cmd}'"
-
         self.log_signal.emit(f"Detected Distro: {distro_id}")
-        self.log_signal.emit(f"Executing: {update_cmd}")
+        self.log_signal.emit(f"Executing update command...")
         self.status_signal.emit("updating", 10)
 
         try:
+            # Use update_cmds directly as a list, shell=False is default and safer
             process = subprocess.Popen(
-                full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1
+                update_cmds, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1
             )
 
             for line in process.stdout:
@@ -178,8 +187,8 @@ class CustomWebEnginePage(QWebEnginePage):
         self.update_thread.start()
 
     def on_update_log(self, message):
-        # Escape quotes for JS
-        safe_msg = message.replace('"', '\\"').replace("'", "\\'")
+        # Use secure sanitization
+        safe_msg = sanitize_for_javascript(message)
         js = f"window.dispatchEvent(new CustomEvent('system-update-log', {{ detail: {{ message: '{safe_msg}' }} }}));"
         self.runJavaScript(js)
 
@@ -247,12 +256,18 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Ro-Start")
         self.setMinimumSize(960, 640)
 
+        # Make the window background transparent for Liquid Glass effect
+        from PyQt6.QtCore import Qt
+        from PyQt6.QtGui import QColor
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        
         # State
         self.is_page_loaded = False
         self.cached_specs = None
 
         # Central Widget
         self.central_widget = QWidget()
+        self.central_widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setCentralWidget(self.central_widget)
 
         # Layout
@@ -262,6 +277,8 @@ class MainWindow(QMainWindow):
 
         # Web View
         self.web_view = QWebEngineView()
+        self.web_view.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.web_view.page().setBackgroundColor(QColor(0, 0, 0, 0)) # Transparent background
         self.web_view.loadFinished.connect(self.on_load_finished)
 
         # Set Custom Page for handling navigation requests
@@ -345,6 +362,12 @@ class MainWindow(QMainWindow):
             return
 
         try:
+            from backend.core.i18n import tr as translator
+            sys_lang = translator.current_locale.split("_")[0].lower() # e.g. 'tr' or 'en'
+            supported_langs = ["tr", "en", "de", "fr", "es", "it", "ru", "zh", "ja"]
+            if sys_lang not in supported_langs:
+                sys_lang = "en"
+                
             specs = self.cached_specs
             autostart = is_autostart_enabled()
             is_dark = darkdetect.isDark()
@@ -353,6 +376,7 @@ class MainWindow(QMainWindow):
             window.dispatchEvent(new CustomEvent('system-specs-update', {{ detail: {json.dumps(specs)} }}));
             window.dispatchEvent(new CustomEvent('autostart-status-update', {{ detail: {{ enabled: {str(autostart).lower()} }} }}));
             window.dispatchEvent(new CustomEvent('theme-status-update', {{ detail: {{ isDark: {str(is_dark).lower()} }} }}));
+            window.dispatchEvent(new CustomEvent('language-status-update', {{ detail: {{ language: '{sys_lang}' }} }}));
             """
             self.web_view.page().runJavaScript(js_code)
             logging.info(f"Injected specs: {specs}, Autostart: {autostart}, DarkMode: {is_dark}")
