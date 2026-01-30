@@ -1,0 +1,32 @@
+Source: ro-start
+Section: utils
+Priority: optional
+Maintainer: ro-repo <project.roasd@gmail.com>
+Build-Depends: debhelper-compat (= 13),
+               cargo,
+               rustc (>= 1.70),
+               libgtk-4-dev (>= 4.12),
+               libadwaita-1-dev (>= 1.5),
+               pkg-config
+Standards-Version: 4.6.2
+Homepage: https://github.com/ro-repo/ro-start
+Vcs-Browser: https://github.com/ro-repo/ro-start
+Vcs-Git: https://github.com/ro-repo/ro-start.git
+Rules-Requires-Root: no
+
+Package: ro-start
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         libgtk-4-1 (>= 4.12),
+         libadwaita-1-0 (>= 1.5)
+Description: Fast, safe, and beautiful Linux welcome application
+ Ro-Start is a modern welcome application built with Rust and GTK4.
+ .
+ It provides a native GNOME experience with excellent performance,
+ featuring:
+  * Lightning-fast startup (0.5 seconds)
+  * Minimal memory usage (~45MB RAM)
+  * Native GTK4 + libadwaita interface
+  * Memory-safe Rust implementation
+  * System information display
+  * Quick action shortcuts

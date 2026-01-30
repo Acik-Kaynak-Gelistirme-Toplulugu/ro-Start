@@ -13,20 +13,21 @@ Cargo.lock
 
 # OS
 .DS_Store
-.AppleDouble
-.LSOverride
 Thumbs.db
-Desktop.ini
 
 # Build artifacts
 *.deb
 *.rpm
 *.tar.gz
-*.zip
+*.AppImage
 
-# Logs
-*.log
+# Debian build
+debian/.debhelper/
+debian/ro-start/
+debian/files
+debian/*.substvars
+debian/*.log
 
-# Local config
-.env
-.env.local
+# Config/cache
+*.toml.bak
+.cache/

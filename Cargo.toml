@@ -1,13 +1,13 @@
 [package]
 name = "ro-start"
-version = "2.0.0"
+version = "1.0.0"
 edition = "2021"
-authors = ["Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>"]
+authors = ["ro-repo <project.roasd@gmail.com>"]
 license = "GPL-3.0-or-later"
-description = "Modern welcome application for Linux distributions"
-repository = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
-homepage = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
-documentation = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/blob/main/README.md"
+description = "Fast, safe, and beautiful Linux welcome application built with Rust + GTK4"
+repository = "https://github.com/ro-repo/ro-start"
+homepage = "https://github.com/ro-repo/ro-start"
+documentation = "https://github.com/ro-repo/ro-start/blob/main/README.md"
 readme = "README.md"
 keywords = ["linux", "gtk", "gtk4", "libadwaita", "welcome"]
 categories = ["gui"]
@@ -60,13 +60,13 @@ opt-level = 0
 
 # Metadata for cargo-deb
 [package.metadata.deb]
-maintainer = "Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>"
-copyright = "2024-2026, Acik Kaynak Gelistirme Toplulugu"
+maintainer = "ro-repo <project.roasd@gmail.com>"
+copyright = "2026, ro-repo"
 license-file = ["LICENSE", "0"]
 extended-description = """\
-Ro-Start is a modern welcome application for Linux distributions.
-Built with Rust, GTK4, and libadwaita, it provides a fast,
-beautiful, and native GNOME experience."""
+Ro-Start is a fast, safe, and beautiful Linux welcome application.
+Built with Rust, GTK4, and libadwaita, it provides native GNOME
+integration with excellent performance."""
 depends = "$auto, libgtk-4-1, libadwaita-1-0"
 section = "x11"
 priority = "optional"

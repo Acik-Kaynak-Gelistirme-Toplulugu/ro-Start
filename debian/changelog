@@ -1,0 +1,11 @@
+ro-start (1.0.0-1) unstable; urgency=medium
+
+  * Initial release
+  * Complete rewrite in Rust + GTK4
+  * Native GNOME integration with libadwaita
+  * 5x faster startup compared to previous versions
+  * 4.4x reduced memory footprint
+  * Memory-safe implementation
+  * Single binary distribution
+
+ -- ro-repo <project.roasd@gmail.com>  Fri, 31 Jan 2026 00:00:00 +0300

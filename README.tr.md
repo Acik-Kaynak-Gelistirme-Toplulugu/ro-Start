@@ -1,6 +1,7 @@
 # 🚀 Ro-Start
 
-**Linux Dağıtımları için Modern Karşılama Uygulaması** - Rust + GTK4 + libadwaita ile geliştirilmiştir.
+> **Modern Linux karşılama uygulaması — Hızlı, güvenli ve şık**  
+> Rust + GTK4 + libadwaita ile geliştirilmiştir
 
 [English](README.md) | **Türkçe**
 

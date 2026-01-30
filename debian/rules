@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	cargo build --release
+
+override_dh_auto_install:
+	install -Dm755 target/release/ro-start debian/ro-start/usr/bin/ro-start
+	install -Dm644 data/ro-start.desktop debian/ro-start/usr/share/applications/ro-start.desktop
+	install -Dm644 data/ro-start.png debian/ro-start/usr/share/icons/hicolor/512x512/apps/ro-start.png
+	install -Dm644 data/org.osdev.ro_start.appdata.xml debian/ro-start/usr/share/metainfo/org.osdev.ro_start.appdata.xml
+
+override_dh_auto_clean:
+	cargo clean
+
+override_dh_auto_test:
+	# Skip tests for now

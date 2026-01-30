@@ -1,11 +1,11 @@
-# Ro-Start
+# 🚀 Ro-Start
+
+> **Modern Linux welcome application — Fast, safe, and beautiful**  
+> Built with Rust + GTK4 + libadwaita
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Rust CI](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/actions/workflows/rust.yml/badge.svg)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/actions/workflows/rust.yml)
 [![GitHub release](https://img.shields.io/github/v/release/Acik-Kaynak-Gelistirme-Toplulugu/ro-start)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest)
-[![GitHub issues](https://img.shields.io/github/issues/Acik-Kaynak-Gelistirme-Toplulugu/ro-start)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/issues)
-
-Modern welcome application for Linux distributions built with **Rust + GTK4 + libadwaita**
 
 [Features](#-features) • [Installation](#-installation) • [Building](#-building-from-source) • [Contributing](#-contributing) • [License](#-license)
 

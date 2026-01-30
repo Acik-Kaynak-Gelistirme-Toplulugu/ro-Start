@@ -1,0 +1,38 @@
+# Maintainer: ro-repo <project.roasd@gmail.com>
+pkgname=ro-start
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Fast, safe, and beautiful Linux welcome application built with Rust + GTK4"
+arch=('x86_64' 'aarch64')
+url="https://github.com/ro-repo/ro-start"
+license=('GPL3')
+depends=('gtk4>=4.12' 'libadwaita>=1.5')
+makedepends=('rust' 'cargo' 'pkg-config')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/ro-repo/$pkgname/archive/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$pkgname-$pkgver"
+    cargo build --release --locked
+}
+
+check() {
+    cd "$pkgname-$pkgver"
+    cargo test --release
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+    
+    # Install binary
+    install -Dm755 "target/release/$pkgname" "$pkgdir/usr/bin/$pkgname"
+    
+    # Install desktop files
+    install -Dm644 "data/$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
+    install -Dm644 "data/$pkgname.png" "$pkgdir/usr/share/icons/hicolor/512x512/apps/$pkgname.png"
+    install -Dm644 "data/org.osdev.ro_start.appdata.xml" "$pkgdir/usr/share/metainfo/org.osdev.ro_start.appdata.xml"
+    
+    # Install documentation
+    install -Dm644 "README.md" "$pkgdir/usr/share/doc/$pk gname/README.md"
+    install -Dm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

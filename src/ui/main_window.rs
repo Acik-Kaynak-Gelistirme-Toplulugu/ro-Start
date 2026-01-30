@@ -112,9 +112,48 @@ impl MainWindow {
         let update_button = Button::with_label("Check for Updates");
         update_button.add_css_class("pill");
         update_button.add_css_class("suggested-action");
-        update_button.connect_clicked(|_| {
+        
+        update_button.connect_clicked(move |btn| {
             tracing::info!("Checking for updates...");
-            // TODO: Implement update checking
+            btn.set_sensitive(false);
+            btn.set_label("Checking...");
+            
+            // Spawn async task
+            glib::spawn_future_local(async move {
+                match crate::package_manager::PackageManager::detect() {
+                    Ok(pm) => {
+                        match pm.check_updates() {
+                            Ok(info) => {
+                                tracing::info!("Update check result: {:?}", info);
+                                crate::ui::dialogs::show_info(
+                                    None,
+                                    "Update Check",
+                                    &info.message()
+                                );
+                            }
+                            Err(e) => {
+                                tracing::error!("Update check failed: {}", e);
+                                crate::ui::dialogs::show_error(
+                                    None,
+                                    "Update Check Failed",
+                                    &format!("Failed to check for updates: {}", e)
+                                );
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        tracing::error!("Package manager detection failed: {}", e);
+                        crate::ui::dialogs::show_error(
+                            None,
+                            "Package Manager Not Found",
+                            "Could not detect your package manager. Please check updates manually."
+                        );
+                    }
+                }
+                
+                btn.set_sensitive(true);
+                btn.set_label("Check for Updates");
+            });
         });
         
         let update_row = adw::ActionRow::new();

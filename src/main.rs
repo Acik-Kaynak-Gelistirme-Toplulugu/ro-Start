@@ -4,6 +4,8 @@
 mod ui;
 mod system;
 mod config;
+mod error;
+mod package_manager;
 
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow};
