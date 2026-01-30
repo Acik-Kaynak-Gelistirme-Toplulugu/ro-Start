@@ -184,13 +184,13 @@ impl MainWindow {
         group.set_title(&t.update.title);
         group.set_description(Some("Common tasks to get started"));
 
-        // Update system button
-        let t = crate::i18n::t();
-        let update_button = Button::with_label(&t.update.btn_update);
-        update_button.add_css_class("pill");
-        update_button.add_css_class("suggested-action");
+        // Update button
+        let update_button = Button::builder()
+            .label(&t.update.btn_update)
+            .css_classes(["suggested-action"])
+            .build();
 
-        let button_label_checking = t.update.status_started.clone();
+        // Clone all needed values before the closure
         let button_label_default = t.update.btn_update.clone();
         let error_title = t.update.error.clone();
         let update_check_title = "Update Check".to_string();
@@ -200,51 +200,56 @@ impl MainWindow {
             btn.set_sensitive(false);
             btn.set_label("Checking...");
 
-            let button_label_default = button_label_default.clone();
-            let error_title = error_title.clone();
-            let update_check_title = update_check_title.clone();
+            let btn_clone = btn.clone();
+            let button_label = button_label_default.clone();
+            let error_title_clone = error_title.clone();
+            let update_check_title_clone = update_check_title.clone();
 
             // Spawn async task
             glib::spawn_future_local(async move {
-                match crate::package_manager::PackageManager::detect() {
-                    Ok(pm) => {
-                        match pm.check_updates() {
-                            Ok(info) => {
-                                tracing::info!("Update check result: {:?}", info);
+                // Simulate async operation
+                let result = tokio::task::spawn_blocking(move || {
+                    crate::package_manager::PackageManager::detect()
+                        .and_then(|pm| pm.check_updates())
+                })
+                .await;
 
-                                // Show notification if updates available
-                                if info.available {
-                                    crate::notifications::notify_updates_available(info.count);
-                                }
+                match result {
+                    Ok(Ok(info)) => {
+                        tracing::info!("Update check result: {:?}", info);
 
-                                crate::ui::dialogs::show_info(
-                                    None,
-                                    &update_check_title,
-                                    &info.message(),
-                                );
-                            }
-                            Err(e) => {
-                                tracing::error!("Update check failed: {}", e);
-                                crate::ui::dialogs::show_error(
-                                    None,
-                                    &error_title,
-                                    &format!("Failed to check for updates: {}", e),
-                                );
-                            }
+                        // Show notification if updates available
+                        if info.available {
+                            crate::notifications::notify_updates_available(info.count);
                         }
+
+                        crate::ui::dialogs::show_info(
+                            None,
+                            &update_check_title_clone,
+                            &info.message(),
+                        );
                     }
-                    Err(e) => {
-                        tracing::error!("Package manager detection failed: {}", e);
+                    Ok(Err(e)) => {
+                        tracing::error!("Update check failed: {}", e);
                         crate::ui::dialogs::show_error(
                             None,
-                            "Package Manager Not Found",
-                            "Could not detect your package manager. Please check updates manually.",
+                            &error_title_clone,
+                            &format!("Failed to check updates: {}", e),
+                        );
+                    }
+                    Err(e) => {
+                        tracing::error!("Task failed: {}", e);
+                        crate::ui::dialogs::show_error(
+                            None,
+                            &error_title_clone,
+                            &format!("Task execution failed: {}", e),
                         );
                     }
                 }
 
-                btn.set_sensitive(true);
-                btn.set_label(&button_label_default);
+                // Re-enable button
+                btn_clone.set_sensitive(true);
+                btn_clone.set_label(&button_label);
             });
         });
 
