@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use libadwaita as adw;
 
 /// Show an error dialog
-pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {
+pub fn show_error(parent: Option<&impl IsA<gtk::Window>>, title: &str, message: &str) {
     let dialog = adw::MessageDialog::builder()
         .heading(title)
         .body(message)
@@ -14,14 +14,14 @@ pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {
     dialog.set_close_response("ok");
 
     if let Some(parent) = parent {
-        dialog.set_transient_for(Some(parent));
+        dialog.set_transient_for(Some(parent.upcast_ref()));
     }
 
     dialog.present();
 }
 
 /// Show an info dialog
-pub fn show_info(parent: Option<&gtk::Window>, title: &str, message: &str) {
+pub fn show_info(parent: Option<&impl IsA<gtk::Window>>, title: &str, message: &str) {
     let dialog = adw::MessageDialog::builder()
         .heading(title)
         .body(message)
@@ -32,7 +32,7 @@ pub fn show_info(parent: Option<&gtk::Window>, title: &str, message: &str) {
     dialog.set_close_response("ok");
 
     if let Some(parent) = parent {
-        dialog.set_transient_for(Some(parent));
+        dialog.set_transient_for(Some(parent.upcast_ref()));
     }
 
     dialog.present();
@@ -40,7 +40,7 @@ pub fn show_info(parent: Option<&gtk::Window>, title: &str, message: &str) {
 
 /// Show a confirmation dialog
 pub fn show_confirm(
-    parent: Option<&gtk::Window>,
+    parent: Option<&impl IsA<gtk::Window>>,
     title: &str,
     message: &str,
     confirm_label: &str,
@@ -58,7 +58,7 @@ pub fn show_confirm(
     dialog.set_response_appearance("confirm", adw::ResponseAppearance::Suggested);
 
     if let Some(parent) = parent {
-        dialog.set_transient_for(Some(parent));
+        dialog.set_transient_for(Some(parent.upcast_ref()));
     }
 
     dialog.connect_response(None, move |_, response| {
