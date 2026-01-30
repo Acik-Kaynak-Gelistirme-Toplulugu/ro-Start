@@ -1,0 +1,88 @@
+[package]
+name = "ro-start"
+version = "2.0.0"
+edition = "2021"
+authors = ["Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>"]
+license = "GPL-3.0-or-later"
+description = "Modern welcome application for Linux distributions"
+repository = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
+homepage = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
+documentation = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/blob/main/README.md"
+readme = "README.md"
+keywords = ["linux", "gtk", "gtk4", "libadwaita", "welcome"]
+categories = ["gui"]
+
+[[bin]]
+name = "ro-start"
+path = "src/main.rs"
+
+[dependencies]
+# GTK4 for native Linux UI
+gtk = { version = "0.9", package = "gtk4", features = ["v4_12"] }
+libadwaita = { version = "0.7", features = ["v1_5"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# System information
+sysinfo = "0.33"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Configuration  
+toml = "0.8"
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Command execution
+which = "7"
+
+# File paths and directories
+dirs = "6"
+
+[profile.release]
+opt-level = "z"      # Optimize for size
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.dev]
+opt-level = 0
+
+# Metadata for cargo-deb
+[package.metadata.deb]
+maintainer = "Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>"
+copyright = "2024-2026, Acik Kaynak Gelistirme Toplulugu"
+license-file = ["LICENSE", "0"]
+extended-description = """\
+Ro-Start is a modern welcome application for Linux distributions.
+Built with Rust, GTK4, and libadwaita, it provides a fast,
+beautiful, and native GNOME experience."""
+depends = "$auto, libgtk-4-1, libadwaita-1-0"
+section = "x11"
+priority = "optional"
+assets = [
+    ["target/release/ro-start", "usr/bin/", "755"],
+    ["data/ro-start.desktop", "usr/share/applications/", "644"],
+    ["data/ro-start.png", "usr/share/icons/hicolor/512x512/apps/", "644"],
+    ["data/org.osdev.ro_start.appdata.xml", "usr/share/metainfo/", "644"],
+    ["README.md", "usr/share/doc/ro-start/", "644"],
+]
+
+# Metadata for cargo-generate-rpm
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/ro-start", dest = "/usr/bin/ro-start", mode = "755" },
+    { source = "data/ro-start.desktop", dest = "/usr/share/applications/ro-start.desktop", mode = "644" },
+    { source = "data/ro-start.png", dest = "/usr/share/icons/hicolor/512x512/apps/ro-start.png", mode = "644" },
+    { source = "data/org.osdev.ro_start.appdata.xml", dest = "/usr/share/metainfo/org.osdev.ro_start.appdata.xml", mode = "644" },
+]

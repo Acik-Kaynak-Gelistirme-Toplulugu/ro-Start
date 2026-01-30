@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release:
+    name: Build Release Binary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev pkg-config
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Build release
+        run: cargo build --release
+      
+      - name: Strip binary
+        run: strip -s target/release/ro-start
+      
+      - name: Create tarball
+        run: |
+          mkdir -p ro-start-${{ github.ref_name }}
+          cp target/release/ro-start ro-start-${{ github.ref_name }}/
+          cp data/* ro-start-${{ github.ref_name }}/
+          cp README.md LICENSE CHANGELOG.md ro-start-${{ github.ref_name }}/
+          tar czf ro-start-${{ github.ref_name }}-linux-amd64.tar.gz ro-start-${{ github.ref_name }}
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ro-start-${{ github.ref_name }}-linux-amd64.tar.gz
+          body: |
+            # Ro-Start ${{ github.ref_name }}
+            
+            Download the binary for your platform and install:
+            
+            ```bash
+            tar xzf ro-start-${{ github.ref_name }}-linux-amd64.tar.gz
+            cd ro-start-${{ github.ref_name }}
+            sudo install -Dm755 ro-start /usr/local/bin/ro-start
+            sudo install -Dm644 ro-start.desktop /usr/share/applications/ro-start.desktop
+            sudo install -Dm644 ro-start.png /usr/share/icons/hicolor/512x512/apps/ro-start.png
+            sudo install -Dm644 org.osdev.ro_start.appdata.xml /usr/share/metainfo/org.osdev.ro_start.appdata.xml
+            ```
+            
+            See [CHANGELOG.md](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/blob/main/CHANGELOG.md) for details.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

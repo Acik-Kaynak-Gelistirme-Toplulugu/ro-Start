@@ -1,219 +1,215 @@
 # Development Guide
 
-## Getting Started
+This guide covers how to set up your development environment and contribute to Ro-Start.
 
-### Prerequisites
+## Prerequisites
 
-- Python 3.9+
-- Node.js 18+
-- Git
+### System Dependencies
 
-### Setup Development Environment
+**Ubuntu/Debian:**
+```bash
+sudo apt install build-essential pkg-config \
+    libgtk-4-dev libadwaita-1-dev \
+    git curl
+```
+
+**Fedora:**
+```bash
+sudo dnf install gcc pkg-config \
+    gtk4-devel libadwaita-devel \
+    git curl
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S base-devel pkg-config \
+    gtk4 libadwaita \
+    git curl
+```
+
+### Rust Toolchain
 
 ```bash
-# Clone the repository
+# Install Rust via rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Add components
+rustup component add rustfmt clippy
+```
+
+## Getting Started
+
+### Clone and Build
+
+```bash
+# Clone repository
 git clone https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start.git
 cd ro-start
 
-# Run installation script
-chmod +x scripts/install.sh
-./scripts/install.sh
+# Build debug version
+cargo build
+
+# Run
+cargo run
+
+# Or with logging
+RUST_LOG=ro_start=debug cargo run
 ```
 
-Or manually:
+### Development Workflow
 
 ```bash
-# Backend setup
-python3 -m venv venv
-source venv/bin/activate
-pip install -e .
-pip install pytest ruff black  # Dev dependencies
+# Watch for changes and rebuild
+cargo install cargo-watch
+cargo watch -x run
 
-# Frontend setup
-cd frontend
-npm install
-npm run build
-cd ..
-```
+# Run tests
+cargo test
 
-## Development Workflow
+# Format code
+cargo fmt
 
-### Running in Development Mode
+# Lint code
+cargo clippy
 
-```bash
-# Terminal 1: Run backend
-source venv/bin/activate
-python3 backend/main.py
-
-# Terminal 2: Frontend development (optional)
-cd frontend
-npm run dev
-```
-
-### Code Quality
-
-Before committing, ensure code quality:
-
-```bash
-# Python
-ruff check .
-black .
-
-# Frontend
-cd frontend
-npm run lint
-npm run format
-```
-
-### Install Git Hooks
-
-```bash
-# Install pre-commit hook
-cp scripts/pre-commit .git/hooks/
-chmod +x .git/hooks/pre-commit
+# Check without building
+cargo check
 ```
 
 ## Project Structure
 
 ```
-ro-start/
-├── backend/              # Python backend
-│   ├── core/            # Core utilities
-│   ├── ui/              # UI pages
-│   └── main.py          # Entry point
-├── frontend/            # React frontend
-│   ├── components/      # React components
-│   ├── config/          # Frontend config
-│   └── dist/            # Built files
-├── assets/              # Static assets
-│   └── locales/         # Translation files
-├── configs/             # App configuration
-├── scripts/             # Build/install scripts
-├── tests/               # Test files
-│   ├── backend/         # Python tests
-│   └── frontend/        # React tests
-└── docs/                # Documentation
+src/
+├── main.rs           # Application entry point
+├── ui/               # User interface
+│   ├── mod.rs
+│   └── main_window.rs
+├── system.rs         # System information
+└── config.rs         # Configuration
+
+resources/
+└── style.css         # GTK CSS styling
+
+data/
+├── ro-start.desktop  # Desktop entry
+├── ro-start.png      # Icon
+└── *.appdata.xml     # AppStream metadata
+```
+
+## Code Style
+
+We follow standard Rust conventions:
+
+- Use `cargo fmt` before committing
+- Fix all `cargo clippy` warnings
+- Write tests for new features
+- Document public APIs
+- Keep commits atomic
+
+## GTK4 Development
+
+### Useful Resources
+
+- [GTK4 Documentation](https://docs.gtk.org/gtk4/)
+- [libadwaita Documentation](https://gnome.pages.gitlab.gnome.org/libadwaita/)
+- [gtk-rs Book](https://gtk-rs.org/gtk4-rs/stable/latest/book/)
+- [GNOME HIG](https://developer.gnome.org/hig/)
+
+### Adding New UI Components
+
+1. Create widget in `src/ui/`
+2. Use libadwaita components when possible
+3. Follow GNOME Human Interface Guidelines
+4. Add CSS styling to `resources/style.css`
+
+Example:
+```rust
+use gtk::prelude::*;
+use libadwaita as adw;
+
+pub fn create_settings_view() -> adw::PreferencesPage {
+    let page = adw::PreferencesPage::new();
+    page.set_title("Settings");
+    
+    let group = adw::PreferencesGroup::new();
+    group.set_title("General");
+    
+    page.add(&group);
+    page
+}
 ```
 
 ## Testing
 
-### Backend Tests
-
 ```bash
 # Run all tests
-pytest tests/backend/
+cargo test
 
 # Run specific test
-pytest tests/backend/test_sys_info.py
+cargo test test_name
 
-# With coverage
-pytest --cov=backend tests/backend/
+# Run with output
+cargo test -- --nocapture
+
+# Run ignored tests
+cargo test -- --ignored
 ```
 
-### Frontend Tests
+## Building Packages
+
+### Debian Package
 
 ```bash
-cd frontend
-npm test
+cargo install cargo-deb
+cargo deb
+# Output: target/debian/ro-start_*.deb
 ```
 
-## Building
-
-### Development Build
+### RPM Package
 
 ```bash
-cd frontend
-npm run build
-```
-
-### Production Build
-
-```bash
-./scripts/build.sh
-```
-
-This creates:
-
-- Python wheel in `dist/`
-- Frontend bundle in `frontend/dist/`
-
-## Adding Features
-
-### 1. Backend Feature
-
-```python
-# backend/core/my_feature.py
-def my_function():
-    """New feature implementation"""
-    pass
-```
-
-### 2. Frontend Component
-
-```typescript
-// frontend/components/MyComponent.tsx
-export function MyComponent() {
-  return <div>My Component</div>;
-}
-```
-
-### 3. Add Tests
-
-```python
-# tests/backend/test_my_feature.py
-def test_my_function():
-    assert my_function() == expected_result
-```
-
-### 4. Update i18n
-
-```json
-// assets/locales/en_US.json
-{
-  "my_feature": {
-    "title": "My Feature"
-  }
-}
+cargo install cargo-generate-rpm
+cargo build --release
+cargo generate-rpm
+# Output: target/generate-rpm/ro-start-*.rpm
 ```
 
 ## Debugging
 
-### Backend Debugging
-
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
-
-### Frontend Debugging
-
-Open DevTools in the application:
-
-- Linux: `Ctrl+Shift+I`
-- macOS: `Cmd+Option+I`
-
-## Common Issues
-
-### Import Errors
-
-If you get import errors, ensure:
-
-1. Virtual environment is activated
-2. Package is installed in editable mode: `pip install -e .`
-
-### Frontend Not Loading
-
-1. Check if frontend is built: `ls frontend/dist/`
-2. Rebuild: `cd frontend && npm run build`
-
-### Permission Errors
-
-System operations require `pkexec`. Ensure it's installed:
+### Enable Debug Logs
 
 ```bash
-which pkexec
+RUST_LOG=debug cargo run
 ```
 
-## Contributing
+### GTK Inspector
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for contribution guidelines.
+```bash
+GTK_DEBUG=interactive cargo run
+```
+
+## Continuous Integration
+
+Our CI runs on every push and PR:
+
+- Format checking (`cargo fmt --check`)
+- Linting (`cargo clippy`)
+- Tests (`cargo test`)
+- Build (`cargo build --release`)
+
+Make sure all checks pass before submitting a PR.
+
+## Release Process
+
+1. Update version in `Cargo.toml`
+2. Update `CHANGELOG.md`
+3. Commit changes: `git commit -m "chore: bump version to X.Y.Z"`
+4. Create tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+5. Push: `git push && git push --tags`
+6. GitHub Actions will create the release automatically
+
+## Getting Help
+
+- **Issues:** [GitHub Issues](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/discussions)
+- **Email:** info@osdev.shop
