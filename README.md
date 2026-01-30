@@ -120,17 +120,80 @@ pip install -r requirements.txt
 
 ### 3. Run Ro-Start
 
+### 3. Run Ro-Start
+
 Launch the application using the entry point or directly via python.
 
 ```bash
-# Recommended
+# Recommended (after installation)
 ro-start
 
-# Or directly
+# Or directly from project
 python3 backend/main.py
 ```
 
 > **Note:** If running on macOS or Windows, system-specific features like "Driver Installation" will run in **Simulation Mode** (mocked responses).
+
+---
+
+## 📦 Production Installation
+
+For system-wide installation on Linux:
+
+```bash
+# Clone repository
+git clone https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start.git
+cd ro-start
+
+# Run installation script
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
+
+This will:
+- ✅ Install system dependencies
+- ✅ Build frontend
+- ✅ Install Python package
+- ✅ Copy desktop file to `/usr/share/applications/`
+- ✅ Install icon to `/usr/share/icons/`
+- ✅ Add AppStream metadata
+- ✅ Create system-wide `ro-start` command
+
+**Uninstall:**
+```bash
+chmod +x scripts/uninstall.sh
+./scripts/uninstall.sh
+```
+
+---
+
+## 🐳 Distribution Packaging
+
+### Flatpak
+
+```bash
+flatpak-builder build-dir org.osdev.ro_start.yml --force-clean
+flatpak-builder --user --install build-dir org.osdev.ro_start.yml
+flatpak run org.osdev.ro_start
+```
+
+### Debian/Ubuntu (.deb)
+
+```bash
+python3 -m build
+# Use dh-python to create .deb from wheel
+```
+
+### Building from Source
+
+```bash
+# Build Python package
+python3 -m pip install --upgrade build
+python3 -m build
+
+# Install wheel
+pip install dist/ro_start-*.whl
+```
 
 ## 🤝 Contributing
 

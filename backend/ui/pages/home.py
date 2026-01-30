@@ -59,10 +59,14 @@ class HomePage(QWidget):
         links_layout = QHBoxLayout()
         links_layout.setSpacing(15)
 
-        self.add_link_button(links_layout, tr.t("home.website"), "https://example.com")
-        self.add_link_button(links_layout, tr.t("home.docs"), "https://example.com/docs")
-        self.add_link_button(links_layout, tr.t("home.forum"), "https://example.com/forum")
-        self.add_link_button(links_layout, tr.t("home.github"), "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu")
+        # Load URLs from config
+        from backend.core.config import load_config
+        config = load_config()
+        
+        self.add_link_button(links_layout, tr.t("home.website"), config.get("links", {}).get("website", "https://repo.osdev.shop"))
+        self.add_link_button(links_layout, tr.t("home.docs"), config.get("links", {}).get("docs", "https://repo.osdev.shop/docs"))
+        self.add_link_button(links_layout, tr.t("home.forum"), config.get("links", {}).get("forum", "https://repo.osdev.shop/forum"))
+        self.add_link_button(links_layout, tr.t("home.github"), config.get("links", {}).get("github", "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"))
 
         layout.addLayout(links_layout)
 
@@ -139,12 +143,12 @@ class HomePage(QWidget):
         return info
 
     def get_autostart_path(self):
-        # ~/.config/autostart/welcome-screen-user.desktop
+        # ~/.config/autostart/ro-start.desktop
         config_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.ConfigLocation)
         autostart_dir = os.path.join(config_dir, "autostart")
         if not os.path.exists(autostart_dir):
             os.makedirs(autostart_dir)
-        return os.path.join(autostart_dir, "welcome-screen-user.desktop")
+        return os.path.join(autostart_dir, "ro-start.desktop")
 
     def check_autostart(self):
         return os.path.exists(self.get_autostart_path())
@@ -155,12 +159,12 @@ class HomePage(QWidget):
             # Create .desktop file
             content = """[Desktop Entry]
 Type=Application
-Exec=/usr/bin/welcome-screen
+Exec=ro-start
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
-Name=Welcome Screen
-Comment=Welcome Screen for Linux
+Name=Ro-Start
+Comment=Modern welcome application for Linux distributions
 """
             try:
                 with open(path, "w") as f:
