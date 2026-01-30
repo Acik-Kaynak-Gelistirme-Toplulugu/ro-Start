@@ -1,5 +1,9 @@
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Box as GtkBox, Label, Button, Orientation, HeaderBar};
+use gtk::{Application, ApplicationWindow, HeaderBar, Label, Button};
+use gtk::{Box as GtkBox, Orientation};
+use gio::prelude::*;
+use gio;
+use glib;
 use libadwaita as adw;
 use adw::prelude::*;
 use crate::system::SystemState;
@@ -128,11 +132,6 @@ impl MainWindow {
         app.set_accels_for_action("win.settings", &["<Ctrl>comma"]);
         app.set_accels_for_action("win.about", &["F1"]);
         app.set_accels_for_action("win.quit", &["<Ctrl>Q"]);
-        
-        // Load CSS for styling
-        Self::load_css();
-        
-        window
     }
     
     fn create_system_info_card() -> adw::PreferencesGroup {

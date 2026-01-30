@@ -41,21 +41,40 @@ impl PackageManager {
     /// Check for available updates
     pub fn check_updates(&self) -> Result<UpdateInfo> {
         let cmd = self.update_check_command();
+        
         let output = Command::new(&cmd[0])
             .args(&cmd[1..])
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
             .output()
-            .map_err(|e| RoStartError::UpdateCheckFailed(e.to_string()))?;
+            .map_err(|e| {
+                tracing::error!("Failed to execute {:?}: {}", cmd, e);
+                RoStartError::UpdateCheckFailed(format!("Command execution failed: {}", e))
+            })?;
+        
+        // Check if command timed out or failed
+        if !output.status.success() && output.status.code() != Some(100) {
+            // DNF returns 100 when there are updates, which is not an error
+            tracing::warn!("Update check command returned non-zero: {:?}", output.status);
+        }
         
         let stdout = String::from_utf8_lossy(&output.stdout);
         let update_count = match self {
             Self::Apt => stdout.lines()
-                .filter(|line| line.contains("upgradable"))
+                .filter(|line| line.contains("upgradable") && !line.starts_with("Listing"))
                 .count(),
             Self::Dnf | Self::Zypper => stdout.lines()
-                .filter(|line| !line.is_empty() && !line.starts_with('#'))
+                .filter(|line| !line.is_empty() 
+                    && !line.starts_with('#') 
+                    && !line.starts_with("Last metadata")
+                    && !line.contains("Metadata cache created"))
                 .count(),
-            Self::Pacman => stdout.lines().count(),
+            Self::Pacman => stdout.lines()
+                .filter(|line| !line.is_empty())
+                .count(),
         };
+        
+        tracing::debug!("Found {} updates using {:?}", update_count, self);
         
         Ok(UpdateInfo {
             available: update_count > 0,

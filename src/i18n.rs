@@ -102,17 +102,30 @@ fn load_locale(locale: &str) -> anyhow::Result<Translations> {
     let json_path = format!("assets/locales/{}.json", locale);
     
     // Try to load from file
-    if let Ok(content) = std::fs::read_to_string(&json_path) {
-        let trans: Translations = serde_json::from_str(&content)?;
-        return Ok(trans);
+    match std::fs::read_to_string(&json_path) {
+        Ok(content) => {
+            match serde_json::from_str(&content) {
+                Ok(trans) => {
+                    tracing::debug!("Loaded locale {} from {}", locale, json_path);
+                    return Ok(trans);
+                }
+                Err(e) => {
+                    tracing::warn!("Failed to parse locale {}: {}", locale, e);
+                }
+            }
+        }
+        Err(e) => {
+            tracing::debug!("Locale file {} not found: {}", json_path, e);
+        }
     }
     
     // Fallback to embedded translations for en_US
     if locale == "en_US" {
+        tracing::debug!("Using embedded fallback for en_US");
         return Ok(get_fallback_en());
     }
     
-    anyhow::bail!("Locale {} not found", locale)
+    anyhow::bail!("Locale {} not found and no fallback available", locale)
 }
 
 /// Detect system locale from environment

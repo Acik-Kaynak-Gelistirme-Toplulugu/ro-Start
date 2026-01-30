@@ -2,18 +2,14 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use anyhow::{Context, Result};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct AppConfig {
     pub app_name: String,
     pub version: String,
     pub autostart: bool,
-    pub theme: String,
     pub language: String,
 }
 
-impl Default for AppConfig {
-    fn default() -> Self {
-        Self {
             app_name: "Ro-Start".to_string(),
             version: "2.0.0".to_string(),
             autostart: false,

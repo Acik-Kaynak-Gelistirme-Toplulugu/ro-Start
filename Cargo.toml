@@ -17,9 +17,11 @@ name = "ro-start"
 path = "src/main.rs"
 
 [dependencies]
-# GTK4 for native Linux UI
-gtk = { version = "0.9", package = "gtk4", features = ["v4_12"] }
+# GTK4 and libadwaita
+gtk = { version = "0.9", package = "gtk4" }
 libadwaita = { version = "0.7", features = ["v1_5"] }
+gio = "0.20"
+glib = "0.20"
 
 # Async runtime
 tokio = { version = "1", features = ["full"] }

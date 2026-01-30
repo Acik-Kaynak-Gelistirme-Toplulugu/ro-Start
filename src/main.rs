@@ -10,8 +10,8 @@ mod i18n;
 mod notifications;
 
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow};
-use gtk::gio;
+use gtk::Application;
+use gio::prelude::*;
 use libadwaita as adw;
 use adw::prelude::*;
 use clap::Parser;
