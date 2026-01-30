@@ -14,36 +14,31 @@ pub struct MainWindow {
 
 impl MainWindow {
     pub fn new(app: &Application) -> ApplicationWindow {
-        // Create header bar
-        let header = HeaderBar::new();
-        header.set_title_widget(Some(&Label::new(Some("Ro-Start"))));
+        // Get translations
+        let t = crate::i18n::t();
 
-        // Create main content box
-        let main_box = GtkBox::new(Orientation::Vertical, 12);
+        // Create main container
+        let main_box = GtkBox::new(Orientation::Vertical, 24);
         main_box.set_margin_top(24);
         main_box.set_margin_bottom(24);
         main_box.set_margin_start(24);
         main_box.set_margin_end(24);
 
-        // Get translations
-        let t = crate::i18n::t();
-
-        // Welcome title
-        let title = Label::new(Some(&format!("🚀 {}", t.home.title)));
-        title.add_css_class("title-1");
-        main_box.append(&title);
-
-        // Subtitle
-        let subtitle = Label::new(Some(&t.home.description));
-        subtitle.add_css_class("subtitle");
-        subtitle.add_css_class("dim-label");
-        main_box.append(&subtitle);
+        // Welcome section
+        let welcome_box = GtkBox::new(Orientation::Vertical, 12);
+        let welcome_label = Label::new(Some(&t.home.title));
+        welcome_label.add_css_class("title-1");
+        let desc_label = Label::new(Some(&t.home.description));
+        desc_label.add_css_class("dim-label");
+        welcome_box.append(&welcome_label);
+        welcome_box.append(&desc_label);
+        main_box.append(&welcome_box);
 
         // System info card
-        let info_card = Self::create_system_info_card();
-        main_box.append(&info_card);
+        let sys_card = Self::create_system_info_card();
+        main_box.append(&sys_card);
 
-        // Quick actions
+        // Quick actions card
         let actions_card = Self::create_actions_card();
         main_box.append(&actions_card);
 
@@ -139,40 +134,33 @@ impl MainWindow {
         let t = crate::i18n::t();
 
         group.set_title("System Information");
-        group.set_description(Some("Your system specifications"));
 
         // Get system info
         let sys_state = SystemState::new();
         let info = sys_state.get_system_info();
 
+        // CPU row
+        let cpu_row = adw::ActionRow::new();
+        cpu_row.set_title("CPU");
+        cpu_row.set_subtitle(&info.cpu_name);
+        group.add(&cpu_row);
+
+        // Memory row
+        let memory_row = adw::ActionRow::new();
+        memory_row.set_title("Memory");
+        let mem_text = format!(
+            "{:.1} GB / {:.1} GB",
+            info.used_memory as f64 / 1024.0 / 1024.0 / 1024.0,
+            info.total_memory as f64 / 1024.0 / 1024.0 / 1024.0
+        );
+        memory_row.set_subtitle(&mem_text);
+        group.add(&memory_row);
+
         // OS row
         let os_row = adw::ActionRow::new();
         os_row.set_title("Operating System");
         os_row.set_subtitle(&format!("{} {}", info.os_name, info.os_version));
-        os_row.set_icon_name(Some("computer-symbolic"));
         group.add(&os_row);
-
-        // Kernel row
-        let kernel_row = adw::ActionRow::new();
-        kernel_row.set_title("Kernel");
-        kernel_row.set_subtitle(&info.kernel_version);
-        kernel_row.set_icon_name(Some("settings-symbolic"));
-        group.add(&kernel_row);
-
-        // CPU row
-        let cpu_row = adw::ActionRow::new();
-        cpu_row.set_title("Processor");
-        cpu_row.set_subtitle(&info.cpu_name);
-        cpu_row.set_icon_name(Some("cpu-symbolic"));
-        group.add(&cpu_row);
-
-        // RAM row
-        let ram_row = adw::ActionRow::new();
-        ram_row.set_title("Memory");
-        let ram_gb = info.total_memory / 1024 / 1024 / 1024;
-        ram_row.set_subtitle(&format!("{} GB", ram_gb));
-        ram_row.set_icon_name(Some("memory-symbolic"));
-        group.add(&ram_row);
 
         group
     }
@@ -184,56 +172,53 @@ impl MainWindow {
         group.set_title(&t.update.title);
         group.set_description(Some("Common tasks to get started"));
 
-        // Update button
+        // Update button with proper lifetime handling
         let update_button = Button::builder()
             .label(&t.update.btn_update)
             .css_classes(["suggested-action"])
             .build();
 
-        // Clone all needed values before the closure
-        let button_label_default = t.update.btn_update.clone();
+        // Clone values for the outer closure
+        let button_label = t.update.btn_update.clone();
         let error_title = t.update.error.clone();
-        let update_check_title = "Update Check".to_string();
 
         update_button.connect_clicked(move |btn| {
             tracing::info!("Checking for updates...");
+
+            // Clone btn for inner async block
+            let btn_weak = btn.downgrade();
+            let button_label = button_label.clone();
+            let error_title = error_title.clone();
+
+            // Disable button
             btn.set_sensitive(false);
             btn.set_label("Checking...");
 
-            let btn_clone = btn.clone();
-            let button_label = button_label_default.clone();
-            let error_title_clone = error_title.clone();
-            let update_check_title_clone = update_check_title.clone();
-
             // Spawn async task
             glib::spawn_future_local(async move {
-                // Simulate async operation
-                let result = tokio::task::spawn_blocking(move || {
+                // Run blocking operation in thread pool
+                let result = tokio::task::spawn_blocking(|| {
                     crate::package_manager::PackageManager::detect()
                         .and_then(|pm| pm.check_updates())
                 })
                 .await;
 
+                // Handle result
                 match result {
                     Ok(Ok(info)) => {
                         tracing::info!("Update check result: {:?}", info);
 
-                        // Show notification if updates available
                         if info.available {
                             crate::notifications::notify_updates_available(info.count);
                         }
 
-                        crate::ui::dialogs::show_info(
-                            None,
-                            &update_check_title_clone,
-                            &info.message(),
-                        );
+                        crate::ui::dialogs::show_info(None, "Update Check", &info.message());
                     }
                     Ok(Err(e)) => {
                         tracing::error!("Update check failed: {}", e);
                         crate::ui::dialogs::show_error(
                             None,
-                            &error_title_clone,
+                            &error_title,
                             &format!("Failed to check updates: {}", e),
                         );
                     }
@@ -241,38 +226,26 @@ impl MainWindow {
                         tracing::error!("Task failed: {}", e);
                         crate::ui::dialogs::show_error(
                             None,
-                            &error_title_clone,
+                            &error_title,
                             &format!("Task execution failed: {}", e),
                         );
                     }
                 }
 
                 // Re-enable button
-                btn_clone.set_sensitive(true);
-                btn_clone.set_label(&button_label);
+                if let Some(btn) = btn_weak.upgrade() {
+                    btn.set_sensitive(true);
+                    btn.set_label(&button_label);
+                }
             });
         });
 
-        let update_row = adw::ActionRow::new();
-        update_row.set_title(&t.update.title);
-        update_row.set_subtitle(&t.update.description);
-        update_row.set_activatable_widget(Some(&update_button));
-        update_row.add_suffix(&update_button);
-        group.add(&update_row);
+        let button_row = adw::ActionRow::new();
+        button_row.set_title(&t.update.btn_update);
+        button_row.add_suffix(&update_button);
+        button_row.set_activatable_widget(Some(&update_button));
 
-        // Software recommendations
-        let software_button = Button::with_label(&t.software.btn_install);
-        software_button.add_css_class("pill");
-        software_button.connect_clicked(|_| {
-            tracing::info!("Opening software recommendations...");
-        });
-
-        let software_row = adw::ActionRow::new();
-        software_row.set_title(&t.software.title);
-        software_row.set_subtitle(&t.software.description);
-        software_row.set_activatable_widget(Some(&software_button));
-        software_row.add_suffix(&software_button);
-        group.add(&software_row);
+        group.add(&button_row);
 
         group
     }
@@ -286,9 +259,5 @@ impl MainWindow {
             &provider,
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
-    }
-
-    pub fn present(&self) {
-        self.window.present();
     }
 }
