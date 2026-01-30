@@ -1,6 +1,7 @@
 use adw::prelude::*;
 use gtk::prelude::*;
 use libadwaita as adw;
+use libadwaita::prelude::MessageDialogExt;
 use libadwaita::prelude::MessageDialogExt; // Keep this for other traits just in case
 
 /// Show an error dialog

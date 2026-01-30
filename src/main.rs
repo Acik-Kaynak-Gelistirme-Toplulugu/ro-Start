@@ -9,7 +9,7 @@ mod package_manager;
 mod system;
 mod ui;
 
-use adw::prelude::*;
+// use adw::prelude::*;
 use clap::Parser;
 use gio::prelude::*;
 use gtk::prelude::*;
