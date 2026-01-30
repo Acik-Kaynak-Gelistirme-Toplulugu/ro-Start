@@ -131,7 +131,7 @@ impl MainWindow {
 
     fn create_system_info_card() -> adw::PreferencesGroup {
         let group = adw::PreferencesGroup::new();
-        let t = crate::i18n::t();
+        // let t = crate::i18n::t();
 
         group.set_title("System Information");
 
