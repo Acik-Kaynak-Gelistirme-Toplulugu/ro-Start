@@ -1,8 +1,9 @@
 use gtk::prelude::*;
+use gtk::glib;
 use libadwaita as adw;
 
 /// Show About dialog
-pub fn show_about(parent: Option<&gtk::Window>) {
+pub fn show_about<W: IsA<gtk::Window>>(parent: Option<&W>) {
     let about = adw::AboutWindow::builder()
         .application_name("Ro-Start")
         .application_icon("ro-start")
@@ -22,7 +23,7 @@ pub fn show_about(parent: Option<&gtk::Window>) {
     );
 
     if let Some(parent) = parent {
-        about.set_transient_for(Some(parent));
+        about.set_transient_for(Some(parent.upcast_ref::<gtk::Window>()));
     }
 
     about.present();
