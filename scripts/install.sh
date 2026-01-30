@@ -41,8 +41,25 @@ npm install
 npm run build
 cd ..
 
+# Install desktop file and icon
+echo "🖥️  Installing desktop integration files..."
+sudo mkdir -p /usr/share/applications
+sudo mkdir -p /usr/share/icons/hicolor/512x512/apps
+sudo mkdir -p /usr/share/metainfo
+
+sudo cp ro-start.desktop /usr/share/applications/
+sudo cp assets/ro-start.png /usr/share/icons/hicolor/512x512/apps/ro-start.png
+sudo cp org.osdev.ro_start.appdata.xml /usr/share/metainfo/
+
+# Update icon cache
+sudo gtk-update-icon-cache /usr/share/icons/hicolor/ 2>/dev/null || true
+
+# Create symlink for easy execution
+sudo ln -sf "$(pwd)/venv/bin/ro-start" /usr/local/bin/ro-start
+
 echo "✅ Installation complete!"
 echo ""
 echo "To run Ro-Start:"
-echo "  source venv/bin/activate"
 echo "  ro-start"
+echo ""
+echo "Or search for 'Ro-Start' in your application menu."

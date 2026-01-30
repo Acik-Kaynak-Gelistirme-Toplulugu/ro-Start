@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.osdev.ro_start</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  
+  <name>Ro-Start</name>
+  <summary>Modern welcome application for Linux distributions</summary>
+  <summary xml:lang="tr">Linux dağıtımları için modern karşılama uygulaması</summary>
+  
+  <description>
+    <p>
+      Ro-Start is a next-generation welcome application that replaces traditional 
+      welcome screens with a modern "Liquid Glass" aesthetic. It combines the 
+      system-level power of Python with the reactive UI capabilities of React.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Beautiful visualization of CPU, GPU, RAM, and Storage statistics</li>
+      <li>System update management with package manager integration</li>
+      <li>Driver installation and management</li>
+      <li>Software recommendations</li>
+      <li>Autostart configuration</li>
+      <li>Multi-language support</li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">ro-start.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <caption>Welcome Screen</caption>
+      <image>https://raw.githubusercontent.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/main/assets/welcome.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>System Updates</caption>
+      <image>https://raw.githubusercontent.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/main/assets/updates.png</image>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start</url>
+  <url type="bugtracker">https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/issues</url>
+  <url type="vcs-browser">https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start</url>
+  
+  <developer_name>Acik Kaynak Gelistirme Toplulugu</developer_name>
+  
+  <provides>
+    <binary>ro-start</binary>
+  </provides>
+  
+  <releases>
+    <release version="1.1.0" date="2026-01-30">
+      <description>
+        <p>Initial production release</p>
+        <ul>
+          <li>Modern Liquid Glass UI design</li>
+          <li>System information dashboard</li>
+          <li>Package manager integration</li>
+          <li>Driver management support</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  
+  <content_rating type="oars-1.1" />
+  
+  <categories>
+    <category>System</category>
+    <category>Settings</category>
+    <category>Utility</category>
+  </categories>
+  
+  <keywords>
+    <keyword>welcome</keyword>
+    <keyword>onboarding</keyword>
+    <keyword>system</keyword>
+    <keyword>setup</keyword>
+    <keyword xml:lang="tr">karşılama</keyword>
+    <keyword xml:lang="tr">sistem</keyword>
+  </keywords>
+  
+  <update_contact>info@osdev.shop</update_contact>
+</component>
