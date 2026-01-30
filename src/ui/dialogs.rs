@@ -1,5 +1,5 @@
-use gtk::prelude::*;
 use gtk::glib;
+use gtk::prelude::*;
 use libadwaita as adw;
 
 /// Show an error dialog
@@ -21,6 +21,10 @@ pub fn show_error<W: IsA<gtk::Window>>(parent: Option<&W>, title: &str, message:
 }
 
 /// Show an info dialog
+pub fn show_info<W: IsA<gtk::Window>>(parent: Option<&W>, title: &str, message: &str) {
+    let dialog = adw::MessageDialog::builder()
+        .heading(title)
+        .body(message)
         .build();
 
     dialog.add_response("ok", "OK");
@@ -28,7 +32,7 @@ pub fn show_error<W: IsA<gtk::Window>>(parent: Option<&W>, title: &str, message:
     dialog.set_close_response("ok");
 
     if let Some(parent) = parent {
-        dialog.set_transient_for(Some(parent));
+        dialog.set_transient_for(Some(parent.upcast_ref::<gtk::Window>()));
     }
 
     dialog.present();

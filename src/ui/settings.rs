@@ -1,6 +1,6 @@
 use adw::prelude::*;
-use gtk::prelude::*;
 use gtk::glib;
+use gtk::prelude::*;
 use gtk::{Box as GtkBox, Button, Label, Orientation, Switch};
 use libadwaita as adw;
 
