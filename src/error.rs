@@ -4,19 +4,19 @@ use thiserror::Error;
 pub enum RoStartError {
     #[error("System information error: {0}")]
     SystemInfo(String),
-    
+
     #[error("Configuration error: {0}")]
     Config(#[from] anyhow::Error),
-    
+
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
-    
+
     #[error("Command execution failed: {0}")]
     CommandFailed(String),
-    
+
     #[error("Package manager not found")]
     PackageManagerNotFound,
-    
+
     #[error("Update check failed: {0}")]
     UpdateCheckFailed(String),
 }

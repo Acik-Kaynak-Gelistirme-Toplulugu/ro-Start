@@ -83,48 +83,49 @@ lazy_static! {
 /// Initialize i18n system and load all available translations
 pub fn init() -> anyhow::Result<()> {
     let locales = vec!["en_US", "tr_TR", "de", "es", "fr", "it", "ja", "ru", "zh"];
-    
+
     for locale in locales {
         if let Ok(trans) = load_locale(locale) {
-            TRANSLATIONS.write().unwrap().insert(locale.to_string(), trans);
+            TRANSLATIONS
+                .write()
+                .unwrap()
+                .insert(locale.to_string(), trans);
             tracing::debug!("Loaded locale: {}", locale);
         }
     }
-    
+
     // Detect system locale
     detect_system_locale();
-    
+
     Ok(())
 }
 
 /// Load translations from JSON file
 fn load_locale(locale: &str) -> anyhow::Result<Translations> {
     let json_path = format!("assets/locales/{}.json", locale);
-    
+
     // Try to load from file
     match std::fs::read_to_string(&json_path) {
-        Ok(content) => {
-            match serde_json::from_str(&content) {
-                Ok(trans) => {
-                    tracing::debug!("Loaded locale {} from {}", locale, json_path);
-                    return Ok(trans);
-                }
-                Err(e) => {
-                    tracing::warn!("Failed to parse locale {}: {}", locale, e);
-                }
+        Ok(content) => match serde_json::from_str(&content) {
+            Ok(trans) => {
+                tracing::debug!("Loaded locale {} from {}", locale, json_path);
+                return Ok(trans);
             }
-        }
+            Err(e) => {
+                tracing::warn!("Failed to parse locale {}: {}", locale, e);
+            }
+        },
         Err(e) => {
             tracing::debug!("Locale file {} not found: {}", json_path, e);
         }
     }
-    
+
     // Fallback to embedded translations for en_US
     if locale == "en_US" {
         tracing::debug!("Using embedded fallback for en_US");
         return Ok(get_fallback_en());
     }
-    
+
     anyhow::bail!("Locale {} not found and no fallback available", locale)
 }
 
@@ -133,10 +134,10 @@ fn detect_system_locale() {
     let locale = std::env::var("LANG")
         .or_else(|_| std::env::var("LC_ALL"))
         .unwrap_or_else(|_| "en_US.UTF-8".to_string());
-    
+
     // Extract locale code (e.g., "tr_TR" from "tr_TR.UTF-8")
     let locale_code = locale.split('.').next().unwrap_or("en_US");
-    
+
     // Check if we have this locale
     if TRANSLATIONS.read().unwrap().contains_key(locale_code) {
         set_locale(locale_code);
@@ -237,12 +238,7 @@ fn get_fallback_en() -> Translations {
 
 /// Get available locales
 pub fn available_locales() -> Vec<String> {
-    TRANSLATIONS
-        .read()
-        .unwrap()
-        .keys()
-        .cloned()
-        .collect()
+    TRANSLATIONS.read().unwrap().keys().cloned().collect()
 }
 
 /// Get locale display name

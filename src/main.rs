@@ -1,20 +1,20 @@
 // Prevents additional console window on Windows (though we're Linux-focused)
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod ui;
-mod system;
 mod config;
 mod error;
-mod package_manager;
 mod i18n;
 mod notifications;
+mod package_manager;
+mod system;
+mod ui;
 
-use gtk::prelude::*;
-use gtk::Application;
-use gio::prelude::*;
-use libadwaita as adw;
 use adw::prelude::*;
 use clap::Parser;
+use gio::prelude::*;
+use gtk::prelude::*;
+use gtk::Application;
+use libadwaita as adw;
 
 const APP_ID: &str = "org.osdev.rostart";
 
@@ -26,11 +26,11 @@ struct Cli {
     /// Don't show at startup
     #[arg(long)]
     no_startup: bool,
-    
+
     /// Set locale (e.g., en_US, tr_TR)
     #[arg(long)]
     locale: Option<String>,
-    
+
     /// Enable debug logging
     #[arg(short, long)]
     debug: bool,
@@ -39,31 +39,31 @@ struct Cli {
 fn main() {
     // Parse CLI arguments
     let cli = Cli::parse();
-    
+
     // Initialize tracing
-    let log_level = if cli.debug { "ro_start=debug" } else { "ro_start=info" };
-    tracing_subscriber::fmt()
-        .with_env_filter(log_level)
-        .init();
+    let log_level = if cli.debug {
+        "ro_start=debug"
+    } else {
+        "ro_start=info"
+    };
+    tracing_subscriber::fmt().with_env_filter(log_level).init();
 
     tracing::info!("🚀 Starting Ro-Start v1.0.0");
-    
+
     // Initialize i18n
     if let Err(e) = i18n::init() {
         tracing::warn!("Failed to initialize i18n: {}", e);
     }
-    
+
     // Set custom locale if provided
     if let Some(locale) = cli.locale {
         i18n::set_locale(&locale);
     }
-    
+
     tracing::info!("📖 Locale: {}", i18n::get_locale());
 
     // Create GTK application
-    let app = Application::builder()
-        .application_id(APP_ID)
-        .build();
+    let app = Application::builder().application_id(APP_ID).build();
 
     app.connect_activate(build_ui);
 
@@ -74,9 +74,9 @@ fn main() {
 fn build_ui(app: &Application) {
     // Create main window
     let window = ui::MainWindow::new(app);
-    
+
     // Present window
     window.present();
-    
+
     tracing::info!("✅ Application window created");
 }

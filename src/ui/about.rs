@@ -13,24 +13,17 @@ pub fn show_about(parent: Option<&gtk::Window>) {
         .copyright("© 2026 ro-repo")
         .license_type(gtk::License::Gpl30)
         .build();
-    
-    about.add_credit_section(
-        Some("Contributors"),
-        &["ro-repo <project.roasd@gmail.com>"],
-    );
-    
+
+    about.add_credit_section(Some("Contributors"), &["ro-repo <project.roasd@gmail.com>"]);
+
     about.add_acknowledgement_section(
         Some("Built with"),
-        &[
-            "Rust Programming Language",
-            "GTK4 Toolkit",
-            "libadwaita",
-        ],
+        &["Rust Programming Language", "GTK4 Toolkit", "libadwaita"],
     );
-    
+
     if let Some(parent) = parent {
         about.set_transient_for(Some(parent));
     }
-    
+
     about.present();
 }

@@ -20,25 +20,27 @@ impl SystemState {
     pub fn new() -> Self {
         let mut sys = System::new_all();
         sys.refresh_all();
-        
+
         Self { sys }
     }
-    
+
     pub fn get_system_info(&self) -> SystemInfo {
-        let cpu_name = self.sys.cpus()
+        let cpu_name = self
+            .sys
+            .cpus()
             .first()
             .map(|cpu| cpu.brand().to_string())
             .unwrap_or_else(|| "Unknown CPU".to_string());
-        
+
         let cpu_usage = self.sys.global_cpu_usage();
         let total_memory = self.sys.total_memory();
         let used_memory = self.sys.used_memory();
-        
+
         let os_name = System::name().unwrap_or_else(|| "Linux".to_string());
         let os_version = System::os_version().unwrap_or_else(|| "Unknown".to_string());
         let kernel_version = System::kernel_version().unwrap_or_else(|| "Unknown".to_string());
         let hostname = System::host_name().unwrap_or_else(|| "localhost".to_string());
-        
+
         SystemInfo {
             cpu_name,
             cpu_usage,
@@ -50,7 +52,7 @@ impl SystemState {
             hostname,
         }
     }
-    
+
     pub fn refresh(&mut self) {
         self.sys.refresh_all();
     }
