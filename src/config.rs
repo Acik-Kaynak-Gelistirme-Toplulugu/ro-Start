@@ -3,20 +3,28 @@ use std::path::PathBuf;
 use anyhow::{Context, Result};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(default)]
 pub struct AppConfig {
+    #[serde(default = "default_app_name")]
     pub app_name: String,
+    #[serde(default = "default_version")]
     pub version: String,
+    #[serde(default)]
     pub autostart: bool,
+    #[serde(default = "default_language")]
     pub language: String,
 }
 
-            app_name: "Ro-Start".to_string(),
-            version: "2.0.0".to_string(),
-            autostart: false,
-            theme: "default".to_string(),
-            language: "auto".to_string(),
-        }
-    }
+fn default_app_name() -> String {
+    "Ro-Start".to_string()
+}
+
+fn default_version() -> String {
+    "1.0.0".to_string()
+}
+
+fn default_language() -> String {
+    "auto".to_string()
 }
 
 impl AppConfig {
@@ -60,5 +68,27 @@ impl AppConfig {
         
         tracing::info!("Config saved to {:?}", path);
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_app_config_default() {
+        let config = AppConfig::default();
+        assert_eq!(config.app_name, "Ro-Start");
+        assert_eq!(config.version, "1.0.0");
+        assert_eq!(config.autostart, false);
+    }
+
+    #[test]
+    fn test_config_path() {
+        let result = AppConfig::config_path();
+        assert!(result.is_ok());
+        let path = result.unwrap();
+        assert!(path.to_str().unwrap().contains("ro-start"));
+        assert!(path.to_str().unwrap().contains("config.toml"));
     }
 }
