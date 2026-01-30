@@ -98,7 +98,7 @@ impl MainWindow {
         let window_weak = window.downgrade();
         settings_action.connect_activate(move |_, _| {
             if let Some(window) = window_weak.upgrade() {
-                crate::ui::settings::show_settings(Some(&window));
+                crate::ui::settings::show_settings(Some(window.upcast_ref()));
             }
         });
         window.add_action(&settings_action);
@@ -108,7 +108,7 @@ impl MainWindow {
         let window_weak = window.downgrade();
         about_action.connect_activate(move |_, _| {
             if let Some(window) = window_weak.upgrade() {
-                crate::ui::about::show_about(Some(&window));
+                crate::ui::about::show_about(Some(window.upcast_ref()));
             }
         });
         window.add_action(&about_action);
