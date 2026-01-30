@@ -9,8 +9,13 @@ override_dh_auto_build:
 override_dh_auto_install:
 	install -Dm755 target/release/ro-start debian/ro-start/usr/bin/ro-start
 	install -Dm644 data/ro-start.desktop debian/ro-start/usr/share/applications/ro-start.desktop
+	install -Dm644 data/ro-start-autostart.desktop debian/ro-start/etc/xdg/autostart/ro-start-autostart.desktop
 	install -Dm644 data/ro-start.png debian/ro-start/usr/share/icons/hicolor/512x512/apps/ro-start.png
 	install -Dm644 data/org.osdev.ro_start.appdata.xml debian/ro-start/usr/share/metainfo/org.osdev.ro_start.appdata.xml
+	install -Dm644 docs/ro-start.1 debian/ro-start/usr/share/man/man1/ro-start.1
+	install -Dm644 packaging/completions/ro-start.bash debian/ro-start/usr/share/bash-completion/completions/ro-start
+	install -Dm644 packaging/completions/ro-start.zsh debian/ro-start/usr/share/zsh/site-functions/_ro-start
+	install -Dm644 packaging/completions/ro-start.fish debian/ro-start/usr/share/fish/vendor_completions.d/ro-start.fish
 
 override_dh_auto_clean:
 	cargo clean

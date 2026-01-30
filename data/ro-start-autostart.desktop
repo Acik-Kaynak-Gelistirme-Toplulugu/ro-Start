@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=2.0
+Name=Ro-Start (Autostart)
+GenericName=Welcome Application
+Comment=Run Ro-Start automatically at login
+Comment[tr]=Oturumda otomatik olarak Ro-Start'ı çalıştır
+Exec=ro-start --no-startup
+Icon=ro-start
+Terminal=false
+Categories=System;Settings;Utility;
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=5
+X-KDE-autostart-after=panel
+Hidden=false

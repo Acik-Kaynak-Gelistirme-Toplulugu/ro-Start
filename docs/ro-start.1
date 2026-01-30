@@ -1,0 +1,87 @@
+.TH RO-START "1" "January 2026" "ro-start 1.0.0" "User Commands"
+.SH NAME
+ro-start \- Fast, safe, and beautiful Linux welcome application
+.SH SYNOPSIS
+.B ro-start
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+.B ro-start
+is a modern welcome application for Linux distributions built with Rust and GTK4.
+It provides system information, update checking, and quick actions for new users.
+.PP
+Features include:
+.IP \(bu 2
+Lightning-fast startup and performance with Rust
+.IP \(bu 2
+Native GTK4 + libadwaita interface
+.IP \(bu 2
+Real-time system information (CPU, RAM, Storage)
+.IP \(bu 2
+Package manager integration (apt, dnf, pacman, zypper)
+.IP \(bu 2
+Internationalization support (9 languages)
+.IP \(bu 2
+Memory-safe and crash-free with compile-time guarantees
+.SH OPTIONS
+.TP
+.B \-\-no\-startup
+Don't show the application at startup. Useful for disabling autostart behavior.
+.TP
+.B \-\-locale \fILOCALE\fR
+Set the interface language. Available locales: en_US, tr_TR, de, es, fr, it, ja, ru, zh.
+.TP
+.B \-d, \-\-debug
+Enable debug logging. Shows detailed information about application operations.
+.TP
+.B \-h, \-\-help
+Print help information.
+.TP
+.B \-V, \-\-version
+Print version information.
+.SH KEYBOARD SHORTCUTS
+.TP
+.B Ctrl+,
+Open Settings dialog
+.TP
+.B F1
+Show About dialog
+.TP
+.B Ctrl+Q
+Quit application
+.SH EXAMPLES
+.TP
+Start with Turkish interface:
+.B ro-start --locale tr_TR
+.TP
+Start with debug logging:
+.B ro-start --debug
+.TP
+Check version:
+.B ro-start --version
+.SH FILES
+.TP
+.I ~/.config/ro-start/config.toml
+User configuration file. Stores language preference, autostart setting, and theme.
+.SH ENVIRONMENT
+.TP
+.B LANG, LC_ALL
+Used for automatic locale detection if --locale is not specified.
+.SH SEE ALSO
+System update tools:
+.BR apt (8),
+.BR dnf (8),
+.BR pacman (8),
+.BR zypper (8)
+.PP
+GTK documentation:
+.BR gtk4 (7)
+.SH BUGS
+Report bugs at: https://github.com/ro-repo/ro-start/issues
+.SH AUTHOR
+Written by ro-repo <project.roasd@gmail.com>
+.SH COPYRIGHT
+Copyright © 2026 ro-repo.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.

@@ -21,13 +21,16 @@ impl MainWindow {
         main_box.set_margin_start(24);
         main_box.set_margin_end(24);
         
+        // Get translations
+        let t = crate::i18n::t();
+        
         // Welcome title
-        let title = Label::new(Some("🚀 Welcome to Linux"));
+        let title = Label::new(Some(&format!("🚀 {}", t.home.title)));
         title.add_css_class("title-1");
         main_box.append(&title);
         
         // Subtitle
-        let subtitle = Label::new(Some("Modern welcome application built with Rust + GTK4"));
+        let subtitle = Label::new(Some(&t.home.description));
         subtitle.add_css_class("subtitle");
         subtitle.add_css_class("dim-label");
         main_box.append(&subtitle);
@@ -39,6 +42,31 @@ impl MainWindow {
         // Quick actions
         let actions_card = Self::create_actions_card();
         main_box.append(&actions_card);
+        
+        // Create header bar with menu
+        let header = HeaderBar::new();
+        header.set_title_widget(Some(&Label::new(Some("Ro-Start"))));
+        
+        // Create menu
+        let menu = gio::Menu::new();
+        
+        // Settings menu item
+        menu.append(Some("_Settings"), Some("win.settings"));
+        
+        // About menu item
+        menu.append(Some("_About"), Some("win.about"));
+        
+        // Separator
+        menu.append(None, None);
+        
+        // Quit menu item
+        menu.append(Some("_Quit"), Some("win.quit"));
+        
+        // Menu button
+        let menu_button = gtk::MenuButton::new();
+        menu_button.set_icon_name("open-menu-symbolic");
+        menu_button.set_menu_model(Some(&menu));
+        header.pack_end(&menu_button);
         
         // Create scrolled window for content
         let scrolled = gtk::ScrolledWindow::new();
@@ -56,6 +84,51 @@ impl MainWindow {
         window.set_titlebar(Some(&header));
         window.set_child(Some(&scrolled));
         
+        // Add actions
+        Self::setup_actions(&window, app);
+        
+        // Load CSS for styling
+        Self::load_css();
+        
+        window
+    }
+    
+    fn setup_actions(window: &ApplicationWindow, app: &Application) {
+        // Settings action
+        let settings_action = gio::SimpleAction::new("settings", None);
+        let window_weak = window.downgrade();
+        settings_action.connect_activate(move |_, _| {
+            if let Some(window) = window_weak.upgrade() {
+                crate::ui::settings::show_settings(Some(&window));
+            }
+        });
+        window.add_action(&settings_action);
+        
+        // About action
+        let about_action = gio::SimpleAction::new("about", None);
+        let window_weak = window.downgrade();
+        about_action.connect_activate(move |_, _| {
+            if let Some(window) = window_weak.upgrade() {
+                crate::ui::about::show_about(Some(&window));
+            }
+        });
+        window.add_action(&about_action);
+        
+        // Quit action
+        let quit_action = gio::SimpleAction::new("quit", None);
+        let app_weak = app.downgrade();
+        quit_action.connect_activate(move |_, _| {
+            if let Some(app) = app_weak.upgrade() {
+                app.quit();
+            }
+        });
+        window.add_action(&quit_action);
+        
+        // Set up keyboard shortcuts
+        app.set_accels_for_action("win.settings", &["<Ctrl>comma"]);
+        app.set_accels_for_action("win.about", &["F1"]);
+        app.set_accels_for_action("win.quit", &["<Ctrl>Q"]);
+        
         // Load CSS for styling
         Self::load_css();
         
@@ -64,6 +137,8 @@ impl MainWindow {
     
     fn create_system_info_card() -> adw::PreferencesGroup {
         let group = adw::PreferencesGroup::new();
+        let t = crate::i18n::t();
+        
         group.set_title("System Information");
         group.set_description(Some("Your system specifications"));
         
@@ -105,18 +180,31 @@ impl MainWindow {
     
     fn create_actions_card() -> adw::PreferencesGroup {
         let group = adw::PreferencesGroup::new();
-        group.set_title("Quick Actions");
+        let t = crate::i18n::t();
+        
+        group.set_title(&t.update.title);
         group.set_description(Some("Common tasks to get started"));
         
+        
         // Update system button
-        let update_button = Button::with_label("Check for Updates");
+        let t = crate::i18n::t();
+        let update_button = Button::with_label(&t.update.btn_update);
         update_button.add_css_class("pill");
         update_button.add_css_class("suggested-action");
+        
+        let button_label_checking = t.update.status_started.clone();
+        let button_label_default = t.update.btn_update.clone();
+        let error_title = t.update.error.clone();
+        let update_check_title = "Update Check".to_string();
         
         update_button.connect_clicked(move |btn| {
             tracing::info!("Checking for updates...");
             btn.set_sensitive(false);
             btn.set_label("Checking...");
+            
+            let button_label_default = button_label_default.clone();
+            let error_title = error_title.clone();
+            let update_check_title = update_check_title.clone();
             
             // Spawn async task
             glib::spawn_future_local(async move {
@@ -125,9 +213,15 @@ impl MainWindow {
                         match pm.check_updates() {
                             Ok(info) => {
                                 tracing::info!("Update check result: {:?}", info);
+                                
+                                // Show notification if updates available
+                                if info.available {
+                                    crate::notifications::notify_updates_available(info.count);
+                                }
+                                
                                 crate::ui::dialogs::show_info(
                                     None,
-                                    "Update Check",
+                                    &update_check_title,
                                     &info.message()
                                 );
                             }
@@ -135,7 +229,7 @@ impl MainWindow {
                                 tracing::error!("Update check failed: {}", e);
                                 crate::ui::dialogs::show_error(
                                     None,
-                                    "Update Check Failed",
+                                    &error_title,
                                     &format!("Failed to check for updates: {}", e)
                                 );
                             }
@@ -152,27 +246,28 @@ impl MainWindow {
                 }
                 
                 btn.set_sensitive(true);
-                btn.set_label("Check for Updates");
+                btn.set_label(&button_label_default);
             });
         });
         
         let update_row = adw::ActionRow::new();
-        update_row.set_title("System Updates");
-        update_row.set_subtitle("Keep your system up to date");
+        update_row.set_title(&t.update.title);
+        update_row.set_subtitle(&t.update.description);
         update_row.set_activatable_widget(Some(&update_button));
         update_row.add_suffix(&update_button);
         group.add(&update_row);
         
+        
         // Software recommendations
-        let software_button = Button::with_label("Browse");
+        let software_button = Button::with_label(&t.software.btn_install);
         software_button.add_css_class("pill");
         software_button.connect_clicked(|_| {
             tracing::info!("Opening software recommendations...");
         });
         
         let software_row = adw::ActionRow::new();
-        software_row.set_title("Recommended Software");
-        software_row.set_subtitle("Discover essential applications");
+        software_row.set_title(&t.software.title);
+        software_row.set_subtitle(&t.software.description);
         software_row.set_activatable_widget(Some(&software_button));
         software_row.add_suffix(&software_button);
         group.add(&software_row);

@@ -6,21 +6,59 @@ mod system;
 mod config;
 mod error;
 mod package_manager;
+mod i18n;
+mod notifications;
 
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow};
+use gtk::gio;
 use libadwaita as adw;
 use adw::prelude::*;
+use clap::Parser;
 
 const APP_ID: &str = "org.osdev.rostart";
 
+#[derive(Parser, Debug)]
+#[command(name = "ro-start")]
+#[command(version = "1.0.0")]
+#[command(about = "Fast, safe, and beautiful Linux welcome application", long_about = None)]
+struct Cli {
+    /// Don't show at startup
+    #[arg(long)]
+    no_startup: bool,
+    
+    /// Set locale (e.g., en_US, tr_TR)
+    #[arg(long)]
+    locale: Option<String>,
+    
+    /// Enable debug logging
+    #[arg(short, long)]
+    debug: bool,
+}
+
 fn main() {
+    // Parse CLI arguments
+    let cli = Cli::parse();
+    
     // Initialize tracing
+    let log_level = if cli.debug { "ro_start=debug" } else { "ro_start=info" };
     tracing_subscriber::fmt()
-        .with_env_filter("ro_start=debug")
+        .with_env_filter(log_level)
         .init();
 
-    tracing::info!("🚀 Starting Ro-Start v2.0.0");
+    tracing::info!("🚀 Starting Ro-Start v1.0.0");
+    
+    // Initialize i18n
+    if let Err(e) = i18n::init() {
+        tracing::warn!("Failed to initialize i18n: {}", e);
+    }
+    
+    // Set custom locale if provided
+    if let Some(locale) = cli.locale {
+        i18n::set_locale(&locale);
+    }
+    
+    tracing::info!("📖 Locale: {}", i18n::get_locale());
 
     // Create GTK application
     let app = Application::builder()

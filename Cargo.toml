@@ -31,6 +31,9 @@ sysinfo = "0.33"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
+# Internationalization
+lazy_static = "1.5"
+
 # Configuration  
 toml = "0.8"
 
@@ -47,6 +50,13 @@ which = "7"
 
 # File paths and directories
 dirs = "6"
+
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }
+
+# Desktop notifications
+notify-rust = "4"
+
 
 [profile.release]
 opt-level = "z"      # Optimize for size
@@ -73,8 +83,13 @@ priority = "optional"
 assets = [
     ["target/release/ro-start", "usr/bin/", "755"],
     ["data/ro-start.desktop", "usr/share/applications/", "644"],
+    ["data/ro-start-autostart.desktop", "etc/xdg/autostart/", "644"],
     ["data/ro-start.png", "usr/share/icons/hicolor/512x512/apps/", "644"],
     ["data/org.osdev.ro_start.appdata.xml", "usr/share/metainfo/", "644"],
+    ["docs/ro-start.1", "usr/share/man/man1/", "644"],
+    ["packaging/completions/ro-start.bash", "usr/share/bash-completion/completions/ro-start", "644"],
+    ["packaging/completions/ro-start.zsh", "usr/share/zsh/site-functions/_ro-start", "644"],
+    ["packaging/completions/ro-start.fish", "usr/share/fish/vendor_completions.d/ro-start.fish", "644"],
     ["README.md", "usr/share/doc/ro-start/", "644"],
 ]
 
@@ -83,6 +98,11 @@ assets = [
 assets = [
     { source = "target/release/ro-start", dest = "/usr/bin/ro-start", mode = "755" },
     { source = "data/ro-start.desktop", dest = "/usr/share/applications/ro-start.desktop", mode = "644" },
+    { source = "data/ro-start-autostart.desktop", dest = "/etc/xdg/autostart/ro-start-autostart.desktop", mode = "644" },
     { source = "data/ro-start.png", dest = "/usr/share/icons/hicolor/512x512/apps/ro-start.png", mode = "644" },
     { source = "data/org.osdev.ro_start.appdata.xml", dest = "/usr/share/metainfo/org.osdev.ro_start.appdata.xml", mode = "644" },
+    { source = "docs/ro-start.1", dest = "/usr/share/man/man1/ro-start.1", mode = "644" },
+    { source = "packaging/completions/ro-start.bash", dest = "/usr/share/bash-completion/completions/ro-start", mode = "644" },
+    { source = "packaging/completions/ro-start.zsh", dest = "/usr/share/zsh/site-functions/_ro-start", mode = "644" },
+    { source = "packaging/completions/ro-start.fish", dest = "/usr/share/fish/vendor_completions.d/ro-start.fish", mode = "644" },
 ]
