@@ -1,6 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug)]
+#[allow(dead_code)]
 pub enum RoStartError {
     #[error("System information error: {0}")]
     SystemInfo(String),

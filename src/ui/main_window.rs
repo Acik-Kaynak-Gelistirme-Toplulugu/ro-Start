@@ -13,6 +13,7 @@ pub struct MainWindow {
 }
 
 impl MainWindow {
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(app: &Application) -> ApplicationWindow {
         // Get translations
         let t = crate::i18n::t();
