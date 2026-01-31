@@ -1,6 +1,6 @@
-use adw::prelude::*;
 use gtk::prelude::*;
 use libadwaita as adw;
+use libadwaita::prelude::*;
 
 /// Show Settings/Preferences window
 pub fn show_settings(parent: Option<&gtk::Window>) {

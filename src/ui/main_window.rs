@@ -1,10 +1,10 @@
 use crate::system::SystemState;
-use adw::prelude::*;
 use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, HeaderBar, Label};
 use gtk::{Box as GtkBox, Orientation};
 use libadwaita as adw;
+use libadwaita::prelude::*;
 
 #[allow(dead_code)]
 pub struct MainWindow {
