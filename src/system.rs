@@ -52,10 +52,8 @@ impl SystemState {
         let kernel_version = System::kernel_version().unwrap_or_else(|| "Unknown".to_string());
         let hostname = System::host_name().unwrap_or_else(|| "localhost".to_string());
 
-        // Detect desktop environment
-        let desktop_environment = std::env::var("XDG_CURRENT_DESKTOP")
-            .or_else(|_| std::env::var("DESKTOP_SESSION"))
-            .unwrap_or_else(|_| "Unknown".to_string());
+        // Detect desktop environment with better support for KDE, GNOME, and others
+        let desktop_environment = Self::detect_desktop_environment();
 
         SystemInfo {
             cpu_name,
@@ -70,6 +68,80 @@ impl SystemState {
             kernel_version,
             hostname,
         }
+    }
+
+    /// Detect the running desktop environment
+    fn detect_desktop_environment() -> String {
+        // Check XDG_CURRENT_DESKTOP (most reliable)
+        if let Ok(xdg_desktop) = std::env::var("XDG_CURRENT_DESKTOP") {
+            let xdg = xdg_desktop.to_lowercase();
+            
+            // Support for KDE Plasma
+            if xdg.contains("kde") || xdg.contains("plasmadesktop") {
+                return "KDE Plasma".to_string();
+            }
+            // Support for GNOME
+            if xdg.contains("gnome") {
+                return "GNOME".to_string();
+            }
+            // Support for other environments
+            if xdg.contains("xfce") {
+                return "Xfce".to_string();
+            }
+            if xdg.contains("lxde") {
+                return "LXDE".to_string();
+            }
+            if xdg.contains("cinnamon") {
+                return "Cinnamon".to_string();
+            }
+            if xdg.contains("mate") {
+                return "MATE".to_string();
+            }
+            if xdg.contains("budgie") {
+                return "Budgie".to_string();
+            }
+            if xdg.contains("deepin") {
+                return "Deepin".to_string();
+            }
+            
+            // Return the value as-is if recognized
+            return xdg_desktop;
+        }
+
+        // Fallback to DESKTOP_SESSION
+        if let Ok(session) = std::env::var("DESKTOP_SESSION") {
+            let session_lower = session.to_lowercase();
+            
+            if session_lower.contains("kde") || session_lower.contains("plasmadesktop") {
+                return "KDE Plasma".to_string();
+            }
+            if session_lower.contains("gnome") {
+                return "GNOME".to_string();
+            }
+            if session_lower.contains("xfce") {
+                return "Xfce".to_string();
+            }
+            if session_lower.contains("lxde") {
+                return "LXDE".to_string();
+            }
+            if session_lower.contains("cinnamon") {
+                return "Cinnamon".to_string();
+            }
+            if session_lower.contains("mate") {
+                return "MATE".to_string();
+            }
+            if session_lower.contains("budgie") {
+                return "Budgie".to_string();
+            }
+            if session_lower.contains("deepin") {
+                return "Deepin".to_string();
+            }
+            
+            return session;
+        }
+
+        // Final fallback
+        "Unknown".to_string()
     }
 
     pub fn refresh(&mut self) {

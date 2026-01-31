@@ -17,7 +17,8 @@ Ro-Start, modern Linux dağıtımları için özel olarak tasarlanmış, native 
 ## ✨ Özellikler
 
 - ✅ **Sistem Bilgisi Gösterimi** - CPU, RAM ve depolama istatistikleri
-- ✅ **GTK4 + libadwaita Arayüz** - Native GNOME entegrasyonu
+- ✅ **Çoklu Masaüstü Desteği** - KDE Plasma, GNOME, Xfce ve diğerleri
+- ✅ **GTK4 Arayüz** - Modern ve şık tasarım
 - ✅ **Yıldırım Hızı** - Alternatiflerden 5x daha hızlı başlangıç
 - ✅ **Hafif** - Sadece ~45MB RAM kullanımı
 - ✅ **Hızlı Aksiyonlar** - Sistem güncellemeleri, yazılım önerileri
@@ -28,16 +29,27 @@ Ro-Start, modern Linux dağıtımları için özel olarak tasarlanmış, native 
 
 ### Kullanıcılar İçin
 
+- **Linux** (herhangi bir modern dağıtım - KDE Plasma, GNOME, Xfce, vb.)
 - **GTK4** 4.12+ 
-- **libadwaita** 1.5+
-- **Linux** (herhangi bir modern dağıtım)
+- **libadwaita** 1.5+ (en iyi GNOME deneyimi için)
 
 ### Geliştiriciler İçin
 
 - **Rust** 1.70+ ([rustup ile yükle](https://rustup.rs/))
 - **GTK4 geliştirme dosyaları**
-- **libadwaita geliştirme dosyaları**  
+- **libadwaita geliştirme dosyaları** (opsiyonel, GNOME stili için)
 - **pkg-config**
+
+### Masaüstü Ortamı Desteği
+
+- ✅ **KDE Plasma** 5.27+
+- ✅ **GNOME** 40+
+- ✅ **Xfce** 4.16+
+- ✅ **LXDE** 0.9.3+
+- ✅ **Cinnamon** 5.0+
+- ✅ **MATE** 1.24+
+- ✅ **Budgie** 10+
+- ✅ **Deepin** 20+
 
 ## 📦 Kurulum
 

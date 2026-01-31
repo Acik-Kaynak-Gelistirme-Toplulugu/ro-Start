@@ -98,6 +98,33 @@ cargo clippy
 cargo check
 ```
 
+### Testing on Different Desktop Environments
+
+The application is designed to work on multiple Linux desktop environments. When testing:
+
+**KDE Plasma:**
+```bash
+# The app will auto-detect as "KDE Plasma" and show in system info
+DESKTOP_SESSION=plasmadesktop ./target/debug/ro-start
+# or
+export XDG_CURRENT_DESKTOP="KDE"
+./target/debug/ro-start
+```
+
+**GNOME:**
+```bash
+export XDG_CURRENT_DESKTOP="GNOME"
+./target/debug/ro-start
+```
+
+**Xfce:**
+```bash
+export XDG_CURRENT_DESKTOP="XFCE"
+./target/debug/ro-start
+```
+
+The desktop environment detection is in `src/system.rs` - `detect_desktop_environment()` function.
+
 ### Project Structure
 
 ```
@@ -106,7 +133,7 @@ src/
 ├── ui/               # GTK4 UI components
 │   ├── mod.rs
 │   └── main_window.rs
-├── system.rs         # System information
+├── system.rs         # System information (includes DE detection)
 └── config.rs         # Configuration
 
 resources/

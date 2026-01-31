@@ -20,7 +20,8 @@
 ## 🎯 Features
 
 - ✅ **System Information Dashboard** - Real-time CPU, RAM, and storage stats
-- ✅ **GTK4 + libadwaita UI** - Native GNOME integration with beautiful design
+- ✅ **Multi-Desktop Support** - Works on KDE Plasma, GNOME, Xfce, and other DEs
+- ✅ **GTK4 UI** - Native integration with beautiful modern design
 - ✅ **Lightning Fast** - 5x faster startup than alternatives (~0.5s)
 - ✅ **Memory Efficient** - Uses only ~45MB RAM
 - ✅ **Quick Actions** - System updates, software recommendations
@@ -33,9 +34,9 @@
 
 ### For Users
 
+- **Linux** (any modern distribution - KDE Plasma, GNOME, Xfce, etc.)
 - **GTK4** 4.12+ 
-- **libadwaita** 1.5+
-- **Linux** (any modern distribution)
+- **libadwaita** 1.5+ (for best GNOME experience)
 
 ### For Developers
 
@@ -43,8 +44,19 @@ Additional requirements for building from source:
 
 - **Rust** 1.70+ ([install via rustup](https://rustup.rs/))
 - **GTK4 development files**
-- **libadwaita development files**
+- **libadwaita development files** (optional, for GNOME styling)
 - **pkg-config**
+
+### Desktop Environment Support
+
+- ✅ **KDE Plasma** 5.27+
+- ✅ **GNOME** 40+
+- ✅ **Xfce** 4.16+
+- ✅ **LXDE** 0.9.3+
+- ✅ **Cinnamon** 5.0+
+- ✅ **MATE** 1.24+
+- ✅ **Budgie** 10+
+- ✅ **Deepin** 20+
 
 ---
 
