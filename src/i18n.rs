@@ -86,10 +86,9 @@ pub fn init() -> anyhow::Result<()> {
 
     for locale in locales {
         if let Ok(trans) = load_locale(locale) {
-            TRANSLATIONS
-                .write()
-                .unwrap()
-                .insert(locale.to_string(), trans);
+            let mut translations = TRANSLATIONS.write()
+                .map_err(|e| anyhow::anyhow!("Failed to acquire write lock on translations: {}", e))?;
+            translations.insert(locale.to_string(), trans);
             tracing::debug!("Loaded locale: {}", locale);
         }
     }
@@ -139,44 +138,68 @@ fn detect_system_locale() {
     let locale_code = locale.split('.').next().unwrap_or("en_US");
 
     // Check if we have this locale
-    if TRANSLATIONS.read().unwrap().contains_key(locale_code) {
-        set_locale(locale_code);
-        tracing::info!("System locale detected: {}", locale_code);
-    } else {
+    if let Ok(translations) = TRANSLATIONS.read() {
+        if translations.contains_key(locale_code) {
+            set_locale(locale_code);
+            tracing::info!("System locale detected: {}", locale_code);
+            return;
+        }
+        
         // Try language code only (e.g., "tr" from "tr_TR")
         let lang_code = locale_code.split('_').next().unwrap_or("en");
-        if TRANSLATIONS.read().unwrap().contains_key(lang_code) {
+        if translations.contains_key(lang_code) {
             set_locale(lang_code);
             tracing::info!("Using language code: {}", lang_code);
-        } else {
-            tracing::info!("Using default locale: en_US");
+            return;
         }
+    } else {
+        tracing::warn!("Failed to read translations lock during locale detection");
     }
+    
+    tracing::info!("Using default locale: en_US");
 }
 
 /// Set current locale
 pub fn set_locale(locale: &str) {
-    if TRANSLATIONS.read().unwrap().contains_key(locale) {
-        *CURRENT_LOCALE.write().unwrap() = locale.to_string();
-        tracing::info!("Locale set to: {}", locale);
-    } else {
-        tracing::warn!("Locale {} not available, keeping current", locale);
+    match TRANSLATIONS.read() {
+        Ok(translations) => {
+            if translations.contains_key(locale) {
+                if let Ok(mut current) = CURRENT_LOCALE.write() {
+                    *current = locale.to_string();
+                    tracing::info!("Locale set to: {}", locale);
+                } else {
+                    tracing::error!("Failed to write current locale");
+                }
+            } else {
+                tracing::warn!("Locale {} not available, keeping current", locale);
+            }
+        }
+        Err(e) => tracing::error!("Failed to read translations: {}", e),
     }
 }
 
 /// Get current locale code
 pub fn get_locale() -> String {
-    CURRENT_LOCALE.read().unwrap().clone()
+    CURRENT_LOCALE
+        .read()
+        .map(|locale| locale.clone())
+        .unwrap_or_else(|_| {
+            tracing::warn!("Failed to read current locale, using default");
+            "en_US".to_string()
+        })
 }
 
 /// Get translations for current locale
 pub fn t() -> Translations {
-    let locale = CURRENT_LOCALE.read().unwrap().clone();
+    let locale = CURRENT_LOCALE
+        .read()
+        .map(|l| l.clone())
+        .unwrap_or_else(|_| "en_US".to_string());
+    
     TRANSLATIONS
         .read()
-        .unwrap()
-        .get(&locale)
-        .cloned()
+        .ok()
+        .and_then(|translations| translations.get(&locale).cloned())
         .unwrap_or_else(get_fallback_en)
 }
 
@@ -238,7 +261,11 @@ fn get_fallback_en() -> Translations {
 
 /// Get available locales
 pub fn available_locales() -> Vec<String> {
-    TRANSLATIONS.read().unwrap().keys().cloned().collect()
+    TRANSLATIONS
+        .read()
+        .ok()
+        .map(|t| t.keys().cloned().collect())
+        .unwrap_or_default()
 }
 
 /// Get locale display name
