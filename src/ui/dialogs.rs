@@ -1,5 +1,6 @@
+use adw::prelude::MessageDialogExt;
 use gtk::prelude::*;
-use libadwaita::prelude::MessageDialogExt;
+use libadwaita as adw;
 
 /// Show an error dialog
 pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {

@@ -1,5 +1,6 @@
+use adw::prelude::*;
 use gtk::prelude::*;
-use libadwaita::prelude::*;
+use libadwaita as adw;
 
 /// Show About dialog
 pub fn show_about(parent: Option<&gtk::Window>) {

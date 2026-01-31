@@ -1,9 +1,10 @@
 use crate::system::SystemState;
+use adw::prelude::*;
 use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, HeaderBar, Label};
 use gtk::{Box as GtkBox, Orientation};
-use libadwaita::prelude::*;
+use libadwaita as adw;
 use std::process::Command;
 
 #[allow(dead_code)]
