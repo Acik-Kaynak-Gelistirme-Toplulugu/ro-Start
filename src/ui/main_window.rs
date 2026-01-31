@@ -214,10 +214,7 @@ impl MainWindow {
                 .spawn()
             {
                 tracing::error!("Failed to open update manager: {}", e);
-                crate::notifications::notify_error(
-                    "Update Manager",
-                    "Failed to open update manager",
-                );
+                crate::notifications::notify_error("Update Manager: Failed to open update manager");
             } else {
                 crate::notifications::notify_success("Update Manager opened");
             }
@@ -258,8 +255,7 @@ impl MainWindow {
             {
                 tracing::error!("Failed to open software center: {}", e);
                 crate::notifications::notify_error(
-                    "Software Center",
-                    "Failed to open software center",
+                    "Software Center: Failed to open software center",
                 );
             } else {
                 crate::notifications::notify_success("Software Center opened");
@@ -295,8 +291,7 @@ impl MainWindow {
             if let Err(e) = std::process::Command::new(settings_cmd).spawn() {
                 tracing::error!("Failed to open system settings: {}", e);
                 crate::notifications::notify_error(
-                    "System Settings",
-                    "Failed to open system settings",
+                    "System Settings: Failed to open system settings",
                 );
             } else {
                 crate::notifications::notify_success("System Settings opened");
