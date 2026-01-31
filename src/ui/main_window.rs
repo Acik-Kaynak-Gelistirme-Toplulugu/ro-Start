@@ -1,13 +1,12 @@
 use crate::system::SystemState;
 use adw::prelude::*;
-use gio;
 use gio::prelude::*;
-use glib;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, HeaderBar, Label};
 use gtk::{Box as GtkBox, Orientation};
 use libadwaita as adw;
 
+#[allow(dead_code)]
 pub struct MainWindow {
     window: ApplicationWindow,
 }
@@ -132,7 +131,6 @@ impl MainWindow {
 
     fn create_system_info_card() -> adw::PreferencesGroup {
         let group = adw::PreferencesGroup::new();
-        // let t = crate::i18n::t();
 
         group.set_title("System Information");
 
@@ -140,120 +138,124 @@ impl MainWindow {
         let sys_state = SystemState::new();
         let info = sys_state.get_system_info();
 
-        // CPU row
-        let cpu_row = adw::ActionRow::new();
-        cpu_row.set_title("CPU");
-        cpu_row.set_subtitle(&info.cpu_name);
-        group.add(&cpu_row);
-
-        // Memory row
-        let memory_row = adw::ActionRow::new();
-        memory_row.set_title("Memory");
-        let mem_text = format!(
-            "{:.1} GB / {:.1} GB",
-            info.used_memory as f64 / 1024.0 / 1024.0 / 1024.0,
-            info.total_memory as f64 / 1024.0 / 1024.0 / 1024.0
-        );
-        memory_row.set_subtitle(&mem_text);
-        group.add(&memory_row);
-
-        // OS row
+        // OS Row
         let os_row = adw::ActionRow::new();
         os_row.set_title("Operating System");
-        os_row.set_subtitle(&format!("{} {}", info.os_name, info.os_version));
+        os_row.set_subtitle(&info.os_name);
+        os_row.add_prefix(&gtk::Image::from_icon_name("computer-symbolic"));
         group.add(&os_row);
+
+        // Desktop Row
+        let desktop_row = adw::ActionRow::new();
+        desktop_row.set_title("Desktop Environment");
+        desktop_row.set_subtitle(&info.desktop_environment);
+        desktop_row.add_prefix(&gtk::Image::from_icon_name("video-display-symbolic"));
+        group.add(&desktop_row);
+
+        // Kernel Row
+        let kernel_row = adw::ActionRow::new();
+        kernel_row.set_title("Kernel");
+        kernel_row.set_subtitle(&info.kernel_version);
+        kernel_row.add_prefix(&gtk::Image::from_icon_name("utilities-terminal-symbolic"));
+        group.add(&kernel_row);
+
+        // Memory Row
+        let memory_row = adw::ActionRow::new();
+        memory_row.set_title("Memory");
+        memory_row.set_subtitle(&info.memory_info);
+        memory_row.add_prefix(&gtk::Image::from_icon_name("drive-harddisk-symbolic"));
+        group.add(&memory_row);
+
+        // CPU Row
+        let cpu_row = adw::ActionRow::new();
+        cpu_row.set_title("CPU");
+        cpu_row.set_subtitle(&info.cpu_info);
+        cpu_row.add_prefix(&gtk::Image::from_icon_name("cpu-symbolic"));
+        group.add(&cpu_row);
 
         group
     }
 
     fn create_actions_card() -> adw::PreferencesGroup {
         let group = adw::PreferencesGroup::new();
-        let t = crate::i18n::t();
 
-        group.set_title(&t.update.title);
-        group.set_description(Some("Common tasks to get started"));
+        group.set_title("Quick Actions");
 
-        // Update button with proper lifetime handling
-        let update_button = Button::builder()
-            .label(&t.update.btn_update)
-            .css_classes(["suggested-action"])
-            .build();
+        // Update System Button
+        let update_row = adw::ActionRow::new();
+        update_row.set_title("Update System");
+        update_row.set_subtitle("Check and install available updates");
+        update_row.add_prefix(&gtk::Image::from_icon_name(
+            "software-update-available-symbolic",
+        ));
+        update_row.set_activatable(true);
 
-        // Clone values for the outer closure
-        let button_label = t.update.btn_update.clone();
-        let error_title = t.update.error.clone();
+        let update_button = Button::with_label("Update");
+        update_button.set_valign(gtk::Align::Center);
+        update_button.add_css_class("suggested-action");
+        update_row.add_suffix(&update_button);
 
-        update_button.connect_clicked(move |btn| {
-            tracing::info!("Checking for updates...");
-
-            // Clone btn for inner async block
-            let btn_weak = btn.downgrade();
-            let button_label = button_label.clone();
-            let error_title = error_title.clone();
-
-            // Disable button
-            btn.set_sensitive(false);
-            btn.set_label("Checking...");
-
-            // Spawn async task
-            glib::spawn_future_local(async move {
-                // Run blocking operation in thread pool
-                let result = tokio::task::spawn_blocking(|| {
-                    crate::package_manager::PackageManager::detect()
-                        .and_then(|pm| pm.check_updates())
-                })
-                .await;
-
-                // Handle result
-                match result {
-                    Ok(Ok(info)) => {
-                        tracing::info!("Update check result: {:?}", info);
-
-                        if info.available {
-                            crate::notifications::notify_updates_available(info.count);
-                        }
-
-                        crate::ui::dialogs::show_info(None, "Update Check", &info.message());
-                    }
-                    Ok(Err(e)) => {
-                        tracing::error!("Update check failed: {}", e);
-                        crate::ui::dialogs::show_error(
-                            None,
-                            &error_title,
-                            &format!("Failed to check updates: {}", e),
-                        );
-                    }
-                    Err(e) => {
-                        tracing::error!("Task failed: {}", e);
-                        crate::ui::dialogs::show_error(
-                            None,
-                            &error_title,
-                            &format!("Task execution failed: {}", e),
-                        );
-                    }
-                }
-
-                // Re-enable button
-                if let Some(btn) = btn_weak.upgrade() {
-                    btn.set_sensitive(true);
-                    btn.set_label(&button_label);
-                }
-            });
+        update_button.connect_clicked(|_| {
+            tracing::info!("Update button clicked");
+            // TODO: Implement update functionality
         });
 
-        let button_row = adw::ActionRow::new();
-        button_row.set_title(&t.update.btn_update);
-        button_row.add_suffix(&update_button);
-        button_row.set_activatable_widget(Some(&update_button));
+        group.add(&update_row);
 
-        group.add(&button_row);
+        // Software Center Button
+        let software_row = adw::ActionRow::new();
+        software_row.set_title("Software Center");
+        software_row.set_subtitle("Browse and install applications");
+        software_row.add_prefix(&gtk::Image::from_icon_name(
+            "system-software-install-symbolic",
+        ));
+        software_row.set_activatable(true);
+
+        let software_button = Button::with_label("Open");
+        software_button.set_valign(gtk::Align::Center);
+        software_row.add_suffix(&software_button);
+
+        software_button.connect_clicked(|_| {
+            tracing::info!("Software Center button clicked");
+            // TODO: Open software center
+        });
+
+        group.add(&software_row);
+
+        // Settings Button
+        let settings_row = adw::ActionRow::new();
+        settings_row.set_title("System Settings");
+        settings_row.set_subtitle("Configure your system");
+        settings_row.add_prefix(&gtk::Image::from_icon_name("emblem-system-symbolic"));
+        settings_row.set_activatable(true);
+
+        let settings_button = Button::with_label("Open");
+        settings_button.set_valign(gtk::Align::Center);
+        settings_row.add_suffix(&settings_button);
+
+        settings_button.connect_clicked(|_| {
+            tracing::info!("Settings button clicked");
+            // TODO: Open system settings
+        });
+
+        group.add(&settings_row);
 
         group
     }
 
     fn load_css() {
         let provider = gtk::CssProvider::new();
-        provider.load_from_data(include_str!("../../resources/style.css"));
+        provider.load_from_string(
+            r#"
+            .title-1 {
+                font-size: 24px;
+                font-weight: bold;
+            }
+            .dim-label {
+                opacity: 0.7;
+            }
+            "#,
+        );
 
         gtk::style_context_add_provider_for_display(
             &gtk::gdk::Display::default().expect("Could not connect to display"),
