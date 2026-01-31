@@ -2,29 +2,24 @@ use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct AppConfig {
-    #[serde(default = "default_app_name")]
     pub app_name: String,
-    #[serde(default = "default_version")]
     pub version: String,
-    #[serde(default)]
     pub autostart: bool,
-    #[serde(default = "default_language")]
     pub language: String,
 }
 
-fn default_app_name() -> String {
-    "Ro-Start".to_string()
-}
-
-fn default_version() -> String {
-    "1.0.0".to_string()
-}
-
-fn default_language() -> String {
-    "auto".to_string()
+impl Default for AppConfig {
+    fn default() -> Self {
+        Self {
+            app_name: "Ro-Start".to_string(),
+            version: "1.0.0".to_string(),
+            autostart: false,
+            language: "auto".to_string(),
+        }
+    }
 }
 
 impl AppConfig {
