@@ -3,13 +3,13 @@ use gtk::prelude::*;
 use libadwaita as adw;
 
 /// Show Settings/Preferences window
-pub fn show_settings(parent: Option<&impl IsA<gtk::Window>>) {
+pub fn show_settings(parent: Option<&gtk::Window>) {
     let window = adw::PreferencesWindow::new();
     window.set_title(Some("Settings"));
     window.set_default_size(600, 400);
 
     if let Some(parent) = parent {
-        window.set_transient_for(Some(parent.upcast_ref()));
+        window.set_transient_for(Some(parent));
         window.set_modal(true);
     }
 
