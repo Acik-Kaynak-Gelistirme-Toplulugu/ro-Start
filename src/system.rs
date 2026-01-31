@@ -75,7 +75,7 @@ impl SystemState {
         // Check XDG_CURRENT_DESKTOP (most reliable)
         if let Ok(xdg_desktop) = std::env::var("XDG_CURRENT_DESKTOP") {
             let xdg = xdg_desktop.to_lowercase();
-            
+
             // Support for KDE Plasma
             if xdg.contains("kde") || xdg.contains("plasmadesktop") {
                 return "KDE Plasma".to_string();
@@ -103,7 +103,7 @@ impl SystemState {
             if xdg.contains("deepin") {
                 return "Deepin".to_string();
             }
-            
+
             // Return the value as-is if recognized
             return xdg_desktop;
         }
@@ -111,7 +111,7 @@ impl SystemState {
         // Fallback to DESKTOP_SESSION
         if let Ok(session) = std::env::var("DESKTOP_SESSION") {
             let session_lower = session.to_lowercase();
-            
+
             if session_lower.contains("kde") || session_lower.contains("plasmadesktop") {
                 return "KDE Plasma".to_string();
             }
@@ -136,7 +136,7 @@ impl SystemState {
             if session_lower.contains("deepin") {
                 return "Deepin".to_string();
             }
-            
+
             return session;
         }
 

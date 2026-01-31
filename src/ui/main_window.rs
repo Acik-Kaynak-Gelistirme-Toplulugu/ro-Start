@@ -198,20 +198,26 @@ impl MainWindow {
         update_button.connect_clicked(|_| {
             tracing::info!("Update button clicked");
             // Open system update manager based on desktop environment
-            let de = crate::system::SystemState::new().get_system_info().desktop_environment;
+            let de = crate::system::SystemState::new()
+                .get_system_info()
+                .desktop_environment;
             let update_cmd = match de.as_str() {
                 "KDE Plasma" => "discover",
                 "GNOME" => "gnome-software",
                 "Xfce" => "xfce4-appfinder",
                 _ => "sudo apt update && sudo apt upgrade",
             };
-            
+
             if let Err(e) = std::process::Command::new("sh")
                 .arg("-c")
                 .arg(update_cmd)
-                .spawn() {
+                .spawn()
+            {
                 tracing::error!("Failed to open update manager: {}", e);
-                crate::notifications::notify_error("Update Manager", "Failed to open update manager");
+                crate::notifications::notify_error(
+                    "Update Manager",
+                    "Failed to open update manager",
+                );
             } else {
                 crate::notifications::notify_success("Update Manager opened");
             }
@@ -235,20 +241,26 @@ impl MainWindow {
         software_button.connect_clicked(|_| {
             tracing::info!("Software Center button clicked");
             // Open software center based on desktop environment
-            let de = crate::system::SystemState::new().get_system_info().desktop_environment;
+            let de = crate::system::SystemState::new()
+                .get_system_info()
+                .desktop_environment;
             let software_cmd = match de.as_str() {
                 "KDE Plasma" => "discover",
                 "GNOME" => "gnome-software",
                 "Xfce" => "xfce4-appfinder",
                 _ => "sudo apt install",
             };
-            
+
             if let Err(e) = std::process::Command::new("sh")
                 .arg("-c")
                 .arg(software_cmd)
-                .spawn() {
+                .spawn()
+            {
                 tracing::error!("Failed to open software center: {}", e);
-                crate::notifications::notify_error("Software Center", "Failed to open software center");
+                crate::notifications::notify_error(
+                    "Software Center",
+                    "Failed to open software center",
+                );
             } else {
                 crate::notifications::notify_success("Software Center opened");
             }
@@ -270,17 +282,22 @@ impl MainWindow {
         settings_button.connect_clicked(|_| {
             tracing::info!("Settings button clicked");
             // Open system settings based on desktop environment
-            let de = crate::system::SystemState::new().get_system_info().desktop_environment;
+            let de = crate::system::SystemState::new()
+                .get_system_info()
+                .desktop_environment;
             let settings_cmd = match de.as_str() {
                 "KDE Plasma" => "systemsettings5",
                 "GNOME" => "gnome-control-center",
                 "Xfce" => "xfce4-settings-manager",
                 _ => "gnome-control-center",
             };
-            
+
             if let Err(e) = std::process::Command::new(settings_cmd).spawn() {
                 tracing::error!("Failed to open system settings: {}", e);
-                crate::notifications::notify_error("System Settings", "Failed to open system settings");
+                crate::notifications::notify_error(
+                    "System Settings",
+                    "Failed to open system settings",
+                );
             } else {
                 crate::notifications::notify_success("System Settings opened");
             }

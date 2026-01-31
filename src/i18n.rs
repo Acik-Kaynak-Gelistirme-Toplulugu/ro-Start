@@ -86,8 +86,9 @@ pub fn init() -> anyhow::Result<()> {
 
     for locale in locales {
         if let Ok(trans) = load_locale(locale) {
-            let mut translations = TRANSLATIONS.write()
-                .map_err(|e| anyhow::anyhow!("Failed to acquire write lock on translations: {}", e))?;
+            let mut translations = TRANSLATIONS.write().map_err(|e| {
+                anyhow::anyhow!("Failed to acquire write lock on translations: {}", e)
+            })?;
             translations.insert(locale.to_string(), trans);
             tracing::debug!("Loaded locale: {}", locale);
         }
@@ -144,7 +145,7 @@ fn detect_system_locale() {
             tracing::info!("System locale detected: {}", locale_code);
             return;
         }
-        
+
         // Try language code only (e.g., "tr" from "tr_TR")
         let lang_code = locale_code.split('_').next().unwrap_or("en");
         if translations.contains_key(lang_code) {
@@ -155,7 +156,7 @@ fn detect_system_locale() {
     } else {
         tracing::warn!("Failed to read translations lock during locale detection");
     }
-    
+
     tracing::info!("Using default locale: en_US");
 }
 
@@ -195,7 +196,7 @@ pub fn t() -> Translations {
         .read()
         .map(|l| l.clone())
         .unwrap_or_else(|_| "en_US".to_string());
-    
+
     TRANSLATIONS
         .read()
         .ok()

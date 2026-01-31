@@ -76,7 +76,7 @@ mod tests {
     fn test_config_path() {
         let result = AppConfig::config_path();
         assert!(result.is_ok());
-        
+
         let path = result.unwrap();
         let path_str = path.to_str().expect("Valid UTF-8 path");
         assert!(path_str.contains("ro-start"));
