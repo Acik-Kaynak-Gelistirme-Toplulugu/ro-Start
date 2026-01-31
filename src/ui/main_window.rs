@@ -4,6 +4,7 @@ use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, HeaderBar, Label};
 use gtk::{Box as GtkBox, Orientation};
 use libadwaita::prelude::*;
+use std::process::Command;
 
 #[allow(dead_code)]
 pub struct MainWindow {
