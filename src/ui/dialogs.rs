@@ -1,10 +1,9 @@
 use gtk::prelude::*;
-use libadwaita as adw;
 use libadwaita::prelude::MessageDialogExt;
 
 /// Show an error dialog
 pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {
-    let dialog = adw::MessageDialog::builder()
+    let dialog = libadwaita::MessageDialog::builder()
         .heading(title)
         .body(message)
         .build();
@@ -22,7 +21,7 @@ pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {
 
 /// Show an info dialog
 pub fn show_info(parent: Option<&gtk::Window>, title: &str, message: &str) {
-    let dialog = adw::MessageDialog::builder()
+    let dialog = libadwaita::MessageDialog::builder()
         .heading(title)
         .body(message)
         .build();
@@ -46,7 +45,7 @@ pub fn show_confirm(
     confirm_label: &str,
     callback: Box<dyn Fn() + 'static>,
 ) {
-    let dialog = adw::MessageDialog::builder()
+    let dialog = libadwaita::MessageDialog::builder()
         .heading(title)
         .body(message)
         .build();
@@ -55,7 +54,7 @@ pub fn show_confirm(
     dialog.add_response("confirm", confirm_label);
     dialog.set_default_response(Some("confirm"));
     dialog.set_close_response("cancel");
-    dialog.set_response_appearance("confirm", adw::ResponseAppearance::Suggested);
+    dialog.set_response_appearance("confirm", libadwaita::ResponseAppearance::Suggested);
 
     if let Some(parent) = parent {
         dialog.set_transient_for(Some(parent));

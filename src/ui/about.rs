@@ -1,10 +1,9 @@
 use gtk::prelude::*;
-use libadwaita as adw;
 use libadwaita::prelude::*;
 
 /// Show About dialog
 pub fn show_about(parent: Option<&gtk::Window>) {
-    let about = adw::AboutWindow::builder()
+    let about = libadwaita::AboutWindow::builder()
         .application_name("Ro-Start")
         .application_icon("ro-start")
         .version("1.0.0")

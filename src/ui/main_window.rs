@@ -3,7 +3,6 @@ use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, HeaderBar, Label};
 use gtk::{Box as GtkBox, Orientation};
-use libadwaita as adw;
 use libadwaita::prelude::*;
 
 #[allow(dead_code)]
@@ -129,8 +128,8 @@ impl MainWindow {
         app.set_accels_for_action("win.quit", &["<Ctrl>Q"]);
     }
 
-    fn create_system_info_card() -> adw::PreferencesGroup {
-        let group = adw::PreferencesGroup::new();
+    fn create_system_info_card() -> libadwaita::PreferencesGroup {
+        let group = libadwaita::PreferencesGroup::new();
 
         group.set_title("System Information");
 
@@ -139,35 +138,35 @@ impl MainWindow {
         let info = sys_state.get_system_info();
 
         // OS Row
-        let os_row = adw::ActionRow::new();
+        let os_row = libadwaita::ActionRow::new();
         os_row.set_title("Operating System");
         os_row.set_subtitle(&info.os_name);
         os_row.add_prefix(&gtk::Image::from_icon_name("computer-symbolic"));
         group.add(&os_row);
 
         // Desktop Row
-        let desktop_row = adw::ActionRow::new();
+        let desktop_row = libadwaita::ActionRow::new();
         desktop_row.set_title("Desktop Environment");
         desktop_row.set_subtitle(&info.desktop_environment);
         desktop_row.add_prefix(&gtk::Image::from_icon_name("video-display-symbolic"));
         group.add(&desktop_row);
 
         // Kernel Row
-        let kernel_row = adw::ActionRow::new();
+        let kernel_row = libadwaita::ActionRow::new();
         kernel_row.set_title("Kernel");
         kernel_row.set_subtitle(&info.kernel_version);
         kernel_row.add_prefix(&gtk::Image::from_icon_name("utilities-terminal-symbolic"));
         group.add(&kernel_row);
 
         // Memory Row
-        let memory_row = adw::ActionRow::new();
+        let memory_row = libadwaita::ActionRow::new();
         memory_row.set_title("Memory");
         memory_row.set_subtitle(&info.memory_info);
         memory_row.add_prefix(&gtk::Image::from_icon_name("drive-harddisk-symbolic"));
         group.add(&memory_row);
 
         // CPU Row
-        let cpu_row = adw::ActionRow::new();
+        let cpu_row = libadwaita::ActionRow::new();
         cpu_row.set_title("CPU");
         cpu_row.set_subtitle(&info.cpu_info);
         cpu_row.add_prefix(&gtk::Image::from_icon_name("cpu-symbolic"));
@@ -176,13 +175,13 @@ impl MainWindow {
         group
     }
 
-    fn create_actions_card() -> adw::PreferencesGroup {
-        let group = adw::PreferencesGroup::new();
+    fn create_actions_card() -> libadwaita::PreferencesGroup {
+        let group = libadwaita::PreferencesGroup::new();
 
         group.set_title("Quick Actions");
 
         // Update System Button
-        let update_row = adw::ActionRow::new();
+        let update_row = libadwaita::ActionRow::new();
         update_row.set_title("Update System");
         update_row.set_subtitle("Check and install available updates");
         update_row.add_prefix(&gtk::Image::from_icon_name(
@@ -203,7 +202,7 @@ impl MainWindow {
         group.add(&update_row);
 
         // Software Center Button
-        let software_row = adw::ActionRow::new();
+        let software_row = libadwaita::ActionRow::new();
         software_row.set_title("Software Center");
         software_row.set_subtitle("Browse and install applications");
         software_row.add_prefix(&gtk::Image::from_icon_name(
@@ -223,7 +222,7 @@ impl MainWindow {
         group.add(&software_row);
 
         // Settings Button
-        let settings_row = adw::ActionRow::new();
+        let settings_row = libadwaita::ActionRow::new();
         settings_row.set_title("System Settings");
         settings_row.set_subtitle("Configure your system");
         settings_row.add_prefix(&gtk::Image::from_icon_name("emblem-system-symbolic"));

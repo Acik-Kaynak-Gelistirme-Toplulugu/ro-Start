@@ -1,10 +1,9 @@
 use gtk::prelude::*;
-use libadwaita as adw;
 use libadwaita::prelude::*;
 
 /// Show Settings/Preferences window
 pub fn show_settings(parent: Option<&gtk::Window>) {
-    let window = adw::PreferencesWindow::new();
+    let window = libadwaita::PreferencesWindow::new();
     window.set_title(Some("Settings"));
     window.set_default_size(600, 400);
 
@@ -14,16 +13,16 @@ pub fn show_settings(parent: Option<&gtk::Window>) {
     }
 
     // General page
-    let general_page = adw::PreferencesPage::new();
+    let general_page = libadwaita::PreferencesPage::new();
     general_page.set_title("General");
     general_page.set_icon_name(Some("preferences-system-symbolic"));
 
     // Appearance group
-    let appearance_group = adw::PreferencesGroup::new();
+    let appearance_group = libadwaita::PreferencesGroup::new();
     appearance_group.set_title("Appearance");
 
     // Language selection
-    let language_row = adw::ComboRow::new();
+    let language_row = libadwaita::ComboRow::new();
     language_row.set_title("Language");
     let languages = gtk::StringList::new(&[
         "English",
@@ -60,11 +59,11 @@ pub fn show_settings(parent: Option<&gtk::Window>) {
     general_page.add(&appearance_group);
 
     // Startup group
-    let startup_group = adw::PreferencesGroup::new();
+    let startup_group = libadwaita::PreferencesGroup::new();
     startup_group.set_title("Startup");
 
     // Autostart toggle
-    let autostart_row = adw::SwitchRow::new();
+    let autostart_row = libadwaita::SwitchRow::new();
     autostart_row.set_title("Launch at login");
     autostart_row.set_subtitle("Automatically start Ro-Start when you log in");
 
