@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Добро пожаловать в Linux",
-    "version": "v1.0.0 (Бета)"
+    "version": "v2.0.0"
   },
   "sidebar": {
     "welcome": "Добро пожаловать",

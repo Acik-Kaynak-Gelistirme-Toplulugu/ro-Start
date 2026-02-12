@@ -209,7 +209,7 @@ fn get_fallback_en() -> Translations {
     Translations {
         app: AppTranslations {
             title: "Welcome to Linux".to_string(),
-            version: "v1.0.0".to_string(),
+            version: "v2.0.0".to_string(),
         },
         sidebar: SidebarTranslations {
             welcome: "Welcome".to_string(),

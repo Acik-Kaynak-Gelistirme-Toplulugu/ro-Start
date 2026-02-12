@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "欢迎使用 Linux",
-    "version": "v1.0.0 (公测版)"
+    "version": "v2.0.0"
   },
   "sidebar": {
     "welcome": "欢迎",

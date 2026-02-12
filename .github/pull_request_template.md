@@ -13,10 +13,12 @@ Fixes # (issue)
 
 ## How Has This Been Tested?
 
-Please describe the tests that you ran to verify your changes.
+Please describe how you tested your changes:
 
-- [ ] Test A
-- [ ] Test B
+- [ ] Built the project: `cargo build`
+- [ ] Tested manually
+- [ ] Ran clippy: `cargo clippy --all-features`
+- [ ] Checked formatting: `cargo fmt --check`
 
 ## Checklist:
 
@@ -25,5 +27,3 @@ Please describe the tests that you ran to verify your changes.
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes

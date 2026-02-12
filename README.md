@@ -3,30 +3,27 @@
 > **Modern Linux welcome application — Fast, safe, and beautiful**  
 > Built with Rust + GTK4 + libadwaita
 
+[English](README.md) | [Türkçe](README.tr.md)
+
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Rust CI](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/actions/workflows/rust.yml/badge.svg)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/actions/workflows/rust.yml)
 [![GitHub release](https://img.shields.io/github/v/release/Acik-Kaynak-Gelistirme-Toplulugu/ro-start)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest)
+[![Rust](https://img.shields.io/badge/Rust-1.70%2B-orange)](https://www.rust-lang.org/)
+[![GTK4](https://img.shields.io/badge/GTK-4.12%2B-blue)](https://gtk.org/)
 
-[Features](#-features) • [Installation](#-installation) • [Building](#-building-from-source) • [Contributing](#-contributing) • [License](#-license)
-
----
-
-## 📸 Screenshots
-
-*Coming soon - Screenshots will be added after first Linux build*
+[Features](#-features) • [Installation](#-installation) • [Building](#%EF%B8%8F-building-from-source) • [Contributing](#-contributing) • [License](#-license)
 
 ---
 
 ## 🎯 Features
 
-- ✅ **System Information Dashboard** - Real-time CPU, RAM, and storage stats
-- ✅ **Multi-Desktop Support** - Works on KDE Plasma, GNOME, Xfce, and other DEs
-- ✅ **GTK4 UI** - Native integration with beautiful modern design
-- ✅ **Lightning Fast** - 5x faster startup than alternatives (~0.5s)
-- ✅ **Memory Efficient** - Uses only ~45MB RAM
-- ✅ **Quick Actions** - System updates, software recommendations
-- ⏳ **Driver Management** - Automatic detection and installation (coming soon)
-- ⏳ **Multi-language Support** - i18n support (coming soon)
+- ✅ **System Information Display** — View CPU, RAM, kernel, and system stats at a glance
+- ✅ **GTK4 + libadwaita** — Modern, native Linux UI with GNOME integration
+- ✅ **Multi-Desktop Support** — Works on GNOME, KDE Plasma, Xfce, and other DEs
+- ✅ **Lightweight** — Minimal resource usage (~45 MB RAM)
+- ✅ **Fast Startup** — Built with Rust for optimal performance (~0.5s)
+- ✅ **Multi-language Support** — 9 languages: English, Türkçe, Deutsch, Español, Français, Italiano, 日本語, Русский, 中文
+- ✅ **Package Manager Integration** — Auto-detects apt, dnf, pacman, zypper
 
 ---
 
@@ -34,9 +31,9 @@
 
 ### For Users
 
-- **Linux** (any modern distribution - KDE Plasma, GNOME, Xfce, etc.)
-- **GTK4** 4.12+ 
-- **libadwaita** 1.5+ (for best GNOME experience)
+- **Linux** (any modern distribution — Fedora, Ubuntu, Arch, etc.)
+- **GTK4** 4.12+
+- **libadwaita** 1.5+
 
 ### For Developers
 
@@ -44,25 +41,46 @@ Additional requirements for building from source:
 
 - **Rust** 1.70+ ([install via rustup](https://rustup.rs/))
 - **GTK4 development files**
-- **libadwaita development files** (optional, for GNOME styling)
+- **libadwaita development files**
 - **pkg-config**
 
 ### Desktop Environment Support
 
-- ✅ **KDE Plasma** 5.27+
-- ✅ **GNOME** 40+
-- ✅ **Xfce** 4.16+
-- ✅ **LXDE** 0.9.3+
-- ✅ **Cinnamon** 5.0+
-- ✅ **MATE** 1.24+
-- ✅ **Budgie** 10+
-- ✅ **Deepin** 20+
+| Desktop Environment  | Status             |
+| -------------------- | ------------------ |
+| **GNOME** 40+        | ✅ Fully supported |
+| **KDE Plasma** 5.27+ | ✅ Fully supported |
+| **Xfce** 4.16+       | ✅ Fully supported |
+| **Cinnamon** 5.0+    | ✅ Supported       |
+| **MATE** 1.24+       | ✅ Supported       |
+| **Budgie** 10+       | ✅ Supported       |
+| **LXDE** 0.9.3+      | ✅ Supported       |
+| **Deepin** 20+       | ✅ Supported       |
 
 ---
 
 ## 📦 Installation
 
-### From Release (Recommended)
+### Fedora / RHEL (RPM)
+
+```bash
+# Download the latest RPM package
+wget https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest/download/ro-start-2.0.0-1.x86_64.rpm
+
+# Install
+sudo dnf install ./ro-start-2.0.0-1.x86_64.rpm
+```
+
+### Debian / Ubuntu (.deb)
+
+```bash
+# Download and install the latest .deb package
+wget https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest/download/ro-start_2.0.0-1_amd64.deb
+sudo dpkg -i ro-start_2.0.0-1_amd64.deb
+sudo apt-get install -f
+```
+
+### From Binary Release
 
 Download the latest release from [GitHub Releases](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases):
 
@@ -73,57 +91,31 @@ tar xzf ro-start-v2.0.0-linux-amd64.tar.gz
 cd ro-start-v2.0.0
 
 # Install system-wide
-sudo install -Dm755 ro-start /usr/local/bin/ro-start
-sudo install -Dm644 ro-start.desktop /usr/share/applications/ro-start.desktop
-sudo install -Dm644 ro-start.png /usr/share/icons/hicolor/512x512/apps/ro-start.png
-sudo install -Dm644 org.osdev.ro_start.appdata.xml /usr/share/metainfo/org.osdev.ro_start.appdata.xml
-
-# Update icon cache
-sudo gtk-update-icon-cache /usr/share/icons/hicolor/
+sudo ./install.sh
 ```
 
-### Distribution Packages
-
-#### Debian/Ubuntu
-
-```bash
-cargo install cargo-deb
-cargo deb
-sudo dpkg -i target/debian/ro-start_*.deb
-```
-
-#### Fedora/RHEL
-
-```bash
-cargo install cargo-generate-rpm
-cargo build --release
-cargo generate-rpm
-sudo rpm -i target/generate-rpm/ro-start-*.rpm
-```
-
-#### Arch Linux (AUR)
-
-```bash
-yay -S ro-start-git
-```
+For more installation options, see [docs/INSTALL.md](docs/INSTALL.md).
 
 ---
 
-## 🛠️ Building from Source
+## 🏗️ Building from Source
 
 ### Install Dependencies
 
-**Ubuntu 24.04+ / Debian:**
-```bash
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev
-```
-
 **Fedora 39+:**
+
 ```bash
 sudo dnf install gcc pkg-config gtk4-devel libadwaita-devel
 ```
 
+**Ubuntu 24.04+ / Debian:**
+
+```bash
+sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev
+```
+
 **Arch Linux:**
+
 ```bash
 sudo pacman -S base-devel pkg-config gtk4 libadwaita
 ```
@@ -146,34 +138,41 @@ strip -s target/release/ro-start
 ./target/release/ro-start
 ```
 
+### Distribution Packages
+
+#### Fedora / RHEL (RPM)
+
+```bash
+cargo install cargo-generate-rpm
+cargo build --release
+strip -s target/release/ro-start
+cargo generate-rpm
+sudo rpm -i target/generate-rpm/ro-start-*.rpm
+```
+
+#### Debian / Ubuntu (.deb)
+
+```bash
+cargo install cargo-deb
+cargo deb
+sudo dpkg -i target/debian/ro-start_*.deb
+```
+
 ---
 
-## 📊 Performance
+## 🚀 Why Rust + GTK4?
 
-| Metric | Python + Qt | Electron | **Rust + GTK4** |
-|--------|-------------|----------|-----------------|
-| Startup Time | 2.5s | 3.0s  | **0.5s** ✅ |
-| RAM Usage | 200MB | 300MB | **45MB** ✅ |
-| Binary Size | N/A | ~100MB | **8MB** ✅ |
-| Native Look | ⚠️ | ❌ | **✅** |
+| Metric           | Value            |
+| ---------------- | ---------------- |
+| **Startup Time** | ~0.5 seconds     |
+| **Memory Usage** | ~45 MB           |
+| **Binary Size**  | ~8 MB (stripped) |
+| **CPU (idle)**   | <0.2%            |
 
----
-
-## 🗺️ Roadmap
-
-See our [project roadmap](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/projects) for planned features and milestones.
-
-### Version 2.1 (Next Release)
-- [ ] Package manager integration (apt, dnf, pacman)
-- [ ] System update functionality
-- [ ] Software recommendations
-- [ ] Settings panel
-
-### Version 2.2
-- [ ] Driver detection and installation
-- [ ] Autostart configuration
-- [ ] Multi-language support (i18n)
-- [ ] Custom themes
+- **Performance** — Compiled native binary with fast startup
+- **Memory Efficient** — Low memory footprint compared to Electron-based apps
+- **Small Binary** — Compact executable size
+- **Native Integration** — True GTK4/libadwaita look and feel
 
 ---
 
@@ -186,10 +185,10 @@ Contributions are welcome! Please see our [Contributing Guide](CONTRIBUTING.md) 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run tests: `cargo test`
-5. Format: `cargo fmt`
-6. Lint: `cargo clippy`
-7. Commit (`git commit -m 'Add amazing feature'`)
+4. Check format: `cargo fmt --check`
+5. Run lint: `cargo clippy --all-features`
+6. Build: `cargo build --release`
+7. Commit (`git commit -m 'feat: add amazing feature'`)
 8. Push (`git push origin feature/amazing-feature`)
 9. Open a Pull Request
 
@@ -197,31 +196,16 @@ Contributions are welcome! Please see our [Contributing Guide](CONTRIBUTING.md) 
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU General Public License v3.0** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## 📚 Documentation
 
-- [GTK Team](https://www.gtk.org/) - Excellent toolkit
-- [GNOME Design Team](https://developer.gnome.org/) - libadwaita and HIG
-- [Rust Community](https://www.rust-lang.org/) - Amazing language
-- [gtk-rs Project](https://gtk-rs.org/) - Rust bindings for GTK
-
----
-
-## 📧 Support
-
-- **Issues:** [GitHub Issues](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/discussions)
-- **Email:** info@osdev.shop
-
----
-
-<div align="center">
-
-**Built with ❤️ in Turkey by [Açık Kaynak Geliştirme Topluluğu](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu)**
-
-⭐ Star us on GitHub — it motivates us a lot!
-
-</div>
+- [Installation Guide](docs/INSTALL.md)
+- [Development Guide](docs/DEVELOPMENT.md)
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [Packaging Guide](docs/PACKAGING.md)
+- [API Reference](docs/API.md)
+- [Changelog](CHANGELOG.md)
+- [Security Policy](SECURITY.md)

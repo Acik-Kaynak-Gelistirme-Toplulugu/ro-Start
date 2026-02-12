@@ -40,18 +40,21 @@ When contributing to this project, you must agree that you have authored 100% of
 2. **Install System Dependencies:**
 
    **Ubuntu/Debian:**
+
    ```bash
    sudo apt install build-essential pkg-config \
        libgtk-4-dev libadwaita-1-dev git curl
    ```
 
    **Fedora:**
+
    ```bash
    sudo dnf install gcc pkg-config \
        gtk4-devel libadwaita-devel git curl
    ```
 
    **Arch Linux:**
+
    ```bash
    sudo pacman -S base-devel pkg-config \
        gtk4 libadwaita git curl
@@ -85,9 +88,6 @@ When contributing to this project, you must agree that you have authored 100% of
 cargo install cargo-watch
 cargo watch -x run
 
-# Run tests
-cargo test
-
 # Format code
 cargo fmt
 
@@ -103,6 +103,7 @@ cargo check
 The application is designed to work on multiple Linux desktop environments. When testing:
 
 **KDE Plasma:**
+
 ```bash
 # The app will auto-detect as "KDE Plasma" and show in system info
 DESKTOP_SESSION=plasmadesktop ./target/debug/ro-start
@@ -112,12 +113,14 @@ export XDG_CURRENT_DESKTOP="KDE"
 ```
 
 **GNOME:**
+
 ```bash
 export XDG_CURRENT_DESKTOP="GNOME"
 ./target/debug/ro-start
 ```
 
 **Xfce:**
+
 ```bash
 export XDG_CURRENT_DESKTOP="XFCE"
 ./target/debug/ro-start
@@ -129,20 +132,31 @@ The desktop environment detection is in `src/system.rs` - `detect_desktop_enviro
 
 ```
 src/
-├── main.rs           # Application entry point
-├── ui/               # GTK4 UI components
+├── main.rs              # Application entry point
+├── ui/                  # GTK4 UI components
 │   ├── mod.rs
-│   └── main_window.rs
-├── system.rs         # System information (includes DE detection)
-└── config.rs         # Configuration
-
-resources/
-└── style.css         # GTK CSS styling
+│   ├── main_window.rs   # Main window implementation
+│   ├── about.rs         # About dialog
+│   ├── settings.rs      # Settings panel
+│   └── dialogs.rs       # Dialog utilities
+├── system.rs            # System information (includes DE detection)
+├── config.rs            # Configuration management
+├── i18n.rs              # Internationalization (9 languages)
+├── package_manager.rs   # Package manager abstraction
+├── notifications.rs     # Desktop notifications
+└── error.rs             # Error types
 
 data/
 ├── ro-start.desktop
+├── ro-start-autostart.desktop
 ├── ro-start.png
+├── style.css
 └── org.osdev.ro_start.appdata.xml
+
+scripts/
+├── build_deb.sh         # Debian package builder
+├── build_deb_orbstack.sh  # macOS OrbStack deb builder
+└── check-syntax.sh      # Pre-push syntax checker
 ```
 
 ## Styleguides
@@ -156,10 +170,11 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `docs:` Documentation changes
 - `style:` Code style changes (formatting)
 - `refactor:` Code refactoring
-- `test:` Adding or updating tests
+- `test:` Code quality improvements
 - `chore:` Maintenance tasks
 
 **Examples:**
+
 ```
 feat: add system update checking
 fix: resolve memory leak in system info
@@ -170,13 +185,13 @@ docs: update installation instructions
 
 - **Follow Rust conventions:** Use `rustfmt` for formatting
 - **Use `clippy`:** Fix all clippy warnings before submitting
-- **Write tests:** Add tests for new functionality
 - **Document public APIs:** Use doc comments (`///`)
 - **Error handling:** Use `Result` and `?` operator
 - **Avoid `unwrap()`:** Use proper error handling
 - **Keep functions small:** Single responsibility principle
 
 **Example:**
+
 ```rust
 /// Retrieves system information
 ///
@@ -199,33 +214,18 @@ pub fn get_system_info() -> Result<SystemInfo, SystemError> {
 ### Pull Request Process
 
 1. **Update documentation** if needed
-2. **Add tests** for new features
-3. **Run `cargo fmt`** and **`cargo clippy`**
-4. **Ensure all tests pass:** `cargo test`
+2. **Run `cargo fmt`** to format code
+3. **Run `cargo clippy --all-features`** to check for warnings
+4. **Build release:** `cargo build --release`
 5. **Update CHANGELOG.md** with notable changes
 6. **Request review** from maintainers
-
-### Testing
-
-```bash
-# Run all tests
-cargo test
-
-# Run specific test
-cargo test test_name
-
-# Run tests with output
-cargo test -- --nocapture
-
-# Run ignored tests
-cargo test -- --ignored
-```
 
 ---
 
 ## Questions?
 
 Feel free to reach out:
+
 - **GitHub Issues:** [Report issues](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/issues)
 - **GitHub Discussions:** [Ask questions](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/discussions)
 - **Email:** info@osdev.shop

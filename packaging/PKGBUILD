@@ -1,14 +1,14 @@
-# Maintainer: ro-repo <project.roasd@gmail.com>
+# Maintainer: Açık Kaynak Geliştirme Topluluğu <info@osdev.shop>
 pkgname=ro-start
-pkgver=1.0.0
+pkgver=2.0.0
 pkgrel=1
 pkgdesc="Fast, safe, and beautiful Linux welcome application built with Rust + GTK4"
 arch=('x86_64' 'aarch64')
-url="https://github.com/ro-repo/ro-start"
+url="https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
 license=('GPL3')
 depends=('gtk4>=4.12' 'libadwaita>=1.5')
 makedepends=('rust' 'cargo' 'pkg-config')
-source=("$pkgname-$pkgver.tar.gz::https://github.com/ro-repo/$pkgname/archive/v$pkgver.tar.gz")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/$pkgname/archive/v$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {

@@ -7,6 +7,7 @@ This guide covers how to set up your development environment and contribute to R
 ### System Dependencies
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo apt install build-essential pkg-config \
     libgtk-4-dev libadwaita-1-dev \
@@ -14,6 +15,7 @@ sudo apt install build-essential pkg-config \
 ```
 
 **Fedora:**
+
 ```bash
 sudo dnf install gcc pkg-config \
     gtk4-devel libadwaita-devel \
@@ -21,6 +23,7 @@ sudo dnf install gcc pkg-config \
 ```
 
 **Arch Linux:**
+
 ```bash
 sudo pacman -S base-devel pkg-config \
     gtk4 libadwaita \
@@ -80,20 +83,31 @@ cargo check
 
 ```
 src/
-├── main.rs           # Application entry point
-├── ui/               # User interface
+├── main.rs              # Application entry point
+├── ui/                  # User interface
 │   ├── mod.rs
-│   └── main_window.rs
-├── system.rs         # System information
-└── config.rs         # Configuration
-
-resources/
-└── style.css         # GTK CSS styling
+│   ├── main_window.rs   # Main window implementation
+│   ├── about.rs         # About dialog
+│   ├── settings.rs      # Settings panel
+│   └── dialogs.rs       # Dialog utilities
+├── system.rs            # System information & DE detection
+├── config.rs            # Configuration management
+├── i18n.rs              # Internationalization (9 languages)
+├── package_manager.rs   # Package manager abstraction
+├── notifications.rs     # Desktop notifications
+└── error.rs             # Error types
 
 data/
-├── ro-start.desktop  # Desktop entry
-├── ro-start.png      # Icon
-└── *.appdata.xml     # AppStream metadata
+├── ro-start.desktop     # Desktop entry
+├── ro-start-autostart.desktop  # Autostart entry
+├── ro-start.png         # Icon
+├── style.css            # GTK CSS styling
+└── *.appdata.xml        # AppStream metadata
+
+scripts/
+├── build_deb.sh         # Debian package build script
+├── build_deb_orbstack.sh  # macOS OrbStack deb build
+└── check-syntax.sh      # Pre-push syntax checker
 ```
 
 ## Code Style
@@ -120,9 +134,10 @@ We follow standard Rust conventions:
 1. Create widget in `src/ui/`
 2. Use libadwaita components when possible
 3. Follow GNOME Human Interface Guidelines
-4. Add CSS styling to `resources/style.css`
+4. Add CSS styling to `data/style.css`
 
 Example:
+
 ```rust
 use gtk::prelude::*;
 use libadwaita as adw;
@@ -130,10 +145,10 @@ use libadwaita as adw;
 pub fn create_settings_view() -> adw::PreferencesPage {
     let page = adw::PreferencesPage::new();
     page.set_title("Settings");
-    
+
     let group = adw::PreferencesGroup::new();
     group.set_title("General");
-    
+
     page.add(&group);
     page
 }

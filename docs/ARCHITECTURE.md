@@ -30,7 +30,7 @@ Ro-Start is a **native Rust application** using GTK4 and libadwaita for a modern
 │  │  └─────────────────────────────────────┘│   │
 │  │  ┌─────────────────────────────────────┐│   │
 │  │  │  i18n.rs                            ││   │
-│  │  │  - 8 language support               ││   │
+│  │  │  - 9 language support               ││   │
 │  │  │  - System locale detection          ││   │
 │  │  │  - Translation management           ││   │
 │  │  └─────────────────────────────────────┘│   │
@@ -90,7 +90,7 @@ Ro-Start is a **native Rust application** using GTK4 and libadwaita for a modern
 src/
 ├── main.rs              # Application entry point
 ├── system.rs            # System info & DE detection
-├── i18n.rs              # Internationalization (8 languages)
+├── i18n.rs              # Internationalization (9 languages)
 ├── package_manager.rs   # Package manager abstraction
 ├── notifications.rs     # Desktop notifications
 ├── config.rs            # Configuration management
@@ -105,7 +105,7 @@ src/
 
 ### 4. Internationalization
 
-- **8 Languages**: en_US, tr_TR, de, es, fr, it, ja, ru, zh
+- **9 Languages**: en_US, tr_TR, de, es, fr, it, ja, ru, zh
 - **Automatic Detection**: System locale detection from LANG/LC_ALL
 - **JSON-based**: Easy to add new translations
 - **Fallback**: Default to English if translation unavailable
@@ -167,12 +167,12 @@ Render UI in selected language
 
 ## Performance Characteristics
 
-| Metric | Value |
-|--------|-------|
-| **Startup Time** | ~0.5 seconds |
-| **Memory Usage** | ~45 MB |
-| **Binary Size** | ~8 MB (stripped) |
-| **CPU (idle)** | <0.2% |
+| Metric               | Value                    |
+| -------------------- | ------------------------ |
+| **Startup Time**     | ~0.5 seconds             |
+| **Memory Usage**     | ~45 MB                   |
+| **Binary Size**      | ~8 MB (stripped)         |
+| **CPU (idle)**       | <0.2%                    |
 | **Compilation Time** | ~30-60 seconds (release) |
 
 ## Extensibility
@@ -217,21 +217,25 @@ let cmd = match de.as_str() {
 ## Testing Strategy
 
 ### Unit Tests
+
 ```bash
 cargo test --all
 ```
 
 ### Format Check
+
 ```bash
 cargo fmt --all -- --check
 ```
 
 ### Linting
+
 ```bash
 cargo clippy --all-features -- -D warnings
 ```
 
 ### Build
+
 ```bash
 cargo build --release
 ```

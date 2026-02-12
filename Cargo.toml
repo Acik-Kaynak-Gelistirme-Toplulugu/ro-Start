@@ -1,13 +1,13 @@
 [package]
 name = "ro-start"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
-authors = ["ro-repo <project.roasd@gmail.com>"]
+authors = ["Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>"]
 license = "GPL-3.0-or-later"
 description = "Fast, safe, and beautiful Linux welcome application built with Rust + GTK4"
-repository = "https://github.com/ro-repo/ro-start"
-homepage = "https://github.com/ro-repo/ro-start"
-documentation = "https://github.com/ro-repo/ro-start/blob/main/README.md"
+repository = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
+homepage = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start"
+documentation = "https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/blob/main/README.md"
 readme = "README.md"
 keywords = ["linux", "gtk", "gtk4", "libadwaita", "welcome"]
 categories = ["gui"]
@@ -23,8 +23,8 @@ libadwaita = { version = "0.7", features = ["v1_5"] }
 gio = "0.20"
 glib = "0.20"
 
-# Async runtime
-tokio = { version = "1", features = ["full"] }
+# Async runtime (only needed features for Linux)
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }
 
 # System information
 sysinfo = "0.33"
@@ -72,8 +72,8 @@ opt-level = 0
 
 # Metadata for cargo-deb
 [package.metadata.deb]
-maintainer = "ro-repo <project.roasd@gmail.com>"
-copyright = "2026, ro-repo"
+maintainer = "Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>"
+copyright = "2026, Acik Kaynak Gelistirme Toplulugu"
 license-file = ["LICENSE", "0"]
 extended-description = """\
 Ro-Start is a fast, safe, and beautiful Linux welcome application.

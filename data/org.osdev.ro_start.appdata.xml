@@ -27,6 +27,8 @@
   
   <launchable type="desktop-id">ro-start.desktop</launchable>
   
+  <icon type="stock">ro-start</icon>
+  
   <screenshots>
     <screenshot type="default">
       <caption>Welcome Screen</caption>
@@ -42,7 +44,9 @@
   <url type="bugtracker">https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/issues</url>
   <url type="vcs-browser">https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start</url>
   
-  <developer_name>Acik Kaynak Gelistirme Toplulugu</developer_name>
+  <developer id="org.osdev">
+    <name>Acik Kaynak Gelistirme Toplulugu</name>
+  </developer>
   
   <provides>
     <binary>ro-start</binary>
@@ -61,6 +65,7 @@
           <li>Perfect GNOME integration</li>
         </ul>
       </description>
+      <url>https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/tag/v2.0.0</url>
     </release>
     <release version="1.1.0" date="2026-01-30">
       <description>
@@ -68,6 +73,20 @@
       </description>
     </release>
   </releases>
+  
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  
+  <recommends>
+    <display_length compare="ge">768</display_length>
+  </recommends>
   
   <content_rating type="oars-1.1" />
   

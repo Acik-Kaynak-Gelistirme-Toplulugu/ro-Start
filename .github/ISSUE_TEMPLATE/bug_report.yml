@@ -36,7 +36,7 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 1.0.0 (Alpha)
+        - 2.0.0
         - Dev Branch
     validations:
       required: true
@@ -45,12 +45,13 @@ body:
     attributes:
       label: Operating System
       options:
+        - Fedora
         - Ubuntu
         - Debian
         - Arch Linux
-        - Fedora
-        - macOS (Simulation)
-        - Windows (Simulation)
+        - Pop!_OS
+        - Linux Mint
+        - openSUSE
         - Other
     validations:
       required: true

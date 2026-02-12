@@ -15,7 +15,7 @@ impl Default for AppConfig {
     fn default() -> Self {
         Self {
             app_name: "Ro-Start".to_string(),
-            version: "1.0.0".to_string(),
+            version: "2.0.0".to_string(),
             autostart: false,
             language: "auto".to_string(),
         }
@@ -68,7 +68,7 @@ mod tests {
     fn test_app_config_default() {
         let config = AppConfig::default();
         assert_eq!(config.app_name, "Ro-Start");
-        assert_eq!(config.version, "1.0.0");
+        assert_eq!(config.version, "2.0.0");
         assert_eq!(config.autostart, false);
     }
 

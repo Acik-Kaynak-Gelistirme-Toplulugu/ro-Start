@@ -1,0 +1,63 @@
+name: Build RPM Package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-rpm:
+    name: Build RPM Package
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          dnf install -y \
+            gcc pkg-config \
+            gtk4-devel libadwaita-devel \
+            rust cargo \
+            rpm-build rpmdevtools \
+            git
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build release binary
+        run: |
+          cargo build --release
+          strip -s target/release/ro-start
+
+      - name: Install cargo-generate-rpm
+        run: cargo install cargo-generate-rpm
+
+      - name: Generate RPM package
+        run: cargo generate-rpm
+
+      - name: Get package info
+        id: rpm_info
+        run: |
+          RPM_FILE=$(find target/generate-rpm -name "*.rpm" -type f | head -n 1)
+          echo "rpm_file=$RPM_FILE" >> $GITHUB_OUTPUT
+          echo "rpm_name=$(basename $RPM_FILE)" >> $GITHUB_OUTPUT
+
+      - name: Upload RPM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpm-package
+          path: ${{ steps.rpm_info.outputs.rpm_file }}
+
+      - name: Create Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.rpm_info.outputs.rpm_file }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

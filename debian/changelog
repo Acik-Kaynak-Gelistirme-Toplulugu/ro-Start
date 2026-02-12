@@ -1,11 +1,15 @@
-ro-start (1.0.0-1) unstable; urgency=medium
+ro-start (2.0.0-1) unstable; urgency=medium
 
-  * Initial release
+  * Version 2.0.0 Release
   * Complete rewrite in Rust + GTK4
   * Native GNOME integration with libadwaita
   * 5x faster startup compared to previous versions
   * 4.4x reduced memory footprint
   * Memory-safe implementation
   * Single binary distribution
+  * Full i18n support (9 languages)
+  * Package manager integration (apt, dnf, pacman, zypper)
+  * System information display
+  * Desktop file and AppData validation
 
- -- ro-repo <project.roasd@gmail.com>  Fri, 31 Jan 2026 00:00:00 +0300
+ -- Acik Kaynak Gelistirme Toplulugu <info@osdev.shop>  Sat, 01 Feb 2026 12:00:00 +0300

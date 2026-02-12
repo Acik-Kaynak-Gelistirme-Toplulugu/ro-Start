@@ -5,7 +5,6 @@ use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, HeaderBar, Label};
 use gtk::{Box as GtkBox, Orientation};
 use libadwaita as adw;
-use std::process::Command;
 
 #[allow(dead_code)]
 pub struct MainWindow {
@@ -206,7 +205,7 @@ impl MainWindow {
                 "KDE Plasma" => "discover",
                 "GNOME" => "gnome-software",
                 "Xfce" => "xfce4-appfinder",
-                _ => "sudo apt update && sudo apt upgrade",
+                _ => "gnome-software",
             };
 
             if let Err(e) = std::process::Command::new("sh")
@@ -246,7 +245,7 @@ impl MainWindow {
                 "KDE Plasma" => "discover",
                 "GNOME" => "gnome-software",
                 "Xfce" => "xfce4-appfinder",
-                _ => "sudo apt install",
+                _ => "gnome-software",
             };
 
             if let Err(e) = std::process::Command::new("sh")
@@ -306,7 +305,7 @@ impl MainWindow {
 
     fn load_css() {
         let provider = gtk::CssProvider::new();
-        provider.load_from_string(
+        provider.load_from_data(
             r#"
             .title-1 {
                 font-size: 24px;

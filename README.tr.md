@@ -1,117 +1,166 @@
 # 🚀 Ro-Start
 
-> **Modern Linux karşılama uygulaması — Hızlı, güvenli ve şık**  
-> Rust + GTK4 + libadwaita ile geliştirilmiştir
+> **Modern Linux karşılama uygulaması — Hızlı, güvenli ve güzel**  
+> Rust + GTK4 + libadwaita ile geliştirildi
 
-[English](README.md) | **Türkçe**
+[English](README.md) | [Türkçe](README.tr.md)
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Lisans: GPL v3](https://img.shields.io/badge/Lisans-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Rust CI](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/actions/workflows/rust.yml/badge.svg)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/actions/workflows/rust.yml)
+[![GitHub sürümü](https://img.shields.io/github/v/release/Acik-Kaynak-Gelistirme-Toplulugu/ro-start)](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest)
+[![Rust](https://img.shields.io/badge/Rust-1.70%2B-orange)](https://www.rust-lang.org/)
+[![GTK4](https://img.shields.io/badge/GTK-4.12%2B-blue)](https://gtk.org/)
+
+[Özellikler](#-özellikler) • [Kurulum](#-kurulum) • [Derleme](#%EF%B8%8F-kaynaktan-derleme) • [Katkıda Bulunma](#-katkıda-bulunma) • [Lisans](#-lisans)
 
 ---
 
-## 📖 Genel Bakış
+## 🎯 Özellikler
 
-Ro-Start, modern Linux dağıtımları için özel olarak tasarlanmış, native bir karşılama uygulamasıdır. Tamamen Rust ile yazılmış olup GTK4 ve libadwaita kullanarak mükemmel performans ve native GNOME deneyimi sunar.
+- ✅ **Sistem Bilgisi Gösterimi** — CPU, RAM, çekirdek ve sistem istatistiklerini tek bakışta görün
+- ✅ **GTK4 + libadwaita** — GNOME entegrasyonlu modern, yerel Linux arayüzü
+- ✅ **Çoklu Masaüstü Desteği** — GNOME, KDE Plasma, Xfce ve diğer masaüstü ortamlarında çalışır
+- ✅ **Hafif** — Düşük kaynak kullanımı (~45 MB RAM)
+- ✅ **Hızlı Başlatma** — Rust ile optimize edilmiş performans (~0.5s)
+- ✅ **Çoklu Dil Desteği** — 9 dil: English, Türkçe, Deutsch, Español, Français, Italiano, 日本語, Русский, 中文
+- ✅ **Paket Yöneticisi Entegrasyonu** — apt, dnf, pacman, zypper otomatik algılama
 
-## ✨ Özellikler
-
-- ✅ **Sistem Bilgisi Gösterimi** - CPU, RAM ve depolama istatistikleri
-- ✅ **Çoklu Masaüstü Desteği** - KDE Plasma, GNOME, Xfce ve diğerleri
-- ✅ **GTK4 Arayüz** - Modern ve şık tasarım
-- ✅ **Yıldırım Hızı** - Alternatiflerden 5x daha hızlı başlangıç
-- ✅ **Hafif** - Sadece ~45MB RAM kullanımı
-- ✅ **Hızlı Aksiyonlar** - Sistem güncellemeleri, yazılım önerileri
-- ⏳ **Sürücü Yönetimi** - Otomatik algılama ve kurulum (yakında)
-- ⏳ **Çoklu Dil Desteği** - i18n desteği (yakında)
+---
 
 ## 📋 Gereksinimler
 
 ### Kullanıcılar İçin
 
-- **Linux** (herhangi bir modern dağıtım - KDE Plasma, GNOME, Xfce, vb.)
-- **GTK4** 4.12+ 
-- **libadwaita** 1.5+ (en iyi GNOME deneyimi için)
+- **Linux** (modern herhangi bir dağıtım — Fedora, Ubuntu, Arch, vb.)
+- **GTK4** 4.12+
+- **libadwaita** 1.5+
 
 ### Geliştiriciler İçin
 
-- **Rust** 1.70+ ([rustup ile yükle](https://rustup.rs/))
+Kaynaktan derleme için ek gereksinimler:
+
+- **Rust** 1.70+ ([rustup ile kurun](https://rustup.rs/))
 - **GTK4 geliştirme dosyaları**
-- **libadwaita geliştirme dosyaları** (opsiyonel, GNOME stili için)
+- **libadwaita geliştirme dosyaları**
 - **pkg-config**
 
-### Masaüstü Ortamı Desteği
-
-- ✅ **KDE Plasma** 5.27+
-- ✅ **GNOME** 40+
-- ✅ **Xfce** 4.16+
-- ✅ **LXDE** 0.9.3+
-- ✅ **Cinnamon** 5.0+
-- ✅ **MATE** 1.24+
-- ✅ **Budgie** 10+
-- ✅ **Deepin** 20+
+---
 
 ## 📦 Kurulum
 
-### Hazır Paket (Önerilen)
-
-[GitHub Releases](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases) sayfasından en son sürümü indirin:
+### Fedora / RHEL (RPM)
 
 ```bash
-# İndir ve çıkart
+# En son RPM paketini indirin
+wget https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest/download/ro-start-2.0.0-1.x86_64.rpm
+
+# Kurun
+sudo dnf install ./ro-start-2.0.0-1.x86_64.rpm
+```
+
+### Debian / Ubuntu (.deb)
+
+```bash
+# En son .deb paketini indirin ve kurun
+wget https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest/download/ro-start_2.0.0-1_amd64.deb
+sudo dpkg -i ro-start_2.0.0-1_amd64.deb
+sudo apt-get install -f
+```
+
+### Binary Sürümden
+
+En son sürümü [GitHub Releases](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases) sayfasından indirin:
+
+```bash
+# İndirin ve çıkartın
 wget https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/latest/download/ro-start-v2.0.0-linux-amd64.tar.gz
 tar xzf ro-start-v2.0.0-linux-amd64.tar.gz
 cd ro-start-v2.0.0
 
-# Sistem genelinde kur
-sudo install -Dm755 ro-start /usr/local/bin/ro-start
-sudo install -Dm644 ro-start.desktop /usr/share/applications/ro-start.desktop
-sudo install -Dm644 ro-start.png /usr/share/icons/hicolor/512x512/apps/ro-start.png
+# Sistem genelinde kurun
+sudo ./install.sh
 ```
 
-### Kaynak Koddan Derleme
+Daha fazla kurulum seçeneği için [docs/INSTALL.md](docs/INSTALL.md) dosyasına bakın.
 
-**Ubuntu/Debian:**
-```bash
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev
-```
+---
 
-**Fedora:**
+## 🏗️ Kaynaktan Derleme
+
+### Bağımlılıkları Kurun
+
+**Fedora 39+:**
+
 ```bash
 sudo dnf install gcc pkg-config gtk4-devel libadwaita-devel
 ```
 
-**Derleme:**
+**Ubuntu 24.04+ / Debian:**
+
 ```bash
+sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev
+```
+
+**Arch Linux:**
+
+```bash
+sudo pacman -S base-devel pkg-config gtk4 libadwaita
+```
+
+### Derleme
+
+```bash
+# Depoyu klonlayın
 git clone https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start.git
 cd ro-start
+
+# Release derlemesi
 ./build.sh
+
+# Veya manuel olarak
+cargo build --release
+strip -s target/release/ro-start
+
+# Çalıştırın
 ./target/release/ro-start
 ```
 
-## 📊 Performans
+---
 
-| Metrik | Python + Qt | Electron | **Rust + GTK4** |
-|--------|-------------|----------|-----------------|
-| Başlangıç | 2.5s | 3.0s | **0.5s** ✅ |
-| RAM | 200MB | 300MB | **45MB** ✅ |
-| Binary Boyutu | - | ~100MB | **8MB** ✅ |
-| Native Görünüm | ⚠️ | ❌ | **✅** |
+## 🚀 Neden Rust + GTK4?
 
-## 🤝 Katkıda Bulunma
+| Metrik               | Değer            |
+| -------------------- | ---------------- |
+| **Başlatma Süresi**  | ~0.5 saniye      |
+| **Bellek Kullanımı** | ~45 MB           |
+| **Binary Boyutu**    | ~8 MB (stripped) |
+| **CPU (boşta)**      | <%0.2            |
 
-Katkılarınızı bekliyoruz! Detaylar için [CONTRIBUTING.md](CONTRIBUTING.md) dosyasına bakın.
-
-## 📄 Lisans
-
-Bu proje **GNU General Public License v3.0** ile lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
+- **Performans** — Hızlı başlatma ile derlenmiş yerel binary
+- **Bellek Verimli** — Electron tabanlı uygulamalara kıyasla düşük bellek ayak izi
+- **Küçük Binary** — Kompakt çalıştırılabilir boyut
+- **Yerel Entegrasyon** — Gerçek GTK4/libadwaita görünümü ve hissi
 
 ---
 
-<div align="center">
+## 🤝 Katkıda Bulunma
 
-**Türkiye'de ❤️ ile geliştirildi - [Açık Kaynak Geliştirme Topluluğu](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu)**
+Katkılarınızı bekliyoruz! Detaylar için [Katkıda Bulunma Rehberi](CONTRIBUTING.md) dosyasına bakın.
 
-⭐ GitHub'da yıldızlamayı unutmayın!
+---
 
-</div>
+## 📄 Lisans
+
+Bu proje **GNU Genel Kamu Lisansı v3.0** altında lisanslanmıştır — detaylar için [LICENSE](LICENSE) dosyasına bakın.
+
+---
+
+## 📚 Dokümantasyon
+
+- [Kurulum Rehberi](docs/INSTALL.md)
+- [Geliştirme Rehberi](docs/DEVELOPMENT.md)
+- [Mimari Genel Bakış](docs/ARCHITECTURE.md)
+- [Paketleme Rehberi](docs/PACKAGING.md)
+- [API Referansı](docs/API.md)
+- [Değişiklik Günlüğü](CHANGELOG.md)
+- [Güvenlik Politikası](SECURITY.md)

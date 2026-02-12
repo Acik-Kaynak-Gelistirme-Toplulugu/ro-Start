@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows (though we're Linux-focused)
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![allow(dead_code)]
 
 mod config;
 mod error;
@@ -9,18 +10,17 @@ mod package_manager;
 mod system;
 mod ui;
 
-// use adw::prelude::*;
 use clap::Parser;
 use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::Application;
-use libadwaita as adw;
+// use adw::prelude::*;
 
 const APP_ID: &str = "org.osdev.rostart";
 
 #[derive(Parser, Debug)]
 #[command(name = "ro-start")]
-#[command(version = "1.0.0")]
+#[command(version = "2.0.0")]
 #[command(about = "Fast, safe, and beautiful Linux welcome application", long_about = None)]
 struct Cli {
     /// Don't show at startup
@@ -48,7 +48,7 @@ fn main() {
     };
     tracing_subscriber::fmt().with_env_filter(log_level).init();
 
-    tracing::info!("🚀 Starting Ro-Start v1.0.0");
+    tracing::info!("🚀 Starting Ro-Start v2.0.0");
 
     // Initialize i18n
     if let Err(e) = i18n::init() {

@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Bienvenue sur Linux",
-    "version": "v1.0.0 (Bêta)"
+    "version": "v2.0.0"
   },
   "sidebar": {
     "welcome": "Bienvenue",

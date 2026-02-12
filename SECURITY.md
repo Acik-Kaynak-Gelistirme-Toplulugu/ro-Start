@@ -6,17 +6,23 @@ We take the security of Ro-Start seriously. This document outlines our security 
 
 ## 🛡️ Security Measures
 
-### Input Sanitization
+### Type Safety
 
-- All user inputs and system data are sanitized before being passed to JavaScript contexts
-- Command-line arguments are validated against injection patterns
-- Distribution IDs are validated using strict regex patterns
+- **Memory Safety**: Rust's ownership system prevents buffer overflows and use-after-free bugs
+- **Type Safety**: Strong type system catches many bugs at compile time
+- **No Unsafe Code**: Application uses safe Rust exclusively (no unsafe blocks)
 
-### Secure Subprocess Execution
+### Input Validation
 
-- **No shell=True**: All subprocess calls use array arguments to prevent command injection
-- Privilege escalation is handled securely through `pkexec` with validated commands
-- Command arguments are never constructed from unsanitized user input
+- All user inputs are validated before use
+- Command-line arguments are validated against expected patterns
+- Locale identifiers are validated using strict regex patterns
+
+### GTK4 Integration
+
+- Uses GTK4 + libadwaita for secure UI rendering
+- No dynamic code execution or script evaluation
+- All UI interactions are type-safe and validated
 
 ### Data Privacy
 
@@ -37,7 +43,8 @@ We provide security updates for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.1.x   | :white_check_mark: |
+| 2.0.x   | :white_check_mark: |
+| 1.0.x   | :x:                |
 | < 1.0   | :x:                |
 
 ## 🚨 Reporting a Vulnerability
@@ -69,26 +76,26 @@ When using Ro-Start:
 1. **Keep Updated**: Always use the latest version to receive security patches
 2. **Verify Downloads**: Only download from official sources (GitHub releases or your distribution's repository)
 3. **Review Permissions**: The application requires elevated privileges for system updates - this is expected behavior
-4. **Check Logs**: Review log files in `~/.local/state/ro-start/logs/` (Linux) or `~/Library/Logs/ro-start/` (macOS) if you notice unusual behavior
+4. **Check Logs**: Review log files if you notice unusual behavior
 
 ## 🔍 Security Audit
 
-Last security review: 2026-01-25
+Last security review: 2026-01-31
 
 Key security features implemented:
 
-- ✅ Input sanitization module
-- ✅ Secure subprocess handling
+- ✅ Type-safe Rust implementation
+- ✅ Input validation module
+- ✅ No unsafe code blocks
 - ✅ No external network requests
-- ✅ XSS prevention in JavaScript injection
 - ✅ Command injection prevention
-- ✅ Secure logging practices
+- ✅ Safe logging practices
 
 ## 📚 Additional Resources
 
+- [Rust Security Book](https://doc.rust-lang.org/book/)
 - [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)
-- [Python Security Best Practices](https://python.readthedocs.io/en/stable/library/security_warnings.html)
 
 ---
 
-**Note**: This is a local system utility. It requires elevated privileges for system operations (updates, driver management). This is by design and necessary for the application's core functionality.
+**Note**: Ro-Start is a native Rust application compiled to a single binary. All operations are performed locally without any external network requests or telemetry collection.

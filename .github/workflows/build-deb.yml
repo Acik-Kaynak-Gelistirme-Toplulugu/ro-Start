@@ -1,0 +1,76 @@
+name: Build DEB Package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-deb:
+    name: Build .deb Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev pkg-config
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-deb
+        run: cargo install cargo-deb
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Strip binary
+        run: strip -s target/release/ro-start
+
+      - name: Create .deb package
+        run: cargo deb --no-build
+
+      - name: Get package info
+        id: package_info
+        run: |
+          DEB_FILE=$(find target/debian -name "*.deb" -type f | head -n 1)
+          echo "deb_file=$DEB_FILE" >> $GITHUB_OUTPUT
+          echo "deb_name=$(basename $DEB_FILE)" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ro-start-deb
+          path: ${{ steps.package_info.outputs.deb_file }}
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.package_info.outputs.deb_file }}
+          body: |
+            # Ro-Start ${{ github.ref_name }}
+
+            ## Install on Debian/Ubuntu
+
+            ```bash
+            wget https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/releases/download/${{ github.ref_name }}/${{ steps.package_info.outputs.deb_name }}
+            sudo dpkg -i ${{ steps.package_info.outputs.deb_name }}
+            sudo apt-get install -f
+            ```
+
+            ## Features
+            - Fast, safe, and beautiful Linux welcome application
+            - Built with Rust + GTK4 + libadwaita
+            - Native GNOME integration
+            - Multi-language support (9 languages)
+            - System information display
+            - Package manager integration
+
+            See [CHANGELOG.md](https://github.com/Acik-Kaynak-Gelistirme-Toplulugu/ro-start/blob/main/CHANGELOG.md) for details.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

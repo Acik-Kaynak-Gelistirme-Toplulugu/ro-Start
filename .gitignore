@@ -1,8 +1,7 @@
-# Rust
+# Rust build artifacts
 /target/
 **/*.rs.bk
 *.pdb
-Cargo.lock
 
 # IDE
 .vscode/
@@ -20,6 +19,10 @@ Thumbs.db
 *.rpm
 *.tar.gz
 *.AppImage
+/dist/
+
+# Log files
+*.log
 
 # Debian build
 debian/.debhelper/
@@ -28,6 +31,11 @@ debian/files
 debian/*.substvars
 debian/*.log
 
-# Config/cache
+# Config backups
 *.toml.bak
+
+# Cache
 .cache/
+
+# Cargo config (platform-specific overrides)
+.cargo/config.toml

@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Linux へようこそ",
-    "version": "v1.0.0 (ベータ)"
+    "version": "v2.0.0"
   },
   "sidebar": {
     "welcome": "ようこそ",
