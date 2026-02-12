@@ -14,7 +14,6 @@ use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::Application;
 
-
 const APP_ID: &str = "org.osdev.rostart";
 
 #[derive(Parser, Debug)]

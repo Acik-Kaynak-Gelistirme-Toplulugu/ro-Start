@@ -1,7 +1,9 @@
 use crate::error::{Result, RoStartError};
+use std::fmt;
 use std::process::Command;
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum PackageManager {
     Apt,
     Dnf,
@@ -9,23 +11,42 @@ pub enum PackageManager {
     Zypper,
 }
 
-impl PackageManager {
-    /// Detect the system's package manager
-    pub fn detect() -> Result<Self> {
-        if Command::new("apt").arg("--version").output().is_ok() {
-            Ok(Self::Apt)
-        } else if Command::new("dnf").arg("--version").output().is_ok() {
-            Ok(Self::Dnf)
-        } else if Command::new("pacman").arg("--version").output().is_ok() {
-            Ok(Self::Pacman)
-        } else if Command::new("zypper").arg("--version").output().is_ok() {
-            Ok(Self::Zypper)
-        } else {
-            Err(RoStartError::PackageManagerNotFound)
+impl fmt::Display for PackageManager {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Apt => write!(f, "apt"),
+            Self::Dnf => write!(f, "dnf"),
+            Self::Pacman => write!(f, "pacman"),
+            Self::Zypper => write!(f, "zypper"),
         }
+    }
+}
+
+impl PackageManager {
+    /// Detect the system's package manager by checking for working binaries
+    #[allow(dead_code)]
+    pub fn detect() -> Result<Self> {
+        let candidates: &[(&str, PackageManager)] = &[
+            ("apt", Self::Apt),
+            ("dnf", Self::Dnf),
+            ("pacman", Self::Pacman),
+            ("zypper", Self::Zypper),
+        ];
+
+        for (cmd, pm) in candidates {
+            if let Ok(output) = Command::new(cmd).arg("--version").output() {
+                if output.status.success() {
+                    tracing::debug!("Detected package manager: {}", pm);
+                    return Ok(pm.clone());
+                }
+            }
+        }
+
+        Err(RoStartError::PackageManagerNotFound)
     }
 
     /// Get the update check command
+    #[allow(dead_code)]
     pub fn update_check_command(&self) -> Vec<String> {
         match self {
             Self::Apt => vec!["apt", "list", "--upgradable"],
@@ -39,6 +60,7 @@ impl PackageManager {
     }
 
     /// Check for available updates
+    #[allow(dead_code)]
     pub fn check_updates(&self) -> Result<UpdateInfo> {
         let cmd = self.update_check_command();
 
@@ -90,6 +112,7 @@ impl PackageManager {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct UpdateInfo {
     pub available: bool,
     pub count: usize,
@@ -97,6 +120,7 @@ pub struct UpdateInfo {
 }
 
 impl UpdateInfo {
+    #[allow(dead_code)]
     pub fn message(&self) -> String {
         if self.available {
             format!("{} update(s) available", self.count)

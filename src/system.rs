@@ -1,17 +1,22 @@
 use sysinfo::System;
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct SystemInfo {
     pub cpu_name: String,
+    #[allow(dead_code)]
     pub cpu_usage: f32,
     pub cpu_info: String,
     pub total_memory: u64,
+    #[allow(dead_code)]
     pub used_memory: u64,
     pub memory_info: String,
     pub os_name: String,
+    #[allow(dead_code)]
     pub os_version: String,
     pub desktop_environment: String,
     pub kernel_version: String,
+    #[allow(dead_code)]
     pub hostname: String,
 }
 
@@ -42,10 +47,8 @@ impl SystemState {
         // Format CPU info as percentage and model name
         let cpu_info = format!("{:.1}% ({})", cpu_usage, cpu_name);
 
-        // Format memory info as "used / total"
-        let memory_mb_used = used_memory / 1024;
-        let memory_mb_total = total_memory / 1024;
-        let memory_info = format!("{} MB / {} MB", memory_mb_used, memory_mb_total);
+        // Format memory info with smart units
+        let memory_info = Self::format_memory(used_memory, total_memory);
 
         let os_name = System::name().unwrap_or_else(|| "Linux".to_string());
         let os_version = System::os_version().unwrap_or_else(|| "Unknown".to_string());
@@ -70,80 +73,65 @@ impl SystemState {
         }
     }
 
-    /// Detect the running desktop environment
-    fn detect_desktop_environment() -> String {
-        // Check XDG_CURRENT_DESKTOP (most reliable)
-        if let Ok(xdg_desktop) = std::env::var("XDG_CURRENT_DESKTOP") {
-            let xdg = xdg_desktop.to_lowercase();
+    /// Format memory values with appropriate units (MB or GB)
+    /// sysinfo returns memory in bytes
+    fn format_memory(used_bytes: u64, total_bytes: u64) -> String {
+        let used_mb = used_bytes / (1024 * 1024);
+        let total_mb = total_bytes / (1024 * 1024);
 
-            // Support for KDE Plasma
-            if xdg.contains("kde") || xdg.contains("plasmadesktop") {
-                return "KDE Plasma".to_string();
-            }
-            // Support for GNOME
-            if xdg.contains("gnome") {
-                return "GNOME".to_string();
-            }
-            // Support for other environments
-            if xdg.contains("xfce") {
-                return "Xfce".to_string();
-            }
-            if xdg.contains("lxde") {
-                return "LXDE".to_string();
-            }
-            if xdg.contains("cinnamon") {
-                return "Cinnamon".to_string();
-            }
-            if xdg.contains("mate") {
-                return "MATE".to_string();
-            }
-            if xdg.contains("budgie") {
-                return "Budgie".to_string();
-            }
-            if xdg.contains("deepin") {
-                return "Deepin".to_string();
-            }
-
-            // Return the value as-is if recognized
-            return xdg_desktop;
+        if total_mb >= 1024 {
+            format!(
+                "{:.1} GB / {:.1} GB",
+                used_mb as f64 / 1024.0,
+                total_mb as f64 / 1024.0
+            )
+        } else {
+            format!("{} MB / {} MB", used_mb, total_mb)
         }
-
-        // Fallback to DESKTOP_SESSION
-        if let Ok(session) = std::env::var("DESKTOP_SESSION") {
-            let session_lower = session.to_lowercase();
-
-            if session_lower.contains("kde") || session_lower.contains("plasmadesktop") {
-                return "KDE Plasma".to_string();
-            }
-            if session_lower.contains("gnome") {
-                return "GNOME".to_string();
-            }
-            if session_lower.contains("xfce") {
-                return "Xfce".to_string();
-            }
-            if session_lower.contains("lxde") {
-                return "LXDE".to_string();
-            }
-            if session_lower.contains("cinnamon") {
-                return "Cinnamon".to_string();
-            }
-            if session_lower.contains("mate") {
-                return "MATE".to_string();
-            }
-            if session_lower.contains("budgie") {
-                return "Budgie".to_string();
-            }
-            if session_lower.contains("deepin") {
-                return "Deepin".to_string();
-            }
-
-            return session;
-        }
-
-        // Final fallback
-        "Unknown".to_string()
     }
 
+    /// Detect the running desktop environment
+    fn detect_desktop_environment() -> String {
+        // Desktop environment name mappings (keyword → display name)
+        const DE_MAP: &[(&str, &str)] = &[
+            ("kde", "KDE Plasma"),
+            ("plasmadesktop", "KDE Plasma"),
+            ("gnome", "GNOME"),
+            ("xfce", "Xfce"),
+            ("lxde", "LXDE"),
+            ("lxqt", "LXQt"),
+            ("cinnamon", "Cinnamon"),
+            ("mate", "MATE"),
+            ("budgie", "Budgie"),
+            ("deepin", "Deepin"),
+            ("sway", "Sway"),
+            ("hyprland", "Hyprland"),
+            ("i3", "i3"),
+            ("cosmic", "COSMIC"),
+            ("pantheon", "Pantheon"),
+        ];
+
+        // Check XDG_CURRENT_DESKTOP first (most reliable), then DESKTOP_SESSION
+        let env_val = std::env::var("XDG_CURRENT_DESKTOP")
+            .or_else(|_| std::env::var("DESKTOP_SESSION"))
+            .unwrap_or_default();
+
+        if env_val.is_empty() {
+            return "Unknown".to_string();
+        }
+
+        let lower = env_val.to_lowercase();
+        for (keyword, display_name) in DE_MAP {
+            if lower.contains(keyword) {
+                return display_name.to_string();
+            }
+        }
+
+        // Return the raw value if no known DE matched
+        env_val
+    }
+
+    #[allow(dead_code)]
     pub fn refresh(&mut self) {
         self.sys.refresh_all();
     }
@@ -152,5 +140,41 @@ impl SystemState {
 impl Default for SystemState {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format_memory_mb() {
+        // 512 MB used / 1024 MB total (values in bytes)
+        let result = SystemState::format_memory(512 * 1024 * 1024, 900 * 1024 * 1024);
+        assert!(result.contains("512 MB"));
+        assert!(result.contains("900 MB"));
+    }
+
+    #[test]
+    fn test_format_memory_gb() {
+        // 4 GB used / 16 GB total (values in bytes)
+        let result = SystemState::format_memory(4 * 1024 * 1024 * 1024, 16 * 1024 * 1024 * 1024);
+        assert!(result.contains("4.0 GB"));
+        assert!(result.contains("16.0 GB"));
+    }
+
+    #[test]
+    fn test_system_info_populated() {
+        let state = SystemState::new();
+        let info = state.get_system_info();
+
+        // All fields should have non-empty values
+        assert!(!info.cpu_name.is_empty());
+        assert!(!info.cpu_info.is_empty());
+        assert!(!info.memory_info.is_empty());
+        assert!(!info.os_name.is_empty());
+        assert!(!info.kernel_version.is_empty());
+        assert!(!info.hostname.is_empty());
+        assert!(info.total_memory > 0);
     }
 }

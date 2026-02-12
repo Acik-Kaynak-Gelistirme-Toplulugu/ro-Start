@@ -178,10 +178,13 @@ impl MainWindow {
 
     fn create_actions_card() -> libadwaita::PreferencesGroup {
         let group = libadwaita::PreferencesGroup::new();
-
         group.set_title("Quick Actions");
 
-        // Update System Button
+        // Detect DE once and share across callbacks (avoids re-creating SystemState each click)
+        let sys_state = SystemState::new();
+        let de = std::rc::Rc::new(sys_state.get_system_info().desktop_environment);
+
+        // --- Update System ---
         let update_row = libadwaita::ActionRow::new();
         update_row.set_title("Update System");
         update_row.set_subtitle("Check and install available updates");
@@ -195,34 +198,29 @@ impl MainWindow {
         update_button.add_css_class("suggested-action");
         update_row.add_suffix(&update_button);
 
-        update_button.connect_clicked(|_| {
+        let de_clone = de.clone();
+        update_button.connect_clicked(move |_| {
             tracing::info!("Update button clicked");
-            // Open system update manager based on desktop environment
-            let de = crate::system::SystemState::new()
-                .get_system_info()
-                .desktop_environment;
-            let update_cmd = match de.as_str() {
+            let cmd = match de_clone.as_str() {
                 "KDE Plasma" => "discover",
                 "GNOME" => "gnome-software",
                 "Xfce" => "xfce4-appfinder",
+                "Cinnamon" | "MATE" | "Budgie" => "mintupdate",
                 _ => "gnome-software",
             };
 
-            if let Err(e) = std::process::Command::new("sh")
-                .arg("-c")
-                .arg(update_cmd)
-                .spawn()
-            {
-                tracing::error!("Failed to open update manager: {}", e);
-                crate::notifications::notify_error("Update Manager: Failed to open update manager");
-            } else {
-                crate::notifications::notify_success("Update Manager opened");
+            // Security: use Command::new directly — no shell interpretation
+            match std::process::Command::new(cmd).spawn() {
+                Ok(_) => crate::notifications::notify_success("Update Manager opened"),
+                Err(e) => {
+                    tracing::error!("Failed to open update manager '{}': {}", cmd, e);
+                    crate::notifications::notify_error("Failed to open update manager");
+                }
             }
         });
-
         group.add(&update_row);
 
-        // Software Center Button
+        // --- Software Center ---
         let software_row = libadwaita::ActionRow::new();
         software_row.set_title("Software Center");
         software_row.set_subtitle("Browse and install applications");
@@ -235,36 +233,28 @@ impl MainWindow {
         software_button.set_valign(gtk::Align::Center);
         software_row.add_suffix(&software_button);
 
-        software_button.connect_clicked(|_| {
+        let de_clone = de.clone();
+        software_button.connect_clicked(move |_| {
             tracing::info!("Software Center button clicked");
-            // Open software center based on desktop environment
-            let de = crate::system::SystemState::new()
-                .get_system_info()
-                .desktop_environment;
-            let software_cmd = match de.as_str() {
+            let cmd = match de_clone.as_str() {
                 "KDE Plasma" => "discover",
                 "GNOME" => "gnome-software",
                 "Xfce" => "xfce4-appfinder",
+                "Cinnamon" | "MATE" | "Budgie" => "mintinstall",
                 _ => "gnome-software",
             };
 
-            if let Err(e) = std::process::Command::new("sh")
-                .arg("-c")
-                .arg(software_cmd)
-                .spawn()
-            {
-                tracing::error!("Failed to open software center: {}", e);
-                crate::notifications::notify_error(
-                    "Software Center: Failed to open software center",
-                );
-            } else {
-                crate::notifications::notify_success("Software Center opened");
+            match std::process::Command::new(cmd).spawn() {
+                Ok(_) => crate::notifications::notify_success("Software Center opened"),
+                Err(e) => {
+                    tracing::error!("Failed to open software center '{}': {}", cmd, e);
+                    crate::notifications::notify_error("Failed to open software center");
+                }
             }
         });
-
         group.add(&software_row);
 
-        // Settings Button
+        // --- System Settings ---
         let settings_row = libadwaita::ActionRow::new();
         settings_row.set_title("System Settings");
         settings_row.set_subtitle("Configure your system");
@@ -275,29 +265,26 @@ impl MainWindow {
         settings_button.set_valign(gtk::Align::Center);
         settings_row.add_suffix(&settings_button);
 
-        settings_button.connect_clicked(|_| {
+        let de_clone = de.clone();
+        settings_button.connect_clicked(move |_| {
             tracing::info!("Settings button clicked");
-            // Open system settings based on desktop environment
-            let de = crate::system::SystemState::new()
-                .get_system_info()
-                .desktop_environment;
-            let settings_cmd = match de.as_str() {
+            let cmd = match de_clone.as_str() {
                 "KDE Plasma" => "systemsettings5",
                 "GNOME" => "gnome-control-center",
                 "Xfce" => "xfce4-settings-manager",
+                "Cinnamon" => "cinnamon-settings",
+                "MATE" => "mate-control-center",
                 _ => "gnome-control-center",
             };
 
-            if let Err(e) = std::process::Command::new(settings_cmd).spawn() {
-                tracing::error!("Failed to open system settings: {}", e);
-                crate::notifications::notify_error(
-                    "System Settings: Failed to open system settings",
-                );
-            } else {
-                crate::notifications::notify_success("System Settings opened");
+            match std::process::Command::new(cmd).spawn() {
+                Ok(_) => crate::notifications::notify_success("System Settings opened"),
+                Err(e) => {
+                    tracing::error!("Failed to open settings '{}': {}", cmd, e);
+                    crate::notifications::notify_error("Failed to open system settings");
+                }
             }
         });
-
         group.add(&settings_row);
 
         group

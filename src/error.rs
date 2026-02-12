@@ -22,4 +22,5 @@ pub enum RoStartError {
     UpdateCheckFailed(String),
 }
 
+#[allow(dead_code)]
 pub type Result<T> = std::result::Result<T, RoStartError>;
