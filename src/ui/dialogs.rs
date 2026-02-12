@@ -3,6 +3,7 @@ use gtk::prelude::*;
 use libadwaita as adw;
 
 /// Show an error dialog
+#[allow(dead_code)]
 pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {
     let dialog = libadwaita::MessageDialog::builder()
         .heading(title)
@@ -21,6 +22,7 @@ pub fn show_error(parent: Option<&gtk::Window>, title: &str, message: &str) {
 }
 
 /// Show an info dialog
+#[allow(dead_code)]
 pub fn show_info(parent: Option<&gtk::Window>, title: &str, message: &str) {
     let dialog = libadwaita::MessageDialog::builder()
         .heading(title)
@@ -39,6 +41,7 @@ pub fn show_info(parent: Option<&gtk::Window>, title: &str, message: &str) {
 }
 
 /// Show a confirmation dialog
+#[allow(dead_code)]
 pub fn show_confirm(
     parent: Option<&gtk::Window>,
     title: &str,

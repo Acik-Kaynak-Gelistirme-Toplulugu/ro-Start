@@ -1,6 +1,7 @@
 use notify_rust::Notification;
 
 /// Show a desktop notification
+#[allow(dead_code)]
 pub fn show_notification(title: &str, body: &str) {
     if let Err(e) = Notification::new()
         .summary(title)
@@ -14,6 +15,7 @@ pub fn show_notification(title: &str, body: &str) {
 }
 
 /// Show update notification
+#[allow(dead_code)]
 pub fn notify_updates_available(count: usize) {
     let title = "Updates Available";
     let body = format!("{} update(s) are ready to install", count);

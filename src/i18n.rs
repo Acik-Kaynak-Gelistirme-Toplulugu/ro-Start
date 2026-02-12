@@ -261,6 +261,7 @@ fn get_fallback_en() -> Translations {
 }
 
 /// Get available locales
+#[allow(dead_code)]
 pub fn available_locales() -> Vec<String> {
     TRANSLATIONS
         .read()
@@ -270,6 +271,7 @@ pub fn available_locales() -> Vec<String> {
 }
 
 /// Get locale display name
+#[allow(dead_code)]
 pub fn locale_name(locale: &str) -> &str {
     match locale {
         "en_US" => "English",

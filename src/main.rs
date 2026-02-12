@@ -1,6 +1,5 @@
-// Prevents additional console window on Windows (though we're Linux-focused)
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-#![allow(dead_code)]
+//! Ro-Start — Fast, safe, and beautiful Linux welcome application
+//! Built with Rust + GTK4 + libadwaita
 
 mod config;
 mod error;
@@ -14,7 +13,7 @@ use clap::Parser;
 use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::Application;
-// use adw::prelude::*;
+
 
 const APP_ID: &str = "org.osdev.rostart";
 
